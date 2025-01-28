@@ -339,6 +339,29 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         hideKeyboard()
     }
     
+    func submit_test(text: NSAttributedString) async {
+        let html = TextFormatManager.shared.attributedStringToHTML(attributedString: text) ?? ""
+        print(html)
+        let tagIds = editorTags.map { $0.id }
+        
+        switch editorState {
+        case .create:
+            await createMemo(content: html, tagIds: tagIds, locked: false)
+            memos = []
+            mainCurrentPage = 0
+            await fetchMemos()
+
+        case .update(let target):
+            await updateMemo(memoId: target.id, content: html, tagIds: tagIds, locked: target.locked)
+        }
+        
+        // Reset the input fields
+        editorState = .create
+        editorContent = ""
+        editorTags = []
+        hideKeyboard()
+    }
+    
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }

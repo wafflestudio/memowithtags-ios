@@ -25,7 +25,6 @@ enum Route: Hashable {
     case changeNickname
     case changePassword
     case search
-    case memoEditor(namespace: Namespace.ID, id: String)
 }
 
 @MainActor

@@ -19,6 +19,7 @@ struct MemoView: View {
     @State private var currentlyLocked = false
     
     @Namespace var namespace
+    @State private var showEditor: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -86,6 +87,10 @@ struct MemoView: View {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
                         viewModel.editorTags = memo.tags
+                        
+                        if viewModel.appState.navigation.current != .main {
+                            viewModel.appState.navigation.pop()
+                        }
                     }
                 }
                 .padding(.top, 10)
@@ -121,7 +126,7 @@ struct MemoView: View {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
                 viewModel.editorTags = memo.tags
-                viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "editor\(memo.id)"))
+                showEditor = true
             }
         }
         .contextMenu {
@@ -160,8 +165,14 @@ struct MemoView: View {
                 Label("삭제하기", systemImage: "trash")
             }
         }
-        .padding(.horizontal, 12)
+        .fullScreenCover(isPresented: $showEditor) {
+            MemoEditorView(viewModel: viewModel)
+                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
+                .interactiveDismissDisabled()
+        }
         .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+        .padding(.horizontal, 12)
+
     }
     
     func dateFormat(date: Date) -> String {
