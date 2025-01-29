@@ -21,7 +21,7 @@ struct MemoView: View {
     @Namespace var namespace
     @State private var showEditor: Bool = false
     
-    @State private var attributedContent: AttributedString = AttributedString("메모를 인코딩하는 중입니다...")
+    @State private var attributedContent: AttributedString = AttributedString()
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -107,11 +107,12 @@ struct MemoView: View {
         .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .onAppear {
             currentlyLocked = memo.locked
-            
+
             if let attrString = NSAttributedString(html: memo.content) {
                 attributedContent = AttributedString(attrString)
             }
         }
+        
         .onChange(of: memo.locked) {
             currentlyLocked = memo.locked
         }
