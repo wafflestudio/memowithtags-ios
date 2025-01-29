@@ -1,19 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "네이버.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "네이버 1.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "네이버 2.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "naver.svg",
+      "idiom" : "universal"
     }
   ],
   "info" : {

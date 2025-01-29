@@ -9,37 +9,74 @@ import RichTextKit
 import Flow
 
 struct MemoEditorView: View {
+    @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: MainViewModel
     
-    @State var text = NSAttributedString(string: "")
-    @StateObject var context = RichTextContext()
-    
+    @StateObject private var context = RichTextContext()
     @StateObject private var keyboardManager = KeyboardManager()
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack {
-                RichTextEditor(text: $text, context: context)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled(true)
-                    .overlay(Group { // placeholder
-                        if !context.isEditingText && text.string.isEmpty {
-                            Text("메모를 작성해보세요.")
-                                .foregroundStyle(Color.dividerGray)
-                                .offset(x: 5, y: 8)
+            HStack {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 19, weight: .regular))
+                    .foregroundStyle(Color.black)
+                    .onTapGesture {
+                        Task {
+                            dismiss()
+                            await viewModel.submit()
                         }
-                    }, alignment: .topLeading)
+                    }
+                
+                Spacer()
+                
+                Menu {
+                    Button {
+                    } label: {
+                        Label("매모 잠그기", systemImage: "lock")
+                    }
+                    
+                    Button(role: .destructive) {
+                        viewModel.editorState = .create
+                        viewModel.editorContent = .init(string: "")
+                        viewModel.editorTags = []
+                        dismiss()
+                    } label: {
+                        Label("변경사항 삭제하기", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 19, weight: .regular))
+                        .rotationEffect(.degrees(90))
+                        .foregroundStyle(Color.black)
+                }
+        
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(Color.memoBackgroundWhite)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            
+            Divider()
+            
+            RichTextEditor(text: $viewModel.editorContent, context: context)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
+                .overlay(Group { // placeholder
+                    if !context.isEditingText && viewModel.editorContent.string.isEmpty {
+                        Text("메모를 작성해보세요.")
+                            .foregroundStyle(Color.dividerGray)
+                            .offset(x: 5, y: 8)
+                    }
+                }, alignment: .topLeading)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(Color.memoBackgroundWhite)
             
             Spacer()
             
-            HStack {
+            HFlow {
                 ForEach(viewModel.editorTags, id: \.id) { tag in
-                    TagView(viewModel: viewModel, tag: tag) {
-                        
+                    TagView(viewModel: viewModel, tag: tag, addXmark: true) {
+                        removeTagFromSelectedTags(tag)
                     }
                 }
             }
@@ -104,19 +141,10 @@ struct MemoEditorView: View {
             }
             
         }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 18))
-                    .onTapGesture {
-                        Task {
-//                            await viewModel.submit()
-                            viewModel.appState.navigation.pop()
-                        }
-                    }
-            }
-        }
-        .navigationBarBackButtonHidden()
+    }
+    
+    private func removeTagFromSelectedTags(_ tag: Tag) {
+        viewModel.editorTags.removeAll { $0.id == tag.id }
     }
     
     @ViewBuilder private func EditIcon(icon: String, selected: Bool, click: @escaping () -> Void) -> some View {
@@ -128,4 +156,7 @@ struct MemoEditorView: View {
             }
     }
 }
+
+
+
 
