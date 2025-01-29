@@ -7,36 +7,33 @@
 
 import Foundation
 
-final class TextFormatManager {
-    static let shared = TextFormatManager()
-    private init() {}
-    
-    func attributedStringToHTML(attributedString: NSAttributedString) -> String? {
+extension NSAttributedString {
+    /// `NSAttributedString`을 `HTML` 문자열로 변환하는 함수
+    func toHTML() -> String? {
         do {
-            let data = try attributedString.data(
-                from: NSRange(location: 0, length: attributedString.length),
+            let range = NSRange(location: 0, length: self.length)
+            let data = try self.data(
+                from: range,
                 documentAttributes: [.documentType: NSAttributedString.DocumentType.html]
             )
             return String(data: data, encoding: .utf8)
         } catch {
-            print("NSAttributedString -> HTML 변환 실패: \(error)")
+            print("attr -> html 변환 실패")
             return nil
         }
     }
     
-    func htmlToAttributedString(html: String) -> NSAttributedString? {
+    /// `HTML` 문자열을 `NSAttributedString`으로 변환하는 초기화 함수
+    convenience init?(html: String) {
         guard let data = html.data(using: .utf8) else { return nil }
         do {
-            return try NSAttributedString(
-                data: data,
-                options: [
-                    .documentType: NSAttributedString.DocumentType.html,
-                    .characterEncoding: String.Encoding.utf8.rawValue
-                ],
-                documentAttributes: nil
-            )
+            let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
+                .documentType: NSAttributedString.DocumentType.html,
+                .characterEncoding: String.Encoding.utf8.rawValue
+            ]
+            try self.init(data: data, options: options, documentAttributes: nil)
         } catch {
-            print("HTML -> NSAttributedString 변환 실패: \(error)")
+            print("html -> attr 변환 실패")
             return nil
         }
     }

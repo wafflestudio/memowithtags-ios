@@ -14,17 +14,15 @@ struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
     @Namespace var namespace
+    @StateObject private var context = RichTextContext()
     @State private var showEditor: Bool = false
-    
-    @StateObject var context = RichTextContext()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             // 메모글 쓰는 곳
-            DynamicHeightTextEditor(
-                text: $viewModel.editorContent,
-                maxHeight: 100
-            )
+            RichTextEditor(text: $viewModel.editorContent, context: context)
+                .frame(height: 30)
+                .border(.black)
             
             // 메모에 넣은 태그들
             HFlow {
@@ -75,7 +73,7 @@ struct EditingMemoView: View {
                         .clipShape(Circle())
                         .onTapGesture {
                             viewModel.editorState = .create
-                            viewModel.editorContent = ""
+                            viewModel.editorContent = .init(string: "")
                             viewModel.editorTags = []
                         }
                     
@@ -109,7 +107,6 @@ struct EditingMemoView: View {
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
-
     }
     
     

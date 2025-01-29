@@ -12,9 +12,7 @@ struct MemoEditorView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: MainViewModel
     
-    @State var text = NSAttributedString(string: "")
-    @StateObject var context = RichTextContext()
-    
+    @StateObject private var context = RichTextContext()
     @StateObject private var keyboardManager = KeyboardManager()
 
     var body: some View {
@@ -26,7 +24,7 @@ struct MemoEditorView: View {
                     .onTapGesture {
                         Task {
                             dismiss()
-                            await viewModel.submit_test(text: text)
+                            await viewModel.submit()
                         }
                     }
                 
@@ -40,7 +38,7 @@ struct MemoEditorView: View {
                     
                     Button(role: .destructive) {
                         viewModel.editorState = .create
-                        viewModel.editorContent = ""
+                        viewModel.editorContent = .init(string: "")
                         viewModel.editorTags = []
                         dismiss()
                     } label: {
@@ -59,11 +57,11 @@ struct MemoEditorView: View {
             
             Divider()
             
-            RichTextEditor(text: $text, context: context)
+            RichTextEditor(text: $viewModel.editorContent, context: context)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
                 .overlay(Group { // placeholder
-                    if !context.isEditingText && text.string.isEmpty {
+                    if !context.isEditingText && viewModel.editorContent.string.isEmpty {
                         Text("메모를 작성해보세요.")
                             .foregroundStyle(Color.dividerGray)
                             .offset(x: 5, y: 8)

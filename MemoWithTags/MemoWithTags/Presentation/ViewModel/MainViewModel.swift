@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import RichTextKit
 
 @MainActor
 final class MainViewModel: BaseViewModel, ObservableObject {
@@ -29,9 +30,10 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     // editor의 변수들 (축소, 확대 상태 모두)
     @Published var editorState: EditorState = .create
-    @Published var editorContent: String = ""
+    @Published var editorContent = NSAttributedString(string: "")
+    @Published var context = RichTextContext()
     @Published var editorTags: [Tag] = []
-    enum EditorState {
+    enum EditorState: Equatable {
         case create
         case update(target: Memo)
     }
@@ -316,34 +318,12 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     ///editor에서 submit 했을 때 작동
     func submit() async {
-        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedContent = editorContent.string.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedContent.isEmpty else { return }
-    
+        
+        guard let html = editorContent.toHTML() else { return }
         let tagIds = editorTags.map { $0.id }
-        
-        switch editorState {
-        case .create:
-            await createMemo(content: trimmedContent, tagIds: tagIds, locked: false)
-            memos = []
-            mainCurrentPage = 0
-            await fetchMemos()
-
-        case .update(let target):
-            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: tagIds, locked: target.locked)
-        }
-        
-        // Reset the input fields
-        editorState = .create
-        editorContent = ""
-        editorTags = []
-        hideKeyboard()
-    }
     
-    func submit_test(text: NSAttributedString) async {
-        let html = TextFormatManager.shared.attributedStringToHTML(attributedString: text) ?? ""
-        print(html)
-        let tagIds = editorTags.map { $0.id }
-        
         switch editorState {
         case .create:
             await createMemo(content: html, tagIds: tagIds, locked: false)
@@ -357,7 +337,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         // Reset the input fields
         editorState = .create
-        editorContent = ""
+        editorContent = .init(string: "")
         editorTags = []
         hideKeyboard()
     }
@@ -378,7 +358,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         mainTotalPages = 1
         
         editorState = .create
-        editorContent = ""
+        editorContent = .init(string: "")
         editorTags = []
     }
     

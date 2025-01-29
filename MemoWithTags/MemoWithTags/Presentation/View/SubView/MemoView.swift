@@ -21,9 +21,11 @@ struct MemoView: View {
     @Namespace var namespace
     @State private var showEditor: Bool = false
     
+    @State private var attributedContent: AttributedString = AttributedString("메모를 인코딩하는 중입니다...")
+    
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
-            Text(memo.content)
+            Text(attributedContent)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : lineLimit)
                 .blur(radius: currentlyLocked ? 6 : 0)
@@ -85,13 +87,14 @@ struct MemoView: View {
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(.black.opacity(0.15), lineWidth: 1))
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
-                        viewModel.editorContent = memo.content
+                        viewModel.editorContent = NSAttributedString(html: memo.content) ?? NSAttributedString(string: "")
                         viewModel.editorTags = memo.tags
                         
                         if viewModel.appState.navigation.current != .main {
                             viewModel.appState.navigation.pop()
                         }
                     }
+
                 }
                 .padding(.top, 10)
             }
@@ -104,6 +107,10 @@ struct MemoView: View {
         .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .onAppear {
             currentlyLocked = memo.locked
+            
+            if let attrString = NSAttributedString(html: memo.content) {
+                attributedContent = AttributedString(attrString)
+            }
         }
         .onChange(of: memo.locked) {
             currentlyLocked = memo.locked
@@ -124,7 +131,7 @@ struct MemoView: View {
                 }
             } else {
                 viewModel.editorState = .update(target: memo)
-                viewModel.editorContent = memo.content
+                viewModel.editorContent = NSAttributedString(html: memo.content) ?? NSAttributedString(string: "")
                 viewModel.editorTags = memo.tags
                 showEditor = true
             }
