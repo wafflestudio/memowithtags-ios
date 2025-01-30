@@ -7,270 +7,298 @@
 
 import Foundation
 import SwiftUI
-import RichTextKit
+import Accelerate
 
 @MainActor
 final class MainViewModel: BaseViewModel, ObservableObject {
     
     @Published var isLoading: Bool = false
     
-    //mainPage 변수들
+    // MARK: - Main Page Variables
     @Published var memos: [Memo] = []
     @Published var tags: [Tag] = []
-    @Published var mainCurrentPage: Int = 0
-    @Published var mainTotalPages: Int = 1
+    @Published var recommendingMemos: [Memo] = []
+    @Published var recommendingTags: [Tag] = []
+    // 참고: 사용자가 태그 검색 창에 검색을 한다고 recommendingTags는 변하지 않는다.
+    // tagRecommendation에 recommendingTags가 그대로 보이는 것이 아니라, 검색을 하는 등 추가적인 과정이 있다.
     
-    //searchPage 변수들
+    // MARK: - Search Page Variables
     @Published var searchBarText: String = ""
     @Published var searchBarSelectedTags: [Tag] = []
     @Published var searchedMemos: [Memo] = []
     @Published var searchedTags: [Tag] = []
-    @Published var searchCurrentPage: Int = 0
-    @Published var searchTotalPages: Int = 1
     
-    // editor의 변수들 (축소, 확대 상태 모두)
+    // MARK: - Editor Variables (Both Collapsed and Expanded States)
     @Published var editorState: EditorState = .create
-    @Published var editorContent = NSAttributedString(string: "")
-    @Published var context = RichTextContext()
+    @Published var editorContent: String = ""
+    @Published var editorTagSearchBarText: String = ""
     @Published var editorTags: [Tag] = []
+    
     enum EditorState: Equatable {
         case create
         case update(target: Memo)
     }
     
-    // 메모 정렬과 관련된 변수
+    // MARK: - Memo Sorting Variables
     @Published var sortMemo: Sort = .byCreate
     @Published var sortSearch: Sort = .byCreate
+    
     enum Sort {
         case byCreate
         case byUpdate
     }
     
-    // mainView에서 첫 검색을 할 때나, pagenation을 할 때 모두 사용된다.
-    func fetchMemos() async {
+    // MARK: Load and Save Opeartions between Filesystem
+    
+    func loadMemosAndTagsFromFileSystem() async {
         guard !isLoading else { return }
         
         isLoading = true
-        mainCurrentPage += 1
         
-        guard mainCurrentPage <= mainTotalPages else {
-            isLoading = false
-            mainCurrentPage -= 1
-            return
-        }
-        
-        let result = await useCases.fetchMemoUseCase.execute(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage)
+        let result = await useCases.loadMemosAndTagsUseCase.execute()
         
         switch result {
-        case .success(let paginatedMemos):
-            let updatedMemos = paginatedMemos.memos.map { memo -> Memo in
-                var updatedMemo = memo
-                updatedMemo.tags = getTags(from: updatedMemo.tagIds)
-                return updatedMemo
-            }
-            
-            self.memos.append(contentsOf: updatedMemos)
-            self.mainTotalPages = paginatedMemos.totalPages
-            
+        case .success(let data):
+            self.memos = data.memos
+            self.tags = data.tags
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = error.localizedDescription
         }
         
         isLoading = false
     }
     
-    // searchView에서 첫 검색을 할 때나, pagenation을 할 때 모두 사용된다.
-    func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
+    func saveMemosAndTagsToFileSystem() async {
         guard !isLoading else { return }
         
         isLoading = true
-        searchCurrentPage += 1
         
-        guard searchCurrentPage <= searchTotalPages else {
-            isLoading = false
-            searchCurrentPage -= 1
-            return
-        }
-        
-        let result = await useCases.fetchMemoUseCase.execute(content: content, tagIds: tagIds, dateRange: dateRange, page: self.searchCurrentPage)
+        let result = await useCases.saveMemosAndTagsUseCase.execute(memos: self.memos, tags: self.tags)
         
         switch result {
-        case .success(let paginatedMemos):
-            let updatedMemos = paginatedMemos.memos.map { memo -> Memo in
-                var updatedMemo = memo
-                updatedMemo.tags = getTags(from: updatedMemo.tagIds)
-                return updatedMemo
-            }
-            
-            self.searchedMemos.append(contentsOf: updatedMemos)
-            self.searchTotalPages = paginatedMemos.totalPages
-
+        case .success():
+            print("Memos and Tags successfully saved to filesystem.")
         case .failure(let error):
-            // SearchView에서 wait이 끝나고 searchMemo가 실행되는 와중에 새로운 Task가 생성되어서 Task가 사라지면 MemoError.unknown이 뜬다. 이것은 정상적인 결과이기 때문에 무시한다.
-            if (error != MemoError.unknown) {
+            appState.system.showAlert = true
+            appState.system.errorMessage = error.localizedDescription
+        }
+        
+        isLoading = false
+    }
+    
+    // MARK: - CRUD Operations for Memos
+    
+    /// 메모를 생성할 때 임베딩 벡터를 생성하고, 관련 태그의 임베딩 벡터를 업데이트합니다.
+    func createMemo(content: String, tagIds: [UUID], locked: Bool) async {
+        isLoading = true
+        
+        do {
+            let newId = UUID()
+            
+            let embeddingVector = try await createEmbeddingVectorWithAI(text: content)
+            
+            let currentDate = Date()
+            
+            let result = await useCases.createMemoUseCase.execute(
+                id: newId,
+                content: content,
+                tagIds: tagIds,
+                locked: locked,
+                embeddingVector: embeddingVector,
+                createdAt: currentDate,
+                updatedAt: currentDate
+            )
+            
+            switch result {
+            case .success(let memo):
+                self.memos.append(memo)
+                
+                // 관련 태그의 임베딩 벡터 업데이트
+                await updateAssociatedTagsEmbedding(for: memo)
+                
+                await saveMemosAndTagsToFileSystem()
+                
+            case .failure(let error):
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription()
+                appState.system.errorMessage = error.localizedDescription
             }
-        }
-        
-        isLoading = false
-    }
-    
-    func createMemo(content: String, tagIds: [Int], locked: Bool) async {
-        isLoading = true
-        
-        let result = await useCases.createMemoUseCase.execute(content: content, tagIds: tagIds, locked: locked)
-        
-        switch result {
-        case .success(let memo):
-            var memoWithFilledTags = memo
-            memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
-            self.memos.insert(memoWithFilledTags, at: 0)
-        case .failure(let error):
+        } catch {
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = "메모 생성 중 오류가 발생했습니다: \(error.localizedDescription)"
         }
         
         isLoading = false
     }
     
-    func updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool) async {
+    /// 메모를 업데이트할 때 임베딩 벡터를 생성하고, 관련 태그의 임베딩 벡터를 업데이트합니다.
+    func updateMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool) async {
         isLoading = true
         
-        let result = await useCases.updateMemoUseCase.execute(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
-        switch result {
-        case .success(let memo):
-            var memoWithFilledTags = memo
-            memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
-            if let index = self.memos.firstIndex(where: { $0.id == memoId }) {
-                self.memos[index] = memoWithFilledTags
+        do {
+            let updatingMemoIndex = self.memos.firstIndex(where: { $0.id == id })!
+            
+            let embeddingVector = try await createEmbeddingVectorWithAI(text: content)
+            
+            let currentDate = Date()
+            
+            let result = await useCases.updateMemoUseCase.execute(
+                id: id,
+                content: content,
+                tagIds: tagIds,
+                locked: locked,
+                embeddingVector: embeddingVector,
+                createdAt: self.memos[updatingMemoIndex].createdAt,
+                updatedAt: currentDate
+            )
+            
+            switch result {
+            case .success(let memo):
+                self.memos[updatingMemoIndex] = memo
+                await saveMemosAndTagsToFileSystem()
+            case .failure(let error):
+                appState.system.showAlert = true
+                appState.system.errorMessage = error.localizedDescription
             }
-        case .failure(let error):
+        } catch {
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = "메모 업데이트 중 오류가 발생했습니다: \(error.localizedDescription)"
         }
         
         isLoading = false
     }
     
-    func deleteMemo(memoId: Int) async {
+    /// 메모를 삭제합니다.
+    func deleteMemo(id: UUID) async {
         isLoading = true
         
-        let result = await useCases.deleteMemoUseCase.execute(memoId: memoId)
+        let result = await useCases.deleteMemoUseCase.execute(id: id)
         switch result {
         case .success:
-            self.memos.removeAll { $0.id == memoId }
-            self.searchedMemos.removeAll { $0.id == memoId }
+            self.memos.removeAll { $0.id == id }
+            self.searchedMemos.removeAll { $0.id == id }
+            await saveMemosAndTagsToFileSystem()
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = error.localizedDescription
         }
         
         isLoading = false
     }
     
-    func fetchTags() async {
-        isLoading = true
-        
-        let result = await useCases.fetchTagUseCase.execute()
-        switch result {
-        case .success(let fetchedTags):
-            self.tags = fetchedTags
-        case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
-        }
-        
-        isLoading = false
-    }
+    // MARK: - CRUD Operations for Tags
     
+    /// 태그를 생성할 때 임베딩 벡터를 생성합니다.
     func createTag(name: String, color: Color.TagColor) async {
         isLoading = true
         
-        let result = await useCases.createTagUseCase.execute(name: name, color: color)
-        switch result {
-        case .success(let tag):
-            self.tags.append(tag)
-//            self.editingMemoSelectedTags.append(tag)
-        case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
-        }
-        
-        isLoading = false
-    }
-    
-    func updateTag(tagId: Int, name: String, color: Color.TagColor) async {
-        isLoading = true
-        
-        let result = await useCases.updateTagUseCase.execute(tagId: tagId, name: name, color: color)
-        switch result {
-        case .success(let tag):
-            // Main과 Search의 tag 변경
-            if let index = self.tags.firstIndex(where: { $0.id == tagId }) {
-                self.tags[index] = tag
-            }
-            if let index = self.searchedTags.firstIndex(where: { $0.id == tagId }) {
-                self.searchedTags[index] = tag
-            }
+        do {
+            let newId = UUID()
             
-            // Main과 Search의 tag 변경
-            for index in memos.indices {
-                if let tagIndex = memos[index].tags.firstIndex(where: { $0.id == tagId }) {
-                    memos[index].tags[tagIndex] = tag
-                }
+            let embeddingVector = try await createEmbeddingVectorWithAI(text: name)
+            
+            let currentDate = Date()
+            
+            let result = await useCases.createTagUseCase.execute(
+                id: newId,
+                name: name,
+                color: color,
+                embeddingVector: embeddingVector,
+                createdAt: currentDate,
+                updatedAt: currentDate
+            )
+            
+            switch result {
+            case .success(let tag):
+                self.tags.append(tag)
+                // 현재 수정하고 있는 메모에 tag를 추가해야 한다.
+                await saveMemosAndTagsToFileSystem()
+            case .failure(let error):
+                appState.system.showAlert = true
+                appState.system.errorMessage = error.localizedDescription
             }
-            // Main과 Search의 memo에 있는 tag 변경
-            for index in searchedMemos.indices {
-                if let tagIndex = searchedMemos[index].tags.firstIndex(where: { $0.id == tagId }) {
-                    searchedMemos[index].tags[tagIndex] = tag
-                }
-            }
-        case .failure(let error):
+        } catch {
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = "태그 생성 중 오류가 발생했습니다: \(error.localizedDescription)"
         }
         
         isLoading = false
     }
     
-    func deleteTag(tagId: Int) async {
+    /// 태그를 업데이트할 때 임베딩 벡터를 생성합니다.
+    func updateTag(id: UUID, name: String, color: Color.TagColor) async {
         isLoading = true
         
-        let result = await useCases.deleteTagUseCase.execute(tagId: tagId)
+        do {
+            let updatingTagIndex = self.tags.firstIndex(where: { $0.id == id })!
+            
+            let embeddingVector = try await createEmbeddingVectorWithAI(text: name)
+            
+            let currentDate = Date()
+            
+            let result = await useCases.updateTagUseCase.execute(
+                id: id,
+                name: name,
+                color: color,
+                embeddingVector: embeddingVector,
+                createdAt: self.tags[updatingTagIndex].createdAt,
+                updatedAt: currentDate
+            )
+            
+            switch result {
+            case .success(let tag):
+                self.tags[updatingTagIndex] = tag
+                await saveMemosAndTagsToFileSystem()
+            case .failure(let error):
+                appState.system.showAlert = true
+                appState.system.errorMessage = error.localizedDescription
+            }
+        } catch {
+            appState.system.showAlert = true
+            appState.system.errorMessage = "태그 업데이트 중 오류가 발생했습니다: \(error.localizedDescription)"
+        }
+        
+        isLoading = false
+    }
+    
+    /// 태그를 삭제합니다.
+    func deleteTag(id: UUID) async {
+        isLoading = true
+        
+        let result = await useCases.deleteTagUseCase.execute(id: id)
         switch result {
         case .success:
-            // Main과 Search의 tag 삭제
-            self.tags.removeAll { $0.id == tagId }
-            self.searchedTags.removeAll { $0.id == tagId }
+            // Main과 Search의 태그 삭제
+            self.tags.removeAll { $0.id == id }
+            self.searchedTags.removeAll { $0.id == id }
             
-            // Main과 Search의 memo에 있는 tag 삭제
+            // Main과 Search의 메모에서 해당 태그 삭제
             for index in memos.indices {
-                self.memos[index].tags.removeAll { $0.id == tagId }
+                self.memos[index].tagIds.removeAll { $0 == id }
             }
             for index in searchedMemos.indices {
-                self.searchedMemos[index].tags.removeAll { $0.id == tagId }
+                self.searchedMemos[index].tagIds.removeAll { $0 == id }
             }
+            await saveMemosAndTagsToFileSystem()
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = error.localizedDescription
         }
         
         isLoading = false
     }
     
-    ///main view에서 onApear때 쓰는 함수
-    func initMemo() async {
-        if tags.isEmpty {
-            await fetchTags()
-        }
-        if memos.isEmpty {
-            await fetchMemos()
+    // MARK: - Initialization and User Info
+    
+    /// Main View가 나타날 때 호출되는 초기화 함수
+    func initMainViewModel() async {
+        if memos.isEmpty || tags.isEmpty {
+            await loadMemosAndTagsFromFileSystem()
+            // 파일 시스템에서 가져오기 실패할 경우 서버에서 데이터를 가져오는 로직을 추가할 수 있습니다.
         }
     }
     
-    ///settings view에서 유저정보 가져오는 함수
+    /// Settings View에서 유저 정보를 가져오는 함수
     func getUserInfo() async {
         isLoading = true
         
@@ -283,13 +311,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.user.userEmail = user.email
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = error.localizedDescription
         }
         
         isLoading = false
     }
     
-    ///settings view에서 로그아웃하는 함수
+    /// Settings View에서 로그아웃하는 함수
     func logout() async {
         let result = await useCases.logoutUseCase.execute()
         
@@ -307,68 +335,258 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.navigation.push(to: .root)
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.errorMessage = error.localizedDescription
         }
     }
     
-    ///태그 추천 해주는 함수: editor에 들어간 것들 뺴고
-    func recommendTags() -> [Tag] {
-        tags.filter { !editorTags.contains($0) }
-    }
-    
-    ///editor에서 submit 했을 때 작동
+    /// Editor에서 Submit 했을 때 작동
     func submit() async {
-        let trimmedContent = editorContent.string.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedContent.isEmpty else { return }
-        
-        guard let html = editorContent.toHTML() else { return }
         let tagIds = editorTags.map { $0.id }
-    
+        
         switch editorState {
         case .create:
-            await createMemo(content: html, tagIds: tagIds, locked: false)
-            memos = []
-            mainCurrentPage = 0
-            await fetchMemos()
+            await createMemo(content: trimmedContent, tagIds: tagIds, locked: false)
 
         case .update(let target):
-            await updateMemo(memoId: target.id, content: html, tagIds: tagIds, locked: target.locked)
+            await updateMemo(id: target.id, content: trimmedContent, tagIds: tagIds, locked: target.locked)
         }
         
-        // Reset the input fields
+        // 입력 필드 초기화
         editorState = .create
-        editorContent = .init(string: "")
+        editorContent = ""
         editorTags = []
         hideKeyboard()
     }
     
+    // MARK: - Helper Functions
+    
+    /// 키보드를 숨깁니다.
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
-    /// tag id --> tag 맵핑하는 함수
-    private func getTags(from tagIDs: [Int]) -> [Tag] {
-        return tags.filter { tagIDs.contains($0.id) }
-    }
-    
+    /// 메인 관련 데이터를 초기화합니다.
     func clearMain() {
         memos = []
         tags = []
-        mainCurrentPage = 0
-        mainTotalPages = 1
         
         editorState = .create
-        editorContent = .init(string: "")
+        editorContent = ""
         editorTags = []
     }
     
+    /// 검색 관련 데이터를 초기화합니다.
     func clearSearch() {
         searchBarText = ""
         searchBarSelectedTags = []
         searchedMemos = []
         searchedTags = []
-        searchCurrentPage = 0
-        searchTotalPages = 1
+    }
+    
+    // MARK: - Helper Functions With AI
+    
+    /// 텍스트로부터 임베딩 벡터를 생성합니다.
+    func createEmbeddingVectorWithAI(text: String) async throws -> [Float] {
+        let embeddings = try AIModel.shared.encode(texts: [text])
+        return embeddings.first ?? []
+    }
+    
+    /// 메모 임베딩 벡터를 사용하여 태그 임베딩 벡터를 업데이트합니다.
+    func updateTagEmbeddingWithAI(memoEmbeddingVector: [Float], tagEmbeddingVector: [Float]) -> [Float] {
+        // 태그 임베딩을 메모 임베딩 쪽으로 1/100만큼 이동
+        let alpha: Float = 0.01
+        let updatedEmbedding = zip(tagEmbeddingVector, memoEmbeddingVector).map { $0 + alpha * $1 }
+        return updatedEmbedding
+    }
+    
+    /// 특정 메모에 속하는 모든 태그의 임베딩 벡터를 업데이트합니다.
+    /// CreateMemo할 때만 호출한다.
+    private func updateAssociatedTagsEmbedding(for memo: Memo) async {
+        for tagId in memo.tagIds {
+            if let currentTag = tags.first(where: { $0.id == tagId }) {
+                let tagEmbedding = currentTag.embeddingVector
+                
+                // 태그 임베딩 업데이트
+                let updatedEmbedding = updateTagEmbeddingWithAI(memoEmbeddingVector: memo.embeddingVector, tagEmbeddingVector: tagEmbedding)
+                
+                let currentDate = Date()
+                
+                // 태그 업데이트 요청
+                let result = await useCases.updateTagUseCase.execute(id: currentTag.id, name: currentTag.name, color: currentTag.color, embeddingVector: updatedEmbedding, createdAt: currentTag.createdAt, updatedAt: currentDate)
+                
+                switch result {
+                case .success(let updatedTag):
+                    var newTag = updatedTag
+                    newTag.embeddingVector = updatedEmbedding // 임베딩 벡터 할당
+                    
+                    // Main과 Search의 태그 목록에서 업데이트
+                    if let index = self.tags.firstIndex(where: { $0.id == updatedTag.id }) {
+                        self.tags[index] = newTag
+                    }
+                    if let index = self.searchedTags.firstIndex(where: { $0.id == updatedTag.id }) {
+                        self.searchedTags[index] = newTag
+                    }
+                    
+                case .failure(let error):
+                    print("태그 임베딩 업데이트 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Recommend Functions
+    
+    /// contentEmbeddingVector와 self.memos의 각 embeddingVector와 similarity를 구해서 threshold 이상인 메모들을 모아서 반환한다.
+    func recommendMemosWithAI(contentEmbeddingVector: [Float]) -> [Memo] {
+        let threshold: Float = 0.7
+        return memos.filter { memo in
+            let similarity = try? AIModel.shared.cosineSimilarity(vectorA: contentEmbeddingVector, vectorB: memo.embeddingVector)
+            return (similarity ?? 0.0) >= threshold
+        }
+    }
+    
+    /// contentEmbeddingVector와 self.tags의 각 embeddingVector와 similarity를 구해서 similarity가 높은 순서대로 태그 배열을 반환한다.
+    func recommendTagsWithAI(contentEmbeddingVector: [Float]) -> [Tag] {
+        let tagNames = tags.map { $0.name }
+        
+        // 태그 임베딩을 시도하고 실패 시 빈 배열 반환
+        guard let tagEmbeddings = try? AIModel.shared.encode(texts: tagNames) else { return [] }
+        
+        // 유사도 계산 시 에러 처리
+        let tagSimilarities = zip(tags, tagEmbeddings).compactMap { tag, embedding -> (Tag, Float)? in
+            if let similarity = try? AIModel.shared.cosineSimilarity(vectorA: contentEmbeddingVector, vectorB: embedding) {
+                return (tag, similarity)
+            } else {
+                return nil
+            }
+        }
+        
+        // 유사도 순으로 정렬
+        let sortedTags = tagSimilarities.sorted { $0.1 > $1.1 }
+        
+        return sortedTags.map { $0.0 }
+    }
+    
+    /// editorContent를 읽고 recommendingMemos와 recommendingTags를 업데이트한다.
+    func recommendMemosAndTags() {
+        Task {
+            do {
+                // editorContent를 읽어서 임베딩 벡터 생성
+                let embeddingVector = try await createEmbeddingVectorWithAI(text: self.editorContent)
+                
+                // 메모 추천
+                var recommendedMemos = recommendMemosWithAI(contentEmbeddingVector: embeddingVector)
+                
+                // 편집창에 있는 태그의 ID를 추출
+                let editorTagIds = editorTags.map { $0.id }
+                
+                // 편집창에 있는 태그를 가지고 있는 메모를 추가로 필터링
+                let additionalMemos = memos.filter { memo in
+                    // 메모가 이미 추천된 메모에 포함되어 있지 않은지 확인
+                    !recommendedMemos.contains(where: { $0.id == memo.id }) &&
+                    // 메모의 태그 중 하나라도 현재 편집 중인 태그에 포함되는지 확인
+                    memo.tagIds.contains(where: { editorTagIds.contains($0) }) &&
+                    // 현재 update 상태인 메모는 제외
+                    !(editorState == .update(target: memo))
+                }
+                recommendedMemos.append(contentsOf: additionalMemos)
+                
+                // 태그 추천
+                var recommendedTags = recommendTagsWithAI(contentEmbeddingVector: embeddingVector)
+                
+                // 이미 선택되어 편집창에 있는 태그의 ID를 추출하여 제외
+                let selectedTagIds = editorTags.map { $0.id }
+                recommendedTags = recommendedTags.filter { !selectedTagIds.contains($0.id) }
+                
+                // UI 업데이트
+                DispatchQueue.main.async {
+                    self.recommendingMemos = recommendedMemos
+                    self.recommendingTags = recommendedTags
+                }
+            } catch {
+                appState.system.showAlert = true
+                appState.system.errorMessage = "추천 시스템에서 오류가 발생했습니다: \(error.localizedDescription)"
+            }
+        }
+    }
+
+    // MARK: - Search Functions
+    
+    /// searchTextEmbeddingVector와 self.memos의 각 embeddingVector와 similarity를 구해서 threshold 이상인 메모들을 모아서 반환한다.
+    func searchMemosWithAI(searchTextEmbeddingVector: [Float]) -> [Memo] {
+        let threshold: Float = 0.7
+        return memos.filter { memo in
+            let similarity = try? AIModel.shared.cosineSimilarity(vectorA: searchTextEmbeddingVector, vectorB: memo.embeddingVector)
+            return (similarity ?? 0.0) >= threshold
+        }
+    }
+    
+    /// searchTextEmbeddingVector와 self.tags의 각 embeddingVector와 similarity를 구해서 similarity가 높은 순서대로 태그 배열을 반환한다.
+    func searchTagsWithAI(searchTextEmbeddingVector: [Float]) -> [Tag] {
+        let tagNames = tags.map { $0.name }
+        
+        // 태그 임베딩을 시도하고 실패 시 빈 배열 반환
+        guard let tagEmbeddings = try? AIModel.shared.encode(texts: tagNames) else { return [] }
+        
+        // 유사도 계산 시 에러 처리
+        let tagSimilarities = zip(tags, tagEmbeddings).compactMap { tag, embedding -> (Tag, Float)? in
+            if let similarity = try? AIModel.shared.cosineSimilarity(vectorA: searchTextEmbeddingVector, vectorB: embedding) {
+                return (tag, similarity)
+            } else {
+                return nil
+            }
+        }
+        
+        // 유사도 순으로 정렬
+        let sortedTags = tagSimilarities.sorted { $0.1 > $1.1 }
+        
+        return sortedTags.map { $0.0 }
+    }
+    
+    /// searchBarText를 읽어서 searchedMemos와 searchedTags를 업데이트한다.
+    func searchMemosAndTags() {
+        Task {
+            do {
+                // searchBarText를 읽어서 임베딩 벡터 생성
+                let embeddingVector = try await createEmbeddingVectorWithAI(text: self.searchBarText)
+                
+                // 메모 검색
+                var foundMemos = searchMemosWithAI(searchTextEmbeddingVector: embeddingVector)
+                
+                // 선택된 태그의 ID를 추출
+                let selectedTagIds = searchBarSelectedTags.map { $0.id }
+                
+                // 선택된 태그를 가지고 있는 메모를 추가로 필터링
+                let additionalMemos = memos.filter { memo in
+                    // 메모가 이미 검색된 메모에 포함되어 있지 않은지 확인
+                    !foundMemos.contains(where: { $0.id == memo.id }) &&
+                    // 메모의 태그 중 하나라도 사용자가 선택한 태그에 포함되는지 확인 - 수정 필요
+                    memo.tagIds.contains(where: { selectedTagIds.contains($0) })
+                }
+                foundMemos.append(contentsOf: additionalMemos)
+                
+                // 태그 검색
+                var foundTags = searchTagsWithAI(searchTextEmbeddingVector: embeddingVector)
+                
+                // 태그 이름과 매칭되는 태그를 추가
+                let matchingTags = tags.filter { $0.name.contains(searchBarText) }
+                foundTags.append(contentsOf: matchingTags)
+                
+                // 선택된 태그의 ID를 추출하여 제외
+                let filteredTags = foundTags.filter { !selectedTagIds.contains($0.id) }
+                
+                // UI 업데이트
+                DispatchQueue.main.async {
+                    self.searchedMemos = foundMemos
+                    self.searchedTags = filteredTags
+                }
+            } catch {
+                appState.system.showAlert = true
+                appState.system.errorMessage = "검색 시스템에서 오류가 발생했습니다: \(error.localizedDescription)"
+            }
+        }
     }
 }
 

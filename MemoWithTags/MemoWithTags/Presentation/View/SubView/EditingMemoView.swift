@@ -14,15 +14,17 @@ struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
     @Namespace var namespace
-    @StateObject private var context = RichTextContext()
-    @State private var showEditor: Bool = false
+    
+    @State var dynamicHeight: CGFloat = 40
+    @StateObject var context = RichTextContext()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             // 메모글 쓰는 곳
-            RichTextEditor(text: $viewModel.editorContent, context: context)
-                .frame(height: 30)
-                .border(.black)
+            DynamicHeightTextEditor(
+                text: $viewModel.editorContent,
+                maxHeight: 100
+            )
             
             // 메모에 넣은 태그들
             HFlow {
@@ -36,13 +38,6 @@ struct EditingMemoView: View {
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때
-                    Image(systemName: "arrow.down.left.and.arrow.up.right")
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.dateGray)
-                        .onTapGesture {
-                            showEditor = true
-                        }
-                    
                     Spacer()
                     
                     Image(systemName: "square.and.pencil")
@@ -59,7 +54,7 @@ struct EditingMemoView: View {
                         .font(.system(size: 17, weight: .regular))
                         .foregroundColor(.dateGray)
                         .onTapGesture {
-                            showEditor = true
+                            viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "zoom"))
                         }
                     
                     Spacer()
@@ -73,7 +68,7 @@ struct EditingMemoView: View {
                         .clipShape(Circle())
                         .onTapGesture {
                             viewModel.editorState = .create
-                            viewModel.editorContent = .init(string: "")
+                            viewModel.editorContent = ""
                             viewModel.editorTags = []
                         }
                     
@@ -99,14 +94,9 @@ struct EditingMemoView: View {
         .background(Color.memoBackgroundWhite)
         .cornerRadius(14)
         .matchedTransitionSource(id: "zoom", in: namespace)
-        .fullScreenCover(isPresented: $showEditor) {
-            MemoEditorView(viewModel: viewModel)
-                .navigationTransition(.zoom(sourceID: "zoom", in: namespace))
-                .interactiveDismissDisabled()
-        }
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
-        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
+        .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 2)
     }
     
     

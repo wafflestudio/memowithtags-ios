@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "naver.svg",
-      "idiom" : "universal"
+      "filename" : "네이버 3.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "네이버 4.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "네이버.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

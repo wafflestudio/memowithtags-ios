@@ -45,6 +45,9 @@ extension DIContainer {
         let updateTagUseCase: UpdateTagUseCase
         let deleteTagUseCase: DeleteTagUseCase
         let fetchTagUseCase: FetchTagUseCase
+        
+        let loadMemosAndTagsUseCase: LoadMemosAndTagsUseCase
+        let saveMemosAndTagsUseCase: SaveMemosAndTagsUseCase
     }
 }
 
@@ -53,6 +56,7 @@ extension DIContainer {
         let authRepository: AuthRepository
         let memoRepository: MemoRepository
         let tagRepository: TagRepository
+        let fileManagerRepository: FileManagerRepository
     }
 }
 
@@ -61,8 +65,14 @@ extension DIContainer {
         let authRepository = DefaultAuthRepository()
         let memoRepository = DefaultMemoRepository()
         let tagRepository = DefaultTagRepository()
+        let fileManagerRepository = DefaultFileManagerRepository()
         
-        return .init(authRepository: authRepository, memoRepository: memoRepository, tagRepository: tagRepository)
+        return .init(
+            authRepository: authRepository,
+            memoRepository: memoRepository,
+            tagRepository: tagRepository,
+            fileManagerRepository: fileManagerRepository
+        )
     }
 }
 
@@ -92,6 +102,9 @@ extension DIContainer {
         let deleteTagUseCase = DefaultDeleteTagUseCase(tagRepository: repositories.tagRepository)
         let fetchTagUseCase = DefaultFetchTagUseCase(tagRepository: repositories.tagRepository)
         
+        let loadMemosAndTagsUseCase = DefaultLoadMemosAndTagsUseCase(fileManagerRepository: repositories.fileManagerRepository)
+        let saveMemosAndTagsUseCase = DefaultSaveMemosAndTagsUseCase(fileManagerRepository: repositories.fileManagerRepository)
+        
         return .init (
             signupUseCase: signupUseCase,
             loginUseCase: loginUseCase,
@@ -115,7 +128,10 @@ extension DIContainer {
             createTagUseCase: createTagUseCase,
             updateTagUseCase: updateTagUseCase,
             deleteTagUseCase: deleteTagUseCase,
-            fetchTagUseCase: fetchTagUseCase
+            fetchTagUseCase: fetchTagUseCase,
+            
+            loadMemosAndTagsUseCase: loadMemosAndTagsUseCase,
+            saveMemosAndTagsUseCase: saveMemosAndTagsUseCase
         )
     }
 }

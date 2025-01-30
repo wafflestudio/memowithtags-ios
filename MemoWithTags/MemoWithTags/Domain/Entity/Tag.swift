@@ -8,7 +8,10 @@ import Foundation
 import SwiftUI
 
 struct Tag: Codable, Identifiable, Equatable, Hashable {
-    let id: Int
+    let id: UUID
     var name: String
     var color: Color.TagColor
+    var embeddingVector: [Float]
+    var createdAt: Date
+    var updatedAt: Date
 }

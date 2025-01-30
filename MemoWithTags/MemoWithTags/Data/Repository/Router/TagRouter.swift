@@ -10,9 +10,9 @@ import Alamofire
 
 enum TagRouter: Router {
     case fetchTags
-    case createTag(name: String, colorHex: String)
-    case deleteTag(tagId: Int)
-    case updateTag(tagId: Int, name: String, colorHex: String)
+    case createTag(id: UUID, name: String, colorHex: String, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
+    case deleteTag(id: UUID)
+    case updateTag(id: UUID, name: String, colorHex: String, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
     
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL)!
@@ -37,10 +37,10 @@ enum TagRouter: Router {
             return "/tag"
         case .createTag:
             return "/tag"
-        case let .deleteTag(tagId):
-            return "/tag/\(tagId)"
-        case let .updateTag(tagId, _, _):
-            return "/tag/\(tagId)"
+        case let .deleteTag(id):
+            return "/tag/\(id)"
+        case let .updateTag(id, _, _, _, _, _):
+            return "/tag/\(id)"
         }
     }
     
@@ -48,12 +48,12 @@ enum TagRouter: Router {
         switch self {
         case .fetchTags:
             return nil
-        case let .createTag(name, colorHex):
-            return ["name": name, "colorHex": colorHex]
+        case let .createTag(id, name, colorHex, embeddingVector, createdAt, updatedAt):
+            return ["id": id, "name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
         case .deleteTag:
             return nil
-        case let .updateTag(_, name, colorHex):
-            return ["name": name, "colorHex": colorHex]
+        case let .updateTag(id, name, colorHex, embeddingVector, createdAt, updatedAt):
+            return ["id": id, "name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
         }
     }
 }

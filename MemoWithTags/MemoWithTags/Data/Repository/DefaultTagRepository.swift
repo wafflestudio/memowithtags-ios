@@ -20,27 +20,27 @@ final class DefaultTagRepository: TagRepository {
         return dto
     }
 
-    func createTag(name: String, colorHex: String) async throws -> TagDto {
+    func createTag(id: UUID, name: String, colorHex: String, embeddingVector: [Float], createdAt: Date, updatedAt: Date) async throws -> TagDto {
         print("create tag")
         let response = await AF.request(
-            TagRouter.createTag(name: name, colorHex: colorHex), interceptor: tokenInterceptor
+            TagRouter.createTag(id: id, name: name, colorHex: colorHex, embeddingVector: embeddingVector, createdAt: createdAt, updatedAt: updatedAt), interceptor: tokenInterceptor
         ).serializingDecodable(TagDto.self).response
         let dto = try handleErrorDecodable(response: response)
         return dto
     }
 
-    func deleteTag(tagId: Int) async throws {
+    func deleteTag(id: UUID) async throws {
         print("delete tag")
         let response =  await AF.request(
-            TagRouter.deleteTag(tagId: tagId), interceptor: tokenInterceptor
+            TagRouter.deleteTag(id: id), interceptor: tokenInterceptor
         ).serializingData().response
         try handleError(response: response)
     }
 
-    func updateTag(tagId: Int, name: String, colorHex: String) async throws -> TagDto {
+    func updateTag(id: UUID, name: String, colorHex: String, embeddingVector: [Float], createdAt: Date, updatedAt: Date) async throws -> TagDto {
         print("update tag")
         let response = await AF.request(
-            TagRouter.updateTag(tagId: tagId, name: name, colorHex: colorHex), interceptor: tokenInterceptor
+            TagRouter.updateTag(id: id, name: name, colorHex: colorHex, embeddingVector: embeddingVector, createdAt: createdAt, updatedAt: updatedAt), interceptor: tokenInterceptor
         ).serializingDecodable(TagDto.self).response
         let dto = try handleErrorDecodable(response: response)
         

@@ -10,9 +10,9 @@ import Foundation
 
 enum MemoRouter: Router {
     case fetchMemos(content: String?, tagIds: [Int]?, dateRange: ClosedRange<Date>?, page: Int)
-    case createMemo(content: String, tagIds: [Int], locked: Bool)
-    case deleteMemo(memoId: Int)
-    case updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool)
+    case createMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
+    case deleteMemo(id: UUID)
+    case updateMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
     
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL)!
@@ -37,8 +37,8 @@ enum MemoRouter: Router {
             return "/search-memo"
         case .createMemo:
             return "/memo"
-        case let .deleteMemo(memoId), let .updateMemo(memoId, _, _, _):
-            return "/memo/\(memoId)"
+        case let .deleteMemo(id), let .updateMemo(id, _, _, _, _, _, _):
+            return "/memo/\(id)"
         }
     }
     
@@ -59,10 +59,10 @@ enum MemoRouter: Router {
                 params["endDate"] = formatter.string(from: dateRange.upperBound)
             }
             return params
-        case let .createMemo(content, tagIds, locked):
-            return ["content": content, "tagIds": tagIds, "locked": locked]
-        case let .updateMemo(_, content, tagIds, locked):
-            return ["content": content, "tagIds": tagIds, "locked": locked]
+        case let .createMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
+            return ["id": id, "content": content, "tagIds": tagIds, "locked": locked, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
+        case let .updateMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
+            return ["content": content, "tagIds": tagIds, "locked": locked, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
         case .deleteMemo:
             return nil
         }
