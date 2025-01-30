@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "kakao.svg",
-      "idiom" : "universal"
+      "filename" : "카카오 1.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "카카오 3.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "카카오 4.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

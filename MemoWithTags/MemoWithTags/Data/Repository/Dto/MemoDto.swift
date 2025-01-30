@@ -8,10 +8,11 @@
 import Foundation
 
 struct MemoDto: Decodable {
-    let id: Int
+    let id: UUID
     let content: String
-    let tagIds: [Int]
+    let tagIds: [UUID]
     let locked: Bool
+    let embeddingVector: [Float]
     let createdAt: String
     let updatedAt: String
 
@@ -23,8 +24,8 @@ struct MemoDto: Decodable {
             id: id,
             content: content,
             tagIds: tagIds,
-            tags: [],
             locked: locked,
+            embeddingVector: embeddingVector,
             createdAt: dateFormatter.date(from: createdAt) ?? Date(),
             updatedAt: dateFormatter.date(from: updatedAt) ?? Date()
         )

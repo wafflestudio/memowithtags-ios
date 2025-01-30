@@ -25,12 +25,12 @@ enum Route: Hashable {
     case changeNickname
     case changePassword
     case search
+    case memoEditor(namespace: Namespace.ID, id: String)
 }
 
 @MainActor
 final class NavigationState: ObservableObject {
     @Published var path = NavigationPath()
-    
     // path는 push, pop, count 기능만 지원한다
     // 따라서 현재 Page가 어떤 Page인지 알기 위해 explicit한 stack이 필요하다.
     var explicitStack: [Route] = []

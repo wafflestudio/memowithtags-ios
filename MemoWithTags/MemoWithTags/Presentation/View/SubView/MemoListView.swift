@@ -6,7 +6,7 @@ struct MemoListView: View {
     var body: some View {
         ScrollView {
             
-            VStack(alignment: .leading, spacing: 12) {
+            LazyVStack(alignment: .leading, spacing: 12) {
                 ForEach(viewModel.memos.reversed()) { memo in
                     if #available(iOS 18.0, *) {
                         MemoView(memo: memo, viewModel: viewModel)

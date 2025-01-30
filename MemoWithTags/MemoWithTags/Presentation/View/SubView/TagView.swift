@@ -27,13 +27,13 @@ struct TagView: View {
             .truncationMode(.tail)
             .overlay (
                 Image(systemName: "xmark")
-                    .font(.system(size: 6, weight: .regular))
-                    .padding(.vertical, 3)
-                    .padding(.horizontal, 3)
+                    .font(.system(size: 5, weight: .regular))
+                    .padding(.vertical, 2.5)
+                    .padding(.horizontal, 2.5)
                     .foregroundColor(.memoBackgroundWhite)
                     .background(Color.dateGray)
                     .clipShape(Circle())
-                    .offset(x: 4, y: -4)
+                    .offset(x: 5, y: -5)
                     .opacity(addXmark ? 1 : 0), alignment: .topTrailing)
             .onTapGesture {
                 onTap?()

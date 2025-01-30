@@ -19,13 +19,10 @@ struct MemoView: View {
     @State private var currentlyLocked = false
     
     @Namespace var namespace
-    @State private var showEditor: Bool = false
-    
-    @State private var attributedContent: AttributedString = AttributedString()
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
-            Text(attributedContent)
+            Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : lineLimit)
                 .blur(radius: currentlyLocked ? 6 : 0)
@@ -87,14 +84,9 @@ struct MemoView: View {
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(.black.opacity(0.15), lineWidth: 1))
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
-                        viewModel.editorContent = NSAttributedString(html: memo.content) ?? NSAttributedString(string: "")
+                        viewModel.editorContent = memo.content
                         viewModel.editorTags = memo.tags
-                        
-                        if viewModel.appState.navigation.current != .main {
-                            viewModel.appState.navigation.pop()
-                        }
                     }
-
                 }
                 .padding(.top, 10)
             }
@@ -107,12 +99,7 @@ struct MemoView: View {
         .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .onAppear {
             currentlyLocked = memo.locked
-
-            if let attrString = NSAttributedString(html: memo.content) {
-                attributedContent = AttributedString(attrString)
-            }
         }
-        
         .onChange(of: memo.locked) {
             currentlyLocked = memo.locked
         }
@@ -132,9 +119,9 @@ struct MemoView: View {
                 }
             } else {
                 viewModel.editorState = .update(target: memo)
-                viewModel.editorContent = NSAttributedString(html: memo.content) ?? NSAttributedString(string: "")
+                viewModel.editorContent = memo.content
                 viewModel.editorTags = memo.tags
-                showEditor = true
+                viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "editor\(memo.id)"))
             }
         }
         .contextMenu {
@@ -173,14 +160,8 @@ struct MemoView: View {
                 Label("삭제하기", systemImage: "trash")
             }
         }
-        .fullScreenCover(isPresented: $showEditor) {
-            MemoEditorView(viewModel: viewModel)
-                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
-                .interactiveDismissDisabled()
-        }
-        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         .padding(.horizontal, 12)
-
+        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
     }
     
     func dateFormat(date: Date) -> String {

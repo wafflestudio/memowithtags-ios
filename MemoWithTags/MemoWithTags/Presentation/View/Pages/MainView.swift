@@ -37,7 +37,7 @@ struct MainView: View {
         }
         .onAppear {
             Task {
-                await viewModel.initMemo()
+                await viewModel.initMainViewModel()
             }
         }
         .toolbar {

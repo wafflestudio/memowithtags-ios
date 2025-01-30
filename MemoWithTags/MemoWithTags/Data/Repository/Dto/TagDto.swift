@@ -9,20 +9,28 @@ import Foundation
 import SwiftUI
 
 struct TagDto: Decodable {
-    let id: Int
+    let id: UUID
     let name: String
     let colorHex: String
+    let embeddingVector: [Float]
+    let createdAt: String
+    let updatedAt: String
 
     func toTag() -> Tag {
-        
         let tagColor = Color.TagColor.allCases.first {
             $0.rawValue.lowercased() == colorHex.lowercased()
         } ?? .color1
-        
+
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
         return Tag(
             id: id,
             name: name,
-            color: tagColor
+            color: tagColor,
+            embeddingVector: embeddingVector,
+            createdAt: dateFormatter.date(from: createdAt) ?? Date(),
+            updatedAt: dateFormatter.date(from: updatedAt) ?? Date()
         )
     }
 }
