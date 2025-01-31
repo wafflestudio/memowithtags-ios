@@ -51,10 +51,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     // MARK: Load and Save Opeartions between Filesystem
     
     func loadMemosAndTagsFromFileSystem() async {
-        guard !isLoading else { return }
-        
-        isLoading = true
-        
         let result = await useCases.loadMemosAndTagsUseCase.execute()
         
         switch result {
@@ -69,22 +65,15 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 print("Files not found. Initializing memos.json and tags.json.")
                 self.memos = []
                 self.tags = []
-                isLoading = false
                 await saveMemosAndTagsToFileSystem()
             default:
                 appState.system.showAlert = true
                 appState.system.errorMessage = error.errorDescription ?? error.localizedDescription
             }
         }
-        
-        isLoading = false
     }
     
     func saveMemosAndTagsToFileSystem() async {
-        guard !isLoading else { return }
-        
-        isLoading = true
-        
         let result = await useCases.saveMemosAndTagsUseCase.execute(memos: self.memos, tags: self.tags)
         
         switch result {
@@ -92,12 +81,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             print("Memos and Tags successfully saved to filesystem.")
         case .failure(let error):
             print("Failed to save Memos and Tags.")
-            print(error)
             appState.system.showAlert = true
             appState.system.errorMessage = error.errorDescription ?? error.localizedDescription
         }
-        
-        isLoading = false
     }
     
     // MARK: - CRUD Operations for Memos
@@ -307,11 +293,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     func initMainViewModel() async {
         await getUserInfo()
         guard let userId = appState.user.userId else { return }
-        
         useCases.userChangedUseCase.execute(userId: userId)
         if memos.isEmpty || tags.isEmpty {
             await loadMemosAndTagsFromFileSystem()
-            // 나중에 파일 시스템에서 가져오기 실패할 경우 서버에서 데이터를 가져오는 로직을 추가해야 한다.
         }
     }
     

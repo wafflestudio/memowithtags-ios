@@ -29,6 +29,7 @@ final class DefaultMemoRepository: MemoRepository {
         let response = await AF.request(
             MemoRouter.createMemo(id: id, content: content, tagIds: tagIds, locked: locked, embeddingVector: embeddingVector, createdAt: createdAt, updatedAt: updatedAt), interceptor: tokenInterceptor
         ).serializingDecodable(MemoDto.self).response
+        
         let dto = try handleErrorDecodable(response: response)
 
         return dto

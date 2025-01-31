@@ -71,8 +71,9 @@ enum MemoRouter: Router {
                 "updatedAt": formatter.string(from: updatedAt)
             ]
             
-        case let .updateMemo(_, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
+        case let .updateMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
             return [
+                "id": id.uuidString,
                 "content": content,
                 "tagIds": tagIds.map { $0.uuidString },
                 "locked": locked,
