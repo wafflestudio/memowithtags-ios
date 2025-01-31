@@ -14,6 +14,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     @Published var isLoading: Bool = false
     
+    // 여기 있는 모든 리스트들은 정렬되지 않은 리스트다.
+    
     // MARK: - Main Page Variables
     @Published var memos: [Memo] = []
     @Published var tags: [Tag] = []
@@ -477,6 +479,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     /// editorContent를 읽고 recommendingMemos와 recommendingTags를 업데이트한다.
     func recommendMemosAndTags() {
+        print("recommendMemosAndTags()")
         Task {
             do {
                 // editorContent를 읽어서 임베딩 벡터 생성
@@ -510,6 +513,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 DispatchQueue.main.async {
                     self.recommendingMemos = recommendedMemos
                     self.recommendingTags = recommendedTags
+                    print(recommendedTags)
                 }
             } catch {
                 appState.system.showAlert = true
@@ -529,64 +533,65 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         }
     }
     
-    /// searchTextEmbeddingVector와 self.tags의 각 embeddingVector와 similarity를 구해서 similarity가 높은 순서대로 태그 배열을 반환한다.
+    /// searchTextEmbeddingVector와 self.tags의 각 embeddingVector와 similarity를 구해서 threshold 이상인 태그들을 모아서 반환한다.
     func searchTagsWithAI(searchTextEmbeddingVector: [Float]) -> [Tag] {
-        let tagNames = tags.map { $0.name }
-        
-        // 태그 임베딩을 시도하고 실패 시 빈 배열 반환
-        guard let tagEmbeddings = try? AIModel.shared.encode(texts: tagNames) else { return [] }
-        
-        // 유사도 계산 시 에러 처리
-        let tagSimilarities = zip(tags, tagEmbeddings).compactMap { tag, embedding -> (Tag, Float)? in
-            if let similarity = try? AIModel.shared.cosineSimilarity(vectorA: searchTextEmbeddingVector, vectorB: embedding) {
-                return (tag, similarity)
-            } else {
-                return nil
-            }
+        let threshold: Float = 0.7
+        return tags.filter { tag in
+            let similarity = try? AIModel.shared.cosineSimilarity(vectorA: searchTextEmbeddingVector, vectorB: tag.embeddingVector)
+            return (similarity ?? 0.0) >= threshold
         }
-        
-        // 유사도 순으로 정렬
-        let sortedTags = tagSimilarities.sorted { $0.1 > $1.1 }
-        
-        return sortedTags.map { $0.0 }
     }
     
     /// searchBarText를 읽어서 searchedMemos와 searchedTags를 업데이트한다.
     func searchMemosAndTags() {
         Task {
             do {
+                // 검색창이 비어있으면 검색 결과를 전부 비우기
+                if self.searchBarText.isEmpty && self.searchBarSelectedTags.isEmpty {
+                    self.searchedMemos = []
+                    self.searchedTags = []
+                    return
+                }
+                
                 // searchBarText를 읽어서 임베딩 벡터 생성
                 let embeddingVector = try await createEmbeddingVectorWithAI(text: self.searchBarText)
                 
-                // 메모 검색
+                // 메모 AI 검색
                 var foundMemos = searchMemosWithAI(searchTextEmbeddingVector: embeddingVector)
                 
                 // 선택된 태그의 ID를 추출
                 let selectedTagIds = searchBarSelectedTags.map { $0.id }
                 
-                // 선택된 태그를 가지고 있는 메모를 추가로 필터링
-                let additionalMemos = memos.filter { memo in
+                // 선택된 태그를 가지고 있는 메모와 를 추가로 필터링
+                let tagAndContentMatchingMemos = memos.filter { memo in
                     // 메모가 이미 검색된 메모에 포함되어 있지 않은지 확인
                     !foundMemos.contains(where: { $0.id == memo.id }) &&
-                    // 메모의 태그 중 하나라도 사용자가 선택한 태그에 포함되는지 확인 - 수정 필요
-                    memo.tagIds.contains(where: { selectedTagIds.contains($0) })
+                    // 선택된 태그를 모두 포함하는 메모를 선택
+                    selectedTagIds.allSatisfy { memo.tagIds.contains($0) } &&
+                    // 검색어와 string match되는 메모를 선택
+                    memo.content.contains(self.searchBarText)
                 }
-                foundMemos.append(contentsOf: additionalMemos)
+                foundMemos.append(contentsOf: tagAndContentMatchingMemos)
                 
-                // 태그 검색
+                // 태그 AI 검색
                 var foundTags = searchTagsWithAI(searchTextEmbeddingVector: embeddingVector)
                 
                 // 태그 이름과 매칭되는 태그를 추가
-                let matchingTags = tags.filter { $0.name.contains(searchBarText) }
+                let matchingTags = tags.filter { tag in
+                    // 태그가 이미 검색된 태그에 포함되어 있지 않은지 확인
+                    !foundTags.contains(where: { $0.id == tag.id }) &&
+                    // 검색어와 string match되는 태그를 선택
+                    tag.name.contains(searchBarText)
+                }
                 foundTags.append(contentsOf: matchingTags)
                 
-                // 선택된 태그의 ID를 추출하여 제외
-                let filteredTags = foundTags.filter { !selectedTagIds.contains($0.id) }
+                // 검색창의 태그를 제외
+                foundTags = foundTags.filter { !selectedTagIds.contains($0.id) }
                 
                 // UI 업데이트
                 DispatchQueue.main.async {
                     self.searchedMemos = foundMemos
-                    self.searchedTags = filteredTags
+                    self.searchedTags = foundTags
                 }
             } catch {
                 appState.system.showAlert = true
