@@ -14,17 +14,13 @@ struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
     @Namespace var namespace
-    
-    @State var dynamicHeight: CGFloat = 40
-    @StateObject var context = RichTextContext()
+    @StateObject private var context = RichTextContext()
+    @State private var showEditor: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             // 메모글 쓰는 곳
-            DynamicHeightTextEditor(
-                text: $viewModel.editorContent,
-                maxHeight: 100
-            )
+            DynamicHeightTextEditor(text: $viewModel.editorContent, maxHeight: 100)
             
             // 메모에 넣은 태그들
             HFlow {
@@ -38,6 +34,13 @@ struct EditingMemoView: View {
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때
+                    Image(systemName: "arrow.down.left.and.arrow.up.right")
+                        .font(.system(size: 17, weight: .regular))
+                        .foregroundColor(.dateGray)
+                        .onTapGesture {
+                            showEditor = true
+                        }
+                    
                     Spacer()
                     
                     Image(systemName: "square.and.pencil")
@@ -54,7 +57,7 @@ struct EditingMemoView: View {
                         .font(.system(size: 17, weight: .regular))
                         .foregroundColor(.dateGray)
                         .onTapGesture {
-                            viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "zoom"))
+                            showEditor = true
                         }
                     
                     Spacer()
@@ -94,9 +97,14 @@ struct EditingMemoView: View {
         .background(Color.memoBackgroundWhite)
         .cornerRadius(14)
         .matchedTransitionSource(id: "zoom", in: namespace)
+        .fullScreenCover(isPresented: $showEditor) {
+            MemoEditorView(viewModel: viewModel)
+                .navigationTransition(.zoom(sourceID: "zoom", in: namespace))
+                .interactiveDismissDisabled()
+        }
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
-        .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 2)
+        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
     }
     
     
