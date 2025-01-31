@@ -62,8 +62,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             self.memos = data.memos
             self.tags = data.tags
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription
+            switch error {
+            case .fileNotFound:
+                // 파일이 존재하지 않는 경우, 빈 배열로 초기화하고 파일 생성
+                print("Files not found. Initializing memos.json and tags.json")
+                self.memos = []
+                self.tags = []
+                await saveMemosAndTagsToFileSystem()
+            default:
+                appState.system.showAlert = true
+                appState.system.errorMessage = error.localizedDescription
+            }
         }
         
         isLoading = false
@@ -294,7 +303,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     func initMainViewModel() async {
         if memos.isEmpty || tags.isEmpty {
             await loadMemosAndTagsFromFileSystem()
-            // 파일 시스템에서 가져오기 실패할 경우 서버에서 데이터를 가져오는 로직을 추가할 수 있습니다.
+            // 나중에 파일 시스템에서 가져오기 실패할 경우 서버에서 데이터를 가져오는 로직을 추가해야 한다.
         }
     }
     

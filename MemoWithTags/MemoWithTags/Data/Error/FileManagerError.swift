@@ -37,7 +37,7 @@ enum FileManagerError: Error, LocalizedError {
         let nsError = error as NSError
         if nsError.domain == NSCocoaErrorDomain {
             switch nsError.code {
-            case NSFileNoSuchFileError:
+            case NSFileNoSuchFileError, NSFileReadNoSuchFileError:
                 self = .fileNotFound
             case NSFileWriteFileExistsError:
                 self = .fileAlreadyExists

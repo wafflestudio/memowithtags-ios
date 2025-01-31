@@ -35,8 +35,8 @@ final class DefaultFileManagerRepository: FileManagerRepository {
     
     /// Saves memos and tags to the file system.
     func saveMemosAndTags(memos: [Memo], tags: [Tag]) async throws {
-        async let saveMemosTask = saveMemos(memos)
-        async let saveTagsTask = saveTags(tags)
+        async let saveMemosTask: () = saveMemos(memos)
+        async let saveTagsTask: () = saveTags(tags)
         try await saveMemosTask
         try await saveTagsTask
     }
@@ -48,6 +48,7 @@ final class DefaultFileManagerRepository: FileManagerRepository {
             let memos = try decoder.decode([Memo].self, from: data)
             return memos
         } catch let error as NSError {
+            print(error)
             throw FileManagerError(error)
         }
     }

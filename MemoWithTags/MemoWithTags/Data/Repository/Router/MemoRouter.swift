@@ -61,7 +61,7 @@ enum MemoRouter: Router {
             return params
         case let .createMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
             return ["id": id, "content": content, "tagIds": tagIds, "locked": locked, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
-        case let .updateMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
+        case let .updateMemo(_, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
             return ["content": content, "tagIds": tagIds, "locked": locked, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
         case .deleteMemo:
             return nil
