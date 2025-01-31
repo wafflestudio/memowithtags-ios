@@ -105,6 +105,28 @@ struct EditingMemoView: View {
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
+        .overlay(Group {
+            HStack(spacing: 18) {
+                Image(systemName: "chevron.up")
+                    .font(.system(size: 14, weight: .regular))
+                    .background(
+                        Circle()
+                            .fill(Color.backgroundGray)
+                            .frame(width: 27, height: 27)
+                    )
+                    .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 14, weight: .regular))
+                    .background(
+                        Circle()
+                            .fill(Color.backgroundGray)
+                            .frame(width: 27, height: 27)
+                    )
+                    .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+            }
+        }.offset(x: -20, y: -24)
+        , alignment: .topTrailing)
     }
     
     
