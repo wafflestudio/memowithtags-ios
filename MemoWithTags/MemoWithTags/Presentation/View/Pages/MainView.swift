@@ -10,8 +10,6 @@ import SwiftUI
 struct MainView: View {
     @ObservedObject var viewModel: MainViewModel
     
-    @StateObject private var keyboardManager = KeyboardManager()
-    
     var body: some View {
         ZStack {
             Color.backgroundGray
@@ -28,10 +26,7 @@ struct MainView: View {
                 } else {
                     // 애니메이션이 ios18부터 지원됨..
                 }
-                
-                if keyboardManager.currentHeight > 0 {
-                    EditingTagListView(viewModel: viewModel)
-                }
+
             }
 
         }
@@ -66,6 +61,10 @@ struct MainView: View {
                             viewModel.appState.navigation.push(to: .settings)
                         }
                 }
+            }
+            
+            ToolbarItem(placement: .keyboard) {
+                EditingTagListView(viewModel: viewModel)
             }
 
         }

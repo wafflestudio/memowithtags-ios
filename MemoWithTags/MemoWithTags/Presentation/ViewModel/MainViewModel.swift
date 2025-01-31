@@ -322,6 +322,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         switch result {
         case .success(let user):
             appState.user.userId = user.id
+            appState.user.userNumber = user.userNumber
             appState.user.userName = user.nickname
             appState.user.userEmail = user.email
         case .failure(let error):

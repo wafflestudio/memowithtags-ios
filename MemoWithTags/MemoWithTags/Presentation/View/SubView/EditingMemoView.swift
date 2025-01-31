@@ -125,7 +125,7 @@ struct EditingMemoView: View {
                     )
                     .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
             }
-        }.offset(x: -20, y: -24)
+        }.offset(x: -20, y: -26)
         , alignment: .topTrailing)
     }
     
