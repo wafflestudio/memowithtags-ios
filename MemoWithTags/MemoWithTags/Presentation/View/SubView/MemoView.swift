@@ -85,7 +85,7 @@ struct MemoView: View {
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(.black.opacity(0.15), lineWidth: 1))
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
-                        viewModel.editorContent = ""
+                        viewModel.editorContent = memo.content
                         viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
                         
                         if viewModel.appState.navigation.current != .main {
@@ -126,7 +126,7 @@ struct MemoView: View {
                 }
             } else {
                 viewModel.editorState = .update(target: memo)
-                viewModel.editorContent = ""
+                viewModel.editorContent = memo.content
                 viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
                 showEditor = true
             }

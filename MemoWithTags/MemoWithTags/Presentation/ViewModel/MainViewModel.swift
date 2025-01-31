@@ -73,7 +73,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 await saveMemosAndTagsToFileSystem()
             default:
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription
+                appState.system.errorMessage = error.errorDescription ?? error.localizedDescription
             }
         }
         
@@ -94,7 +94,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             print("Failed to save Memos and Tags.")
             print(error)
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription
+            appState.system.errorMessage = error.errorDescription ?? error.localizedDescription
         }
         
         isLoading = false
@@ -134,7 +134,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 
             case .failure(let error):
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription
+                appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
             appState.system.showAlert = true
@@ -171,7 +171,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 await saveMemosAndTagsToFileSystem()
             case .failure(let error):
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription
+                appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
             appState.system.showAlert = true
@@ -193,7 +193,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             await saveMemosAndTagsToFileSystem()
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription
+            appState.system.errorMessage = error.localizedDescription()
         }
         
         isLoading = false
@@ -228,7 +228,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 await saveMemosAndTagsToFileSystem()
             case .failure(let error):
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription
+                appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
             appState.system.showAlert = true
@@ -264,7 +264,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 await saveMemosAndTagsToFileSystem()
             case .failure(let error):
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription
+                appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
             appState.system.showAlert = true
@@ -295,7 +295,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             await saveMemosAndTagsToFileSystem()
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription
+            appState.system.errorMessage = error.localizedDescription()
         }
         
         isLoading = false
@@ -326,7 +326,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.user.userEmail = user.email
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription
+            appState.system.errorMessage = error.localizedDescription()
         }
         
         isLoading = false
@@ -350,7 +350,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.navigation.push(to: .root)
         case .failure(let error):
             appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription
+            appState.system.errorMessage = error.localizedDescription()
         }
     }
     

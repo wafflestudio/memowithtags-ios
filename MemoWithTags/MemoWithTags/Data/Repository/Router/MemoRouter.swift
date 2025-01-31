@@ -43,6 +43,8 @@ enum MemoRouter: Router {
     }
     
     var parameters: Parameters? {
+        let formatter = ISO8601DateFormatter()
+        
         switch self {
         case let .fetchMemos(content, tagIds, dateRange, page):
             var params: [String: Any] = ["page": page]
@@ -54,15 +56,31 @@ enum MemoRouter: Router {
                 params["tagIds"] = tagIds.map { String($0) }.joined(separator: ",")
             }
             if let dateRange = dateRange {
-                let formatter = ISO8601DateFormatter()
                 params["startDate"] = formatter.string(from: dateRange.lowerBound)
                 params["endDate"] = formatter.string(from: dateRange.upperBound)
             }
             return params
         case let .createMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
-            return ["id": id, "content": content, "tagIds": tagIds, "locked": locked, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
+            return [
+                "id": id.uuidString,
+                "content": content,
+                "tagIds": tagIds.map { $0.uuidString },
+                "locked": locked,
+                "embeddingVector": embeddingVector,
+                "createdAt": formatter.string(from: createdAt),
+                "updatedAt": formatter.string(from: updatedAt)
+            ]
+            
         case let .updateMemo(_, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
-            return ["content": content, "tagIds": tagIds, "locked": locked, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
+            return [
+                "content": content,
+                "tagIds": tagIds.map { $0.uuidString },
+                "locked": locked,
+                "embeddingVector": embeddingVector,
+                "createdAt": formatter.string(from: createdAt),
+                "updatedAt": formatter.string(from: updatedAt)
+            ]
+            
         case .deleteMemo:
             return nil
         }

@@ -45,15 +45,32 @@ enum TagRouter: Router {
     }
     
     var parameters: Parameters? {
+        let formatter = ISO8601DateFormatter()
+        
         switch self {
         case .fetchTags:
             return nil
         case let .createTag(id, name, colorHex, embeddingVector, createdAt, updatedAt):
-            return ["id": id, "name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
+            return [
+                "id": id.uuidString,
+                "name": name,
+                "colorHex": colorHex,
+                "embeddingVector": embeddingVector,
+                "createdAt": formatter.string(from: createdAt),
+                "updatedAt": formatter.string(from: updatedAt)
+            ]
+            
         case .deleteTag:
             return nil
+            
         case let .updateTag(_, name, colorHex, embeddingVector, createdAt, updatedAt):
-            return ["name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
+            return [
+                "name": name,
+                "colorHex": colorHex,
+                "embeddingVector": embeddingVector,
+                "createdAt": formatter.string(from: createdAt),
+                "updatedAt": formatter.string(from: updatedAt)
+            ]
         }
     }
 }

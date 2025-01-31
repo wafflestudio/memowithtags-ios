@@ -55,6 +55,19 @@ struct MemoEditorView: View {
             
             Divider()
             
+            
+            TextEditor(text: $viewModel.editorContent)
+                .overlay(Group { // placeholder
+                    if viewModel.editorContent.isEmpty {
+                        Text("메모를 작성해보세요.")
+                            .foregroundStyle(Color.dividerGray)
+                            .offset(x: 5, y: 10)
+                    }
+                }, alignment: .topLeading)
+                .border(.black)
+                .padding(.vertical, 6)
+                .padding(.horizontal, 12)
+            
             Spacer()
             
             HFlow {
@@ -66,8 +79,6 @@ struct MemoEditorView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            
-            Divider()
             
             if keyboardManager.currentHeight > 0 {
                 EditingTagListView(viewModel: viewModel)
