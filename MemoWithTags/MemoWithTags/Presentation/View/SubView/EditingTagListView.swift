@@ -9,8 +9,7 @@ import SwiftUI
 
 struct EditingTagListView: View {
     @ObservedObject var viewModel: MainViewModel
-    
-    @State private var searchText: String = ""
+
     @State private var randomColor: Color.TagColor = Color.TagColor.allCases.randomElement()!
     
     // 상태 변수를 sheet(item:)에 맞게 수정
@@ -19,7 +18,7 @@ struct EditingTagListView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             // 태그 검색하는 필드
-            TextField("태그 검색", text: $searchText)
+            TextField("태그 검색", text: $viewModel.editorTagSearchBarText)
                 .font(.custom("Pretendard", size: 16))
                 .foregroundColor(Color.searchBarPlaceholderGray)
                 .frame(maxWidth: 80)
@@ -45,13 +44,13 @@ struct EditingTagListView: View {
                     // "Create Tag" TagView
                     if canCreateTag() {
                         CreateTagView(
-                            searchText: $searchText,
+                            searchText: $viewModel.editorTagSearchBarText,
                             randomColor: $randomColor
                         )
                         .onTapGesture {
                             Task {
-                                await viewModel.createTag(name: searchText, color: randomColor)
-                                searchText = ""
+                                await viewModel.createTag(name: viewModel.editorTagSearchBarText, color: randomColor)
+                                viewModel.editorTagSearchBarText = ""
                                 generateRandomHexColor()
                             }
                         }
@@ -70,7 +69,7 @@ struct EditingTagListView: View {
     
     // Determine if a new tag can be created
     private func canCreateTag() -> Bool {
-        let trimmedText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedText = viewModel.editorTagSearchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
         return !trimmedText.isEmpty && !viewModel.tags.contains { $0.name.lowercased() == trimmedText.lowercased() }
     }
     
