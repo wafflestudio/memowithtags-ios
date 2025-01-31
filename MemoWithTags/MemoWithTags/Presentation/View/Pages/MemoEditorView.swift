@@ -12,6 +12,8 @@ struct MemoEditorView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: MainViewModel
 
+    @StateObject var keyboardManager = KeyboardManager()
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -78,9 +80,8 @@ struct MemoEditorView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-        }
-        .toolbar {
-            ToolbarItem(placement: .keyboard) {
+            
+            if keyboardManager.currentHeight > 0 {
                 EditingTagListView(viewModel: viewModel)
             }
         }

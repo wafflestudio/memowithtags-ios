@@ -101,7 +101,7 @@ struct SearchView: View {
                             .padding(.horizontal, 26)
                         
                         ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 12) {
                                 ForEach(sortedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
                                 }
