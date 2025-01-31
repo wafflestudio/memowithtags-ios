@@ -48,7 +48,6 @@ final class DefaultFileManagerRepository: FileManagerRepository {
             let memos = try decoder.decode([Memo].self, from: data)
             return memos
         } catch let error as NSError {
-            print(error)
             throw FileManagerError(error)
         }
     }

@@ -59,15 +59,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let data):
+            print("Successfully loaded Memos and Tags.")
             self.memos = data.memos
             self.tags = data.tags
         case .failure(let error):
             switch error {
             case .fileNotFound:
                 // 파일이 존재하지 않는 경우, 빈 배열로 초기화하고 파일 생성
-                print("Files not found. Initializing memos.json and tags.json")
+                print("Files not found. Initializing memos.json and tags.json.")
                 self.memos = []
                 self.tags = []
+                isLoading = false
                 await saveMemosAndTagsToFileSystem()
             default:
                 appState.system.showAlert = true
@@ -89,6 +91,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .success():
             print("Memos and Tags successfully saved to filesystem.")
         case .failure(let error):
+            print("Failed to save Memos and Tags.")
             appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription
         }

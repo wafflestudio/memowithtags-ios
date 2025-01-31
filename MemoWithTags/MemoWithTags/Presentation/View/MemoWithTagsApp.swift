@@ -19,9 +19,6 @@ struct MemoWithTagsApp: App {
             AppRootView(container: .init(
                 appState: AppState(user: userState, system: systemState, navigation: navigationState)
             ))
-            .onAppear {
-                tryAIModel()
-            }
         }
     }
 }
