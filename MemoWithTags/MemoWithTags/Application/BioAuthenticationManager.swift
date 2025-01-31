@@ -7,9 +7,9 @@
 
 import LocalAuthentication
 
-final class AuthenticationManager {
+final class BioAuthenticationManager {
     ///singleton
-    static let shared = AuthenticationManager()
+    static let shared = BioAuthenticationManager()
     private init() {}
     
     // 생체 인증 또는 디바이스 비밀번호를 사용하여 사용자를 인증합니다.
@@ -29,7 +29,7 @@ final class AuthenticationManager {
                 return success
             } catch {
                 // 인증 실패 또는 에러 발생
-                print("Authentication failed with error: \(error.localizedDescription)")
+                print("BioAuthentication failed with error: \(error.localizedDescription)")
                 return false
             }
         } else {

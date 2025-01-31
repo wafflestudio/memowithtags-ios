@@ -9,14 +9,12 @@ import SwiftUI
 import Flow
 import RichTextKit
 
-@available(iOS 18.0, *)
 struct MemoView: View {
     let memo: Memo
     let lineLimit: Int = 2
     
     @ObservedObject var viewModel: MainViewModel
     @State private var isExpanded: Bool = false
-    @State private var currentlyLocked = false
     
     @Namespace var namespace
     @State private var showEditor: Bool = false
@@ -26,7 +24,7 @@ struct MemoView: View {
             Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : lineLimit)
-                .blur(radius: currentlyLocked ? 6 : 0)
+                .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
@@ -103,20 +101,13 @@ struct MemoView: View {
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
-        .onAppear {
-            currentlyLocked = memo.locked
-        }
-        
-        .onChange(of: memo.locked) {
-            currentlyLocked = memo.locked
-        }
         .onTapGesture {
-            if currentlyLocked {
+            if memo.locked && !viewModel.appState.user.isBioAuthenticated {
                 Task {
-                    let authenticated = await AuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
+                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
                     if authenticated {
                         withAnimation(.spring()) {
-                            currentlyLocked = false
+                            viewModel.appState.user.isBioAuthenticated = true
                         }
                     }
                 }
@@ -145,8 +136,13 @@ struct MemoView: View {
             
             Button {
                 Task {
-                    let authenticated = await AuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-                    if authenticated {
+                    if !viewModel.appState.user.isBioAuthenticated {
+                        let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+                        if authenticated {
+                            viewModel.appState.user.isBioAuthenticated = true
+                            await viewModel.updateMemo(id: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                        }
+                    } else {
                         await viewModel.updateMemo(id: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
                     }
                 }
