@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 final class UserState: ObservableObject {
     @Published var isLoggedIn: Bool = false
+    @Published var isBioAuthenticated: Bool = false
     
     @Published var userId: String?
     @Published var userNumber: Int?
