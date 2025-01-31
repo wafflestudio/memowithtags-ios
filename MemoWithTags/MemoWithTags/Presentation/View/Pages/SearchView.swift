@@ -45,7 +45,7 @@ struct SearchView: View {
                                     // 0.5초 기다리기
                                     try? await Task.sleep(nanoseconds: 500_000_000)
                                     
-                                    await firstSearch()
+                                    viewModel.searchMemosAndTags()
                                 }
                             }
                             .onAppear {
@@ -102,12 +102,8 @@ struct SearchView: View {
                         
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 12) {
-                                ForEach(viewModel.searchedMemos, id: \.id) { memo in
-                                    if #available(iOS 18.0, *) {
-                                        MemoView(memo: memo, viewModel: viewModel)
-                                    } else {
-                                        // 애니메이션이 일단 ios18만 지원되는 상태..
-                                    }
+                                ForEach(sortedMemos, id: \.id) { memo in
+                                    MemoView(memo: memo, viewModel: viewModel)
                                 }
                             }
                          }
@@ -125,47 +121,27 @@ struct SearchView: View {
         }
     }
     
+    // viewModel.searchedMemo에서 sort한 결과를 반환하는 computed property
+    private var sortedMemos: [Memo] {
+        switch viewModel.sortSearch {
+        case .byCreate:
+            return viewModel.searchedMemos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.createdAt > memo2.createdAt
+            }
+        case .byUpdate:
+            return viewModel.searchedMemos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.updatedAt > memo2.updatedAt
+            }
+        }
+    }
+    
     private func removeTagFromSelectedTags(_ tag: Tag) {
         viewModel.searchBarSelectedTags.removeAll { $0.id == tag.id }
-        Task {
-            await firstSearch()
-        }
+        viewModel.searchMemosAndTags()
     }
     
     private func appendTagToSelectedTags(_ tag: Tag) {
         viewModel.searchBarSelectedTags.append(tag)
-        Task {
-            await firstSearch()
-        }
-    }
-    
-    private func firstSearch() async {
-//        // 이전 검색 결과를 모두 리셋
-//        viewModel.searchedMemos = []
-//        viewModel.searchedTags = []
-//        viewModel.searchCurrentPage = 0
-//        viewModel.searchTotalPages = 1
-//        
-//        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-//        
-//        // 검색할 text와 tag가 있는지 확인
-//        if !trimmedText.isEmpty || !viewModel.searchBarSelectedTags.isEmpty {
-//            // 선택한 tag들의 id를 뽑아서 tagId list로 만듦
-//            let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
-//            
-//            // Perform the search with content and selected tag IDs
-//            await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
-//            
-//            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
-//            viewModel.searchedTags = viewModel.tags.filter { tag in
-//                tag.name.lowercased().contains(trimmedText.lowercased()) && !selectedTagIds.contains(tag.id)
-//            }
-//        }
-    }
-    
-    private func fetchNextPage() async {
-//        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-//        let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
-//        await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
+        viewModel.searchMemosAndTags()
     }
 }
