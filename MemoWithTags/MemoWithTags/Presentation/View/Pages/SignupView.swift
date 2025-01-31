@@ -58,7 +58,7 @@ struct SignupView: View {
                                 Spacer()
                                 Text("\(nickname.count)/8")
                                     .font(.system(size: 12, weight: .regular))
-                                    .foregroundStyle(Color.dateGray)
+                                    .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
                                     .padding(.horizontal, 6)
                             }
                         }
@@ -84,7 +84,7 @@ struct SignupView: View {
                         .textInputAutocapitalization(.never)
                         
                         // 비밀번호 입력 필드
-                        VStack(spacing: 4) {
+                        VStack(alignment: .leading, spacing: 4) {
                             SecureField(
                                 "",
                                 text: $password,
@@ -102,14 +102,29 @@ struct SignupView: View {
                             )
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
+                            .onChange(of: password) { _, newPassword in
+                                viewModel.checkPasswordValidity(password: newPassword)
+                            }
                             
                             //조건 표시
-                            HStack {
-                                Spacer()
-                                Text("\(password.count)/8")
-                                    .font(.system(size: 12, weight: .regular))
-                                    .foregroundStyle(Color.dateGray)
-                                    .padding(.horizontal, 6)
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                    Text("최소 8자 ~ 최대 16자")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                }
+                                
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                    Text("알파벳 대소문자, 숫자, 특수문자 포함")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                }
                             }
                         }
                         
@@ -186,8 +201,8 @@ struct SignupView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.isValidPassword = false
-            viewModel.satisfiedCount = 0
+            viewModel.isValidPasswordFormat = false
+            viewModel.isValidLength = false
         }
     }
 }
