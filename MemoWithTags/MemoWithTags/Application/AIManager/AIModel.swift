@@ -28,7 +28,7 @@ class AIModel {
                   let tokenizerConfigURL = Bundle.main.url(forResource: "tokenizer_config", withExtension: "json"),
                   let specialTokensMapURL = Bundle.main.url(forResource: "special_tokens_map", withExtension: "json"),
                   let modelURL = Bundle.main.url(forResource: "Model", withExtension: "onnx") else {
-                fatalError("필요한 파일들을 번들에서 찾을 수 없습니다.")
+                fatalError("AI에 필요한 파일들을 찾을 수 없습니다.")
             }
             
             // CustomTokenizer 인스턴스 생성

@@ -52,8 +52,8 @@ enum TagRouter: Router {
             return ["id": id, "name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
         case .deleteTag:
             return nil
-        case let .updateTag(id, name, colorHex, embeddingVector, createdAt, updatedAt):
-            return ["id": id, "name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
+        case let .updateTag(_, name, colorHex, embeddingVector, createdAt, updatedAt):
+            return ["name": name, "colorHex": colorHex, "embeddingVector": embeddingVector, "createdAt": createdAt, "updatedAt": updatedAt]
         }
     }
 }
