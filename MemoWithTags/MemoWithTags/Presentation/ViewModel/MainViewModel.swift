@@ -59,15 +59,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let data):
+            print("Successfully loaded Memos and Tags.")
             self.memos = data.memos
             self.tags = data.tags
         case .failure(let error):
             switch error {
             case .fileNotFound:
                 // 파일이 존재하지 않는 경우, 빈 배열로 초기화하고 파일 생성
-                print("Files not found. Initializing memos.json and tags.json")
+                print("Files not found. Initializing memos.json and tags.json.")
                 self.memos = []
                 self.tags = []
+                isLoading = false
                 await saveMemosAndTagsToFileSystem()
             default:
                 appState.system.showAlert = true
@@ -89,6 +91,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .success():
             print("Memos and Tags successfully saved to filesystem.")
         case .failure(let error):
+            print("Failed to save Memos and Tags.")
+            print(error)
             appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription
         }
@@ -301,6 +305,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     /// Main View가 나타날 때 호출되는 초기화 함수
     func initMainViewModel() async {
+        await getUserInfo()
+        useCases.userChangedUseCase.execute(userId: appState.user.userId!)
         if memos.isEmpty || tags.isEmpty {
             await loadMemosAndTagsFromFileSystem()
             // 나중에 파일 시스템에서 가져오기 실패할 경우 서버에서 데이터를 가져오는 로직을 추가해야 한다.

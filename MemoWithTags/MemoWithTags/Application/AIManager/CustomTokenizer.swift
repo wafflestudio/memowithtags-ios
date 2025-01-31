@@ -171,12 +171,12 @@ class CustomTokenizer {
         // Add EOS token
         tokens.append(self.eosToken)
         
-        print(tokens)
+        // print(tokens)
         
         // Map tokens to IDs
         let ids = tokens.map { tokenToID[$0] ?? self.unkTokenID }
         
-        print(ids)
+        // print(ids)
         return ids
     }
     

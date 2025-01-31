@@ -48,6 +48,7 @@ extension DIContainer {
         
         let loadMemosAndTagsUseCase: LoadMemosAndTagsUseCase
         let saveMemosAndTagsUseCase: SaveMemosAndTagsUseCase
+        let userChangedUseCase: UserChangedUseCase
     }
 }
 
@@ -104,6 +105,7 @@ extension DIContainer {
         
         let loadMemosAndTagsUseCase = DefaultLoadMemosAndTagsUseCase(fileManagerRepository: repositories.fileManagerRepository)
         let saveMemosAndTagsUseCase = DefaultSaveMemosAndTagsUseCase(fileManagerRepository: repositories.fileManagerRepository)
+        let userChangedUseCase = DefaultUserChangedUseCase(fileManagerRepository: repositories.fileManagerRepository)
         
         return .init (
             signupUseCase: signupUseCase,
@@ -131,7 +133,8 @@ extension DIContainer {
             fetchTagUseCase: fetchTagUseCase,
             
             loadMemosAndTagsUseCase: loadMemosAndTagsUseCase,
-            saveMemosAndTagsUseCase: saveMemosAndTagsUseCase
+            saveMemosAndTagsUseCase: saveMemosAndTagsUseCase,
+            userChangedUseCase: userChangedUseCase
         )
     }
 }
