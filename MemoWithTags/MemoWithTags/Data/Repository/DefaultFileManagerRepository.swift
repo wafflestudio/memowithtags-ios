@@ -10,20 +10,24 @@ import Foundation
 final class DefaultFileManagerRepository: FileManagerRepository {
     
     private let fileManager: FileManager
-    private let memosFileURL: URL
-    private let tagsFileURL: URL
+    private var memosFileURL: URL?
+    private var tagsFileURL: URL?
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
     
     init(fileManager: FileManager = .default) {
         self.fileManager = fileManager
-        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        self.memosFileURL = documentsDirectory.appendingPathComponent("memos.json")
-        self.tagsFileURL = documentsDirectory.appendingPathComponent("tags.json")
         self.encoder = JSONEncoder()
         self.decoder = JSONDecoder()
         self.encoder.outputFormatting = .prettyPrinted
         self.decoder.dateDecodingStrategy = .iso8601
+    }
+    
+    /// 로그인해서 사용자가 변할 때 호출
+    func userChanged(userId: String) {
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        self.memosFileURL = documentsDirectory.appendingPathComponent("\(userId)-memos.json")
+        self.tagsFileURL = documentsDirectory.appendingPathComponent("\(userId)-tags.json")
     }
     
     /// Loads memos and tags from the file system.
@@ -44,7 +48,7 @@ final class DefaultFileManagerRepository: FileManagerRepository {
     /// Loads memos from the memos.json file.
     private func loadMemos() async throws -> [Memo] {
         do {
-            let data = try Data(contentsOf: memosFileURL)
+            let data = try Data(contentsOf: memosFileURL!)
             let memos = try decoder.decode([Memo].self, from: data)
             return memos
         } catch let error as NSError {
@@ -55,7 +59,7 @@ final class DefaultFileManagerRepository: FileManagerRepository {
     /// Loads tags from the tags.json file.
     private func loadTags() async throws -> [Tag] {
         do {
-            let data = try Data(contentsOf: tagsFileURL)
+            let data = try Data(contentsOf: tagsFileURL!)
             let tags = try decoder.decode([Tag].self, from: data)
             return tags
         } catch let error as NSError {
@@ -67,7 +71,7 @@ final class DefaultFileManagerRepository: FileManagerRepository {
     private func saveMemos(_ memos: [Memo]) async throws {
         do {
             let data = try encoder.encode(memos)
-            try data.write(to: memosFileURL, options: [.atomicWrite, .completeFileProtection])
+            try data.write(to: memosFileURL!, options: [.atomicWrite, .completeFileProtection])
         } catch let error as NSError {
             throw FileManagerError(error)
         }
@@ -77,7 +81,7 @@ final class DefaultFileManagerRepository: FileManagerRepository {
     private func saveTags(_ tags: [Tag]) async throws {
         do {
             let data = try encoder.encode(tags)
-            try data.write(to: tagsFileURL, options: [.atomicWrite, .completeFileProtection])
+            try data.write(to: tagsFileURL!, options: [.atomicWrite, .completeFileProtection])
         } catch let error as NSError {
             throw FileManagerError(error)
         }

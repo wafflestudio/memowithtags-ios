@@ -14,5 +14,3 @@ protocol BaseRepository {
     ///base error handiling을 위한 함수, Dto로 디코딩하는 경우
     func handleErrorDecodable<T>(response: DataResponse<T, AFError>) throws -> T
 }
-
-
