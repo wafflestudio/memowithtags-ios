@@ -140,32 +140,32 @@ struct SearchView: View {
     }
     
     private func firstSearch() async {
-        // 이전 검색 결과를 모두 리셋
-        viewModel.searchedMemos = []
-        viewModel.searchedTags = []
-        viewModel.searchCurrentPage = 0
-        viewModel.searchTotalPages = 1
-        
-        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // 검색할 text와 tag가 있는지 확인
-        if !trimmedText.isEmpty || !viewModel.searchBarSelectedTags.isEmpty {
-            // 선택한 tag들의 id를 뽑아서 tagId list로 만듦
-            let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
-            
-            // Perform the search with content and selected tag IDs
-            await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
-            
-            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
-            viewModel.searchedTags = viewModel.tags.filter { tag in
-                tag.name.lowercased().contains(trimmedText.lowercased()) && !selectedTagIds.contains(tag.id)
-            }
-        }
+//        // 이전 검색 결과를 모두 리셋
+//        viewModel.searchedMemos = []
+//        viewModel.searchedTags = []
+//        viewModel.searchCurrentPage = 0
+//        viewModel.searchTotalPages = 1
+//        
+//        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+//        
+//        // 검색할 text와 tag가 있는지 확인
+//        if !trimmedText.isEmpty || !viewModel.searchBarSelectedTags.isEmpty {
+//            // 선택한 tag들의 id를 뽑아서 tagId list로 만듦
+//            let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
+//            
+//            // Perform the search with content and selected tag IDs
+//            await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
+//            
+//            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
+//            viewModel.searchedTags = viewModel.tags.filter { tag in
+//                tag.name.lowercased().contains(trimmedText.lowercased()) && !selectedTagIds.contains(tag.id)
+//            }
+//        }
     }
     
     private func fetchNextPage() async {
-        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
-        await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
+//        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+//        let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
+//        await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
     }
 }

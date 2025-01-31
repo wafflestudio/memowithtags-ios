@@ -34,30 +34,30 @@ struct EditingTagListView: View {
                 .frame(width: 0.3, height: 32)
             
             // 태그 추천해주는 스크롤 라인
-            ScrollView(.horizontal) {
-                HStack(alignment: .center, spacing: 8) {
-                    ForEach(filterTags(), id: \.id) { tag in
-                        TagView(viewModel: viewModel, tag: tag) {
-                            viewModel.editorTags.append(tag)
-                        }
-                    }
-                    
-                    // "Create Tag" TagView
-                    if canCreateTag() {
-                        CreateTagView(
-                            searchText: $searchText,
-                            randomColor: $randomColor
-                        )
-                        .onTapGesture {
-                            Task {
-                                await viewModel.createTag(name: searchText, color: randomColor)
-                                searchText = ""
-                                generateRandomHexColor()
-                            }
-                        }
-                    }
-                }
-            }
+//            ScrollView(.horizontal) {
+//                HStack(alignment: .center, spacing: 8) {
+//                    ForEach(filterTags(), id: \.id) { tag in
+//                        TagView(viewModel: viewModel, tag: tag) {
+//                            viewModel.editorTags.append(tag)
+//                        }
+//                    }
+//                    
+//                    // "Create Tag" TagView
+//                    if canCreateTag() {
+//                        CreateTagView(
+//                            searchText: $searchText,
+//                            randomColor: $randomColor
+//                        )
+//                        .onTapGesture {
+//                            Task {
+//                                await viewModel.createTag(name: searchText, color: randomColor)
+//                                searchText = ""
+//                                generateRandomHexColor()
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             
             // Spacer()
         }
@@ -69,13 +69,13 @@ struct EditingTagListView: View {
     }
     
     // Function to filter tags based on search text
-    private func filterTags() -> [Tag] {
-        if searchText.isEmpty {
-            return viewModel.recommendTags()
-        } else {
-            return viewModel.recommendTags().filter { $0.name.lowercased().contains(searchText.lowercased()) }
-        }
-    }
+//    private func filterTags() -> [Tag] {
+//        if searchText.isEmpty {
+//            return viewModel.recommendTags()
+//        } else {
+//            return viewModel.recommendTags().filter { $0.name.lowercased().contains(searchText.lowercased()) }
+//        }
+//    }
     
     // Determine if a new tag can be created
     private func canCreateTag() -> Bool {

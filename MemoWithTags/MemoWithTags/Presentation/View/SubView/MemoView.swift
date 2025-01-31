@@ -19,6 +19,7 @@ struct MemoView: View {
     @State private var currentlyLocked = false
     
     @Namespace var namespace
+    @State private var showEditor: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -29,9 +30,9 @@ struct MemoView: View {
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
-            if !memo.tags.isEmpty {
+            if !memo.tagIds.isEmpty {
                 HFlow {
-                    ForEach(memo.tags, id: \.id) { tag in
+                    ForEach(viewModel.mapTags(from: memo.tagIds), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
                     }
                 }
@@ -84,9 +85,14 @@ struct MemoView: View {
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(.black.opacity(0.15), lineWidth: 1))
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
-                        viewModel.editorContent = memo.content
-                        viewModel.editorTags = memo.tags
+                        viewModel.editorContent = ""
+                        viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
+                        
+                        if viewModel.appState.navigation.current != .main {
+                            viewModel.appState.navigation.pop()
+                        }
                     }
+
                 }
                 .padding(.top, 10)
             }
@@ -100,6 +106,7 @@ struct MemoView: View {
         .onAppear {
             currentlyLocked = memo.locked
         }
+        
         .onChange(of: memo.locked) {
             currentlyLocked = memo.locked
         }
@@ -119,9 +126,9 @@ struct MemoView: View {
                 }
             } else {
                 viewModel.editorState = .update(target: memo)
-                viewModel.editorContent = memo.content
-                viewModel.editorTags = memo.tags
-                viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "editor\(memo.id)"))
+                viewModel.editorContent = ""
+                viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
+                showEditor = true
             }
         }
         .contextMenu {
@@ -140,7 +147,7 @@ struct MemoView: View {
                 Task {
                     let authenticated = await AuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
                     if authenticated {
-                        await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                        await viewModel.updateMemo(id: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
                     }
                 }
             } label: {
@@ -153,15 +160,21 @@ struct MemoView: View {
             
             Button(role: .destructive) {
                 Task {
-                    await viewModel.deleteMemo(memoId: memo.id)
+                    await viewModel.deleteMemo(id: memo.id)
                 }
 
             } label: {
                 Label("삭제하기", systemImage: "trash")
             }
         }
-        .padding(.horizontal, 12)
+        .fullScreenCover(isPresented: $showEditor) {
+            MemoEditorView(viewModel: viewModel)
+                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
+                .interactiveDismissDisabled()
+        }
         .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+        .padding(.horizontal, 12)
+
     }
     
     func dateFormat(date: Date) -> String {

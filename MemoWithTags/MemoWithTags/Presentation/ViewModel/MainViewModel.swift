@@ -385,6 +385,10 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         searchedTags = []
     }
     
+    func mapTags(from tagIds: [UUID]) -> [Tag] {
+        return tags.filter { tagIds.contains($0.id) }
+    }
+    
     // MARK: - Helper Functions With AI
     
     /// 텍스트로부터 임베딩 벡터를 생성합니다.

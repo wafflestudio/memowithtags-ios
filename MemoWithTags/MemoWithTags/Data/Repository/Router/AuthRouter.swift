@@ -87,7 +87,7 @@ enum AuthRouter: Router {
         case let .setProfile(nickname):
             return ["nickname": nickname]
         case let .changePassword(currentPassword, newPassword):
-            return ["password": newPassword]
+            return ["originalPassword": currentPassword, "newPassword": newPassword]
         }
     }
 }
