@@ -81,8 +81,16 @@ extension SignupSuccessView {
     @MainActor
     final class ViewModel: BaseViewModel, ObservableObject {
         func start() {
-            appState.navigation.reset()
-            appState.navigation.push(to: .login)
+            
+            if let _ = KeyChainManager.shared.readAccessToken(),
+               let _ = KeyChainManager.shared.readRefreshToken() {
+                appState.navigation.reset()
+                appState.navigation.push(to: .main)
+            } else {
+                appState.navigation.reset()
+                appState.navigation.push(to: .login)
+            }
+            
         }
     }
 }
