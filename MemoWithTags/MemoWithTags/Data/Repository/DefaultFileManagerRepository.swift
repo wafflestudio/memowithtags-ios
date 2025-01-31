@@ -20,6 +20,7 @@ final class DefaultFileManagerRepository: FileManagerRepository {
         self.encoder = JSONEncoder()
         self.decoder = JSONDecoder()
         self.encoder.outputFormatting = .prettyPrinted
+        self.encoder.dateEncodingStrategy = .iso8601
         self.decoder.dateDecodingStrategy = .iso8601
     }
     
