@@ -14,13 +14,34 @@ struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
     @Namespace var namespace
-    @StateObject private var context = RichTextContext()
     @State private var showEditor: Bool = false
     
+    @State private var memoEditingTask: Task<Void, Never>? = nil
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 0) {
             // 메모글 쓰는 곳
             DynamicHeightTextEditor(text: $viewModel.editorContent, maxHeight: 100)
+                .focused($isFocused)
+                .onChange(of: viewModel.editorContent) {
+                    // 실행하고 있는 searchTask를 종료
+                    memoEditingTask?.cancel()
+                    
+                    // 새로운 searchTask 생성
+                    memoEditingTask = Task {
+                        // 1초 기다리기
+                        try? await Task.sleep(nanoseconds: 500_000_000)
+                        
+                        if viewModel.editorContent.isEmpty {
+                            viewModel.aiRecommendation = false
+                        } else {
+                            viewModel.aiRecommendation = true
+                            viewModel.recommendMemosAndTags()
+                        }
+     
+                    }
+                }
             
             // 메모에 넣은 태그들
             HFlow {
@@ -30,7 +51,9 @@ struct EditingMemoView: View {
                     }
                 }
             }
+            .padding(.top, 6)
             
+            //editor 밑에 버튼들
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때
@@ -43,14 +66,27 @@ struct EditingMemoView: View {
                     
                     Spacer()
                     
+                    Image(systemName: "xmark")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(hex: "#FF9C9C"))
+                        .onTapGesture {
+                            isFocused = false
+                            viewModel.aiRecommendation = false
+                            viewModel.editorState = .create
+                            viewModel.editorContent = ""
+                            viewModel.editorTags = []
+                        }
+                    
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 20))
                         .foregroundColor(.black)
                         .onTapGesture {
                             Task {
+                                isFocused = false
                                 await viewModel.submit()
                             }
                         }
+                        .padding(.bottom, 3)
 
                 case .update: // 업데이트 모드일 때
                     Image(systemName: "arrow.down.left.and.arrow.up.right")
@@ -70,6 +106,8 @@ struct EditingMemoView: View {
                         .background(Color.highlightRed)
                         .clipShape(Circle())
                         .onTapGesture {
+                            isFocused = false
+                            viewModel.aiRecommendation = false
                             viewModel.editorState = .create
                             viewModel.editorContent = ""
                             viewModel.editorTags = []
@@ -88,8 +126,8 @@ struct EditingMemoView: View {
                             }
                         }
                 }
-                
             }
+            .padding(.top, 6)
         }
         .padding(.top, 9)
         .padding(.bottom, 12)
@@ -115,6 +153,11 @@ struct EditingMemoView: View {
                             .frame(width: 27, height: 27)
                     )
                     .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                    .onTapGesture {
+                        if viewModel.scrollTarget < viewModel.recommendingMemos.count {
+                            viewModel.scrollTarget += 1
+                        }
+                    }
                 
                 Image(systemName: "chevron.down")
                     .font(.system(size: 14, weight: .regular))
@@ -124,9 +167,17 @@ struct EditingMemoView: View {
                             .frame(width: 27, height: 27)
                     )
                     .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                    .onTapGesture {
+                        if viewModel.scrollTarget > 1 {
+                            viewModel.scrollTarget -= 1
+                        }
+                    }
             }
-        }.offset(x: -20, y: -26)
+        }.offset(x: -20, y: -26).opacity(viewModel.aiRecommendation ? 1 : 0)
         , alignment: .topTrailing)
+        .onChange(of: viewModel.recommendingMemos) {
+            viewModel.scrollTarget = 0
+        }
     }
     
     

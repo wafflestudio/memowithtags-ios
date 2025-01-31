@@ -50,6 +50,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case byUpdate
     }
     
+    @Published var aiRecommendation: Bool = false
+    @Published var scrollTarget: Int = 0
+    
     // MARK: Load and Save Opeartions between Filesystem
     
     func loadMemosAndTagsFromFileSystem() async {
@@ -345,6 +348,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     /// Editor에서 Submit 했을 때 작동
     func submit() async {
+        hideKeyboard()
+        
         let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedContent.isEmpty else { return }
         let tagIds = editorTags.map { $0.id }
@@ -358,10 +363,10 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         }
         
         // 입력 필드 초기화
+        aiRecommendation = false
         editorState = .create
         editorContent = ""
         editorTags = []
-        hideKeyboard()
     }
     
     // MARK: - Helper Functions
