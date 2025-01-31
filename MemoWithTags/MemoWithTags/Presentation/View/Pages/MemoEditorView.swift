@@ -11,7 +11,6 @@ import Flow
 struct MemoEditorView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: MainViewModel
-    @StateObject private var keyboardManager = KeyboardManager()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -79,11 +78,11 @@ struct MemoEditorView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            
-            if keyboardManager.currentHeight > 0 {
+        }
+        .toolbar {
+            ToolbarItem(placement: .keyboard) {
                 EditingTagListView(viewModel: viewModel)
             }
-            
         }
     }
     

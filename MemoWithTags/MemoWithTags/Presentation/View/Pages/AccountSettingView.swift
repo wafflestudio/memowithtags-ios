@@ -26,7 +26,7 @@ struct AccountSettingView: View {
                             .foregroundStyle(Color.titleTextBlack)
                         
                         HStack {
-                            Text("#\(viewModel.appState.user.userId ?? "")")
+                            Text("#\(viewModel.appState.user.userNumber ?? 0)")
                                 .font(.system(size: 13, weight: .regular))
                                 .foregroundStyle(Color.dateGray)
                             

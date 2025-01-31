@@ -7,11 +7,12 @@
 
 struct UserDto: Codable {
     let id: String
+    let userNumber: Int
     let email: String
     let nickname: String
     let createdAt: String
     
     func toUser() -> User {
-        return User(id: id, email: email, nickname: nickname)
+        return User(id: id, userNumber: userNumber, email: email, nickname: nickname)
     }
 }
