@@ -44,16 +44,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     // MARK: - Memo Sorting Variables
     @Published var sortMemo: Sort = .byCreate
-    @Published var sortSearch: Sort = .byCreate
     
     enum Sort {
         case byCreate
         case byUpdate
     }
     
+    // MARK: - Memo Scroll Target in MainView
+    
     @Published var scrollTarget: Int = 0
     
-    // MARK: Load and Save Opeartions between Filesystem
+    // MARK: - Load and Save Opeartions between Filesystem
     
     func loadMemosAndTagsFromFileSystem() async {
         let result = await useCases.loadMemosAndTagsUseCase.execute()

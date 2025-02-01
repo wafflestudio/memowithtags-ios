@@ -34,7 +34,7 @@ struct SettingsView: View {
                     viewModel.appState.navigation.push(to: .accountSetting)
                 }
                 
-                VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("메모 필터 기준")
                             .font(.system(size: 12, weight: .regular))
@@ -76,46 +76,12 @@ struct SettingsView: View {
                         }
                     }
                     
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("검색 필터 기준")
-                            .font(.system(size: 12, weight: .regular))
-                            .foregroundStyle(Color.dateGray)
-                            .padding(.leading, 6)
+                    Text("검색 필터 기준은 관련성 순입니다.")
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundStyle(Color.dateGray)
+                        .padding(.leading, 6)
                     
-                        HStack {
-                            Text("만든 날짜")
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundStyle(Color.titleTextBlack)
-                            
-                            Spacer()
-                            
-                            if viewModel.sortSearch == .byCreate {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 16, weight: .regular))
-                                    .foregroundStyle(Color(hex: "#FF9C9C"))
-                            }
-                        }
-                        .onTapGesture {
-                            viewModel.sortSearch = .byCreate
-                        }
-                        
-                        HStack {
-                            Text("수정한 날짜")
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundStyle(Color.titleTextBlack)
-                            
-                            Spacer()
-                            
-                            if viewModel.sortSearch == .byUpdate {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 16, weight: .regular))
-                                    .foregroundStyle(Color(hex: "#FF9C9C"))
-                            }
-                        }
-                        .onTapGesture {
-                            viewModel.sortSearch = .byUpdate
-                        }
-                    }
+                    
                 }
                 .padding(.vertical, 13)
                 .padding(.horizontal, 17)
