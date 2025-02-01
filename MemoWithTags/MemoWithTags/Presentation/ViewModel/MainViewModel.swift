@@ -398,6 +398,32 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         return tags.filter { tagIds.contains($0.id) }
     }
     
+    func getSortedMemos() -> [Memo] {
+        switch sortMemo {
+        case .byCreate:
+            return memos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.createdAt < memo2.createdAt
+            }
+        case .byUpdate:
+            return memos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.updatedAt < memo2.updatedAt
+            }
+        }
+    }
+    
+    func getSortedRecommendedMemos() -> [Memo] {
+        switch sortMemo {
+        case .byCreate:
+            return recommendingMemos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.createdAt > memo2.createdAt
+            }
+        case .byUpdate:
+            return recommendingMemos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.updatedAt > memo2.updatedAt
+            }
+        }
+    }
+    
     // MARK: - Helper Functions With AI
     
     /// 텍스트로부터 임베딩 벡터를 생성합니다.
