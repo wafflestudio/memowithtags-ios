@@ -23,7 +23,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var recommendingMemos: [Memo] = []
     @Published var recommendingTags: [Tag] = []
     // 참고: 사용자가 태그 검색 창에 검색을 한다고 recommendingTags는 변하지 않는다.
-    // tagRecommendation에 recommendingTags가 그대로 보이는 것이 아니라, 검색을 하는 등 추가적인 과정이 있다.
+    // tagRecommendation에 recommendingTags가 그대로 보이는 것이 아니라, 검색을 하거나 create Tag를 하는 등 추가적인 과정이 있다.
     
     // MARK: - Search Page Variables
     @Published var searchBarText: String = ""

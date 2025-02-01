@@ -104,6 +104,7 @@ struct SearchView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 ForEach(sortedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
+                                        .shadow(color: Color.black.opacity(0.05), radius: 6)
                                 }
                             }
                          }

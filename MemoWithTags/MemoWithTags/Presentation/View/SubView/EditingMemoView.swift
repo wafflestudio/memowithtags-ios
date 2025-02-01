@@ -125,7 +125,8 @@ struct EditingMemoView: View {
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
         .overlay(Group {
             HStack(spacing: 18) {
-                Text("\(viewModel.scrollTarget) / \(viewModel.recommendingMemos.count)")
+                Text("\(viewModel.scrollTarget == 0 ? "-" : String(viewModel.scrollTarget)) / \(viewModel.recommendingMemos.count)")
+                    .font(.system(size: 11, weight: .medium))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(Color.black)
                     .padding(.horizontal, 10)
@@ -133,7 +134,7 @@ struct EditingMemoView: View {
                     .background(
                         Rectangle()
                             .fill(Color.memoBackgroundWhite)
-                            .cornerRadius(10)
+                            .cornerRadius(20)
                     )
                     .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
                 
