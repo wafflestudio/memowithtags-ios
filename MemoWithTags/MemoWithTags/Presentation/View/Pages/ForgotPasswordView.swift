@@ -118,6 +118,8 @@ struct ForgotPasswordView: View {
 extension ForgotPasswordView {
     @MainActor
     final class ViewModel: BaseViewModel, ObservableObject {
+        @Published var isLoading = false
+        
         func checkEmailValidity(email: String) -> Bool {
             let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}$"
             let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
@@ -125,10 +127,14 @@ extension ForgotPasswordView {
         }
         
         func sendEmailCode(email: String) async {
+            guard !isLoading else { return }
+            
             if !checkEmailValidity(email: email) {
                 appState.system.showAlert = true
                 appState.system.errorMessage = ForgotPasswordError.invalidEmail.localizedDescription()
             } else {
+                isLoading = true
+                
                 let result = await useCases.forgotPasswordUseCase.execute(email: email)
                 
                 switch result {
@@ -138,6 +144,8 @@ extension ForgotPasswordView {
                     appState.system.showAlert = true
                     appState.system.errorMessage = error.localizedDescription()
                 }
+                
+                isLoading = false
             }
         }
     }

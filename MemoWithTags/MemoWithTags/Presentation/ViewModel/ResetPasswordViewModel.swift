@@ -9,6 +9,8 @@ import Foundation
 
 @MainActor
 final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
+    @Published var isLoading = false
+    
     @Published var isValidLength: Bool = false
     @Published var isValidPasswordFormat: Bool = false
     
@@ -27,6 +29,8 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
         checkPasswordValidity(password: password)
         let isPasswordSame = password == passwordRepeat
         
+        guard !isLoading else { return }
+        
         if !isValidLength || !isValidPasswordFormat {
             appState.system.showAlert = true
             appState.system.errorMessage = ResetPasswordError.invalidPassword.localizedDescription()
@@ -34,6 +38,8 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
             appState.system.showAlert = true
             appState.system.errorMessage = ResetPasswordError.passwordNotMatch.localizedDescription()
         } else {
+            isLoading = true
+            
             let result = await useCases.resetPasswordUseCase.execute(email: email, code: code, newPassword: password)
             
             switch result {
@@ -42,7 +48,9 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
             case .failure(let error):
                 appState.system.showAlert = true
                 appState.system.errorMessage = error.localizedDescription()
+                appState.navigation.pop()
             }
+            isLoading = false
         }
     }
 }
