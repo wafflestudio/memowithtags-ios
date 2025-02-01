@@ -42,10 +42,12 @@ struct SearchView: View {
                                 
                                 // 새로운 searchTask 생성
                                 searchTask = Task {
-                                    // 0.5초 기다리기
-                                    try? await Task.sleep(nanoseconds: 500_000_000)
-                                    
-                                    viewModel.searchMemosAndTags()
+                                    do {
+                                        try await Task.sleep(nanoseconds: 500_000_000)
+                                        viewModel.searchMemosAndTags()
+                                    } catch {
+                                        // 취소된 경우 아무 작업도 하지 않아도 된다.
+                                    }
                                 }
                             }
                             .onAppear {
@@ -85,6 +87,7 @@ struct SearchView: View {
                             }, id: \.id) { tag in
                                 TagView(viewModel: viewModel, tag: tag) {
                                     appendTagToSelectedTags(tag)
+                                    viewModel.searchBarText = ""
                                 }
                             }
                         }

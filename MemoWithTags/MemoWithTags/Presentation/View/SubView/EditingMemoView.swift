@@ -176,10 +176,12 @@ struct EditingMemoView: View {
             
             // 새로운 recommendingTask 생성
             memoEditingTask = Task {
-                // 0.5초 기다리기
-                try? await Task.sleep(nanoseconds: 500_000_000)
-                
-                viewModel.recommendMemosAndTags()
+                do {
+                    try await Task.sleep(nanoseconds: 500_000_000)
+                    viewModel.recommendMemosAndTags()
+                } catch {
+                    // 취소된 경우 아무 작업도 하지 않아도 된다.
+                }
             }
         }
         .onChange(of: viewModel.editorTags) {
@@ -188,10 +190,12 @@ struct EditingMemoView: View {
             
             // 새로운 recommendingTask 생성
             memoEditingTask = Task {
-                // 0.5초 기다리기
-                try? await Task.sleep(nanoseconds: 500_000_000)
-                
-                viewModel.recommendMemosAndTags()
+                do {
+                    try await Task.sleep(nanoseconds: 500_000_000)
+                    viewModel.recommendMemosAndTags()
+                } catch {
+                    // 취소된 경우 아무 작업도 하지 않아도 된다.
+                }
             }
         }
     }

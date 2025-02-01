@@ -235,6 +235,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             switch result {
             case .success(let tag):
                 self.tags.append(tag)
+                self.editorTags.append(tag)
                 // 현재 수정하고 있는 메모에 tag를 추가해야 한다.
                 await saveMemosAndTagsToFileSystem()
                 
