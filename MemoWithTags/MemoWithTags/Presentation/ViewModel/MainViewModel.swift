@@ -131,12 +131,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 await saveMemosAndTagsToFileSystem()
                 
             case .failure(let error):
-                if error == .unsureUser {
-                    appState.system.showSessionAlert = true
-                } else {
-                    appState.system.showAlert = true
-                }
-                
+                appState.system.showAlert = true
                 appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
@@ -173,11 +168,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 self.memos[updatingMemoIndex] = memo
                 await saveMemosAndTagsToFileSystem()
             case .failure(let error):
-                if error == .unsureUser {
-                    appState.system.showSessionAlert = true
-                } else {
-                    appState.system.showAlert = true
-                }
+                appState.system.showAlert = true
                 appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
@@ -199,11 +190,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             self.searchedMemos.removeAll { $0.id == id }
             await saveMemosAndTagsToFileSystem()
         case .failure(let error):
-            if error == .unsureUser {
-                appState.system.showSessionAlert = true
-            } else {
-                appState.system.showAlert = true
-            }
+            appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription()
         }
         
@@ -238,11 +225,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 // 현재 수정하고 있는 메모에 tag를 추가해야 한다.
                 await saveMemosAndTagsToFileSystem()
             case .failure(let error):
-                if error == .unsureUser {
-                    appState.system.showSessionAlert = true
-                } else {
-                    appState.system.showAlert = true
-                }
+                appState.system.showAlert = true
                 appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
@@ -278,11 +261,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 self.tags[updatingTagIndex] = tag
                 await saveMemosAndTagsToFileSystem()
             case .failure(let error):
-                if error == .unsureUser {
-                    appState.system.showSessionAlert = true
-                } else {
-                    appState.system.showAlert = true
-                }
+                appState.system.showAlert = true
                 appState.system.errorMessage = error.localizedDescription()
             }
         } catch {
@@ -313,11 +292,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             }
             await saveMemosAndTagsToFileSystem()
         case .failure(let error):
-            if error == .unsureUser {
-                appState.system.showSessionAlert = true
-            } else {
-                appState.system.showAlert = true
-            }
+            appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription()
         }
         
@@ -349,11 +324,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.user.userName = user.nickname
             appState.user.userEmail = user.email
         case .failure(let error):
-            if error == .userNotFound {
-                appState.system.showSessionAlert = true
-            } else {
-                appState.system.showAlert = true
-            }
+            appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription()
         }
         
@@ -412,11 +383,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.navigation.reset()
             appState.navigation.push(to: .root)
         case .failure(let error):
-            if error == .userNotFound {
-                appState.system.showSessionAlert = true
-            } else {
-                appState.system.showAlert = true
-            }
+            appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription()
         }
     }

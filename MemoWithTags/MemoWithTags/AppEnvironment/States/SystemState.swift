@@ -10,6 +10,5 @@ import Foundation
 @MainActor
 final class SystemState: ObservableObject {
     @Published var showAlert: Bool = false
-    @Published var showSessionAlert = false
     @Published var errorMessage: String = ""
 }

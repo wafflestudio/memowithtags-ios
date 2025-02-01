@@ -96,11 +96,7 @@ extension ChangeNicknameView {
                 case .success:
                     appState.navigation.pop()
                 case .failure(let error):
-                    if error == .userNotFound {
-                        appState.system.showSessionAlert = true
-                    } else {
-                        appState.system.showAlert = true
-                    }
+                    appState.system.showAlert = true
                     appState.system.errorMessage = error.localizedDescription()
                 }
             }
