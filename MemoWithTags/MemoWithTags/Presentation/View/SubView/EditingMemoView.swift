@@ -24,24 +24,6 @@ struct EditingMemoView: View {
             // 메모글 쓰는 곳
             DynamicHeightTextEditor(text: $viewModel.editorContent, maxHeight: 100)
                 .focused($isFocused)
-                .onChange(of: viewModel.editorContent) {
-                    // 실행하고 있는 searchTask를 종료
-                    memoEditingTask?.cancel()
-                    
-                    // 새로운 searchTask 생성
-                    memoEditingTask = Task {
-                        // 1초 기다리기
-                        try? await Task.sleep(nanoseconds: 500_000_000)
-                        
-                        if viewModel.editorContent.isEmpty {
-                            viewModel.aiRecommendation = false
-                        } else {
-                            viewModel.aiRecommendation = true
-                            viewModel.recommendMemosAndTags()
-                        }
-     
-                    }
-                }
             
             // 메모에 넣은 태그들
             HFlow {
@@ -71,7 +53,6 @@ struct EditingMemoView: View {
                         .foregroundColor(Color(hex: "#FF9C9C"))
                         .onTapGesture {
                             isFocused = false
-                            viewModel.aiRecommendation = false
                             viewModel.editorState = .create
                             viewModel.editorContent = ""
                             viewModel.editorTags = []
@@ -87,7 +68,7 @@ struct EditingMemoView: View {
                             }
                         }
                         .padding(.bottom, 3)
-
+                    
                 case .update: // 업데이트 모드일 때
                     Image(systemName: "arrow.down.left.and.arrow.up.right")
                         .font(.system(size: 17, weight: .regular))
@@ -107,7 +88,6 @@ struct EditingMemoView: View {
                         .clipShape(Circle())
                         .onTapGesture {
                             isFocused = false
-                            viewModel.aiRecommendation = false
                             viewModel.editorState = .create
                             viewModel.editorContent = ""
                             viewModel.editorTags = []
@@ -145,11 +125,23 @@ struct EditingMemoView: View {
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
         .overlay(Group {
             HStack(spacing: 18) {
+                Text("\(viewModel.scrollTarget) / \(viewModel.recommendingMemos.count)")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.black)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Rectangle()
+                            .fill(Color.memoBackgroundWhite)
+                            .cornerRadius(10)
+                    )
+                    .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                
                 Image(systemName: "chevron.up")
                     .font(.system(size: 14, weight: .regular))
                     .background(
                         Circle()
-                            .fill(Color.backgroundGray)
+                            .fill(Color.memoBackgroundWhite)
                             .frame(width: 27, height: 27)
                     )
                     .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
@@ -163,7 +155,7 @@ struct EditingMemoView: View {
                     .font(.system(size: 14, weight: .regular))
                     .background(
                         Circle()
-                            .fill(Color.backgroundGray)
+                            .fill(Color.memoBackgroundWhite)
                             .frame(width: 27, height: 27)
                     )
                     .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
@@ -173,10 +165,33 @@ struct EditingMemoView: View {
                         }
                     }
             }
-        }.offset(x: -20, y: -26).opacity(viewModel.aiRecommendation ? 1 : 0)
-        , alignment: .topTrailing)
+        }.offset(x: -20, y: -36).opacity(viewModel.recommendingMemos.isEmpty ? 0 : 1), alignment: .topTrailing)
         .onChange(of: viewModel.recommendingMemos) {
             viewModel.scrollTarget = 0
+        }
+        .onChange(of: viewModel.editorContent) {
+            // 실행하고 있는 recommendingTask를 종료
+            memoEditingTask?.cancel()
+            
+            // 새로운 recommendingTask 생성
+            memoEditingTask = Task {
+                // 0.5초 기다리기
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                
+                viewModel.recommendMemosAndTags()
+            }
+        }
+        .onChange(of: viewModel.editorTags) {
+            // 실행하고 있는 recommendingTask를 종료
+            memoEditingTask?.cancel()
+            
+            // 새로운 recommendingTask 생성
+            memoEditingTask = Task {
+                // 0.5초 기다리기
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                
+                viewModel.recommendMemosAndTags()
+            }
         }
     }
     
