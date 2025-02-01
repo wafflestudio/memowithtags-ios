@@ -188,9 +188,7 @@ struct MemoView: View {
                 .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
                 .interactiveDismissDisabled()
         }
-        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         .padding(.horizontal, 12)
-
     }
     
     func dateFormat(date: Date) -> String {

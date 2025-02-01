@@ -12,7 +12,8 @@ struct MemoListView: View {
                     ForEach(viewModel.getSortedMemos()) { memo in
                         MemoView(memo: memo, viewModel: viewModel)
                             .id(memo.id)
-                            .scaleEffect(highlightedMemoID == memo.id && isHighlighted ? 1.05 : 1.0)
+                            .scaleEffect(highlightedMemoID == memo.id && isHighlighted ? 1.04 : 1.0)
+                            .shadow(color: (highlightedMemoID == memo.id && isHighlighted) ? Color.black.opacity(0.2) : Color.black.opacity(0.05), radius: 6)
                             .animation(.easeInOut(duration: 0.3), value: isHighlighted)
                     }
                 }
@@ -30,7 +31,7 @@ struct MemoListView: View {
                         proxy.scrollTo(targetMemoID, anchor: .center)
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.async() {
                         highlightedMemoID = targetMemoID
                         isHighlighted = true
                     }
