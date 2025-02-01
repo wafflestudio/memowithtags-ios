@@ -38,13 +38,25 @@ struct EditingTagListView: View {
                     
                     let lowercasedEditorTagSearchBarText = viewModel.editorTagSearchBarText.lowercased()
                     
-                    let filteredTags = viewModel.recommendingTags.filter { tag in
+                    // editorTagSearchBarText와 정확히 일치하는 태그가 있는지 확인. 이것은 lowercase할 필요가 없다.
+                    let isExactMatchExist = viewModel.recommendingTags.contains { tag in
+                        tag.name == viewModel.editorTagSearchBarText
+                    }
+                    
+                    // 1차로 editorTagSearchBarText의 검색어와 String Match 되는 tag들만 남김
+                    let filteredBySearchText = viewModel.recommendingTags
+                        .filter { tag in
                         let lowercasedTagName = tag.name.lowercased()
                         return lowercasedEditorTagSearchBarText.isEmpty || lowercasedTagName.contains(lowercasedEditorTagSearchBarText)
                     }
                     
-                    if !lowercasedEditorTagSearchBarText.isEmpty && filteredTags.isEmpty {
-                        // 필터링 결과가 없으면 "Create Tag" TagView 표시
+                    // 2차로 editorTags에 있는 tag들 제거
+                    let editorTagsFilteredTags = filteredBySearchText
+                        .filter { tag in
+                            !viewModel.editorTags.contains(where: { $0.id == tag.id })
+                        }
+                    
+                    if !lowercasedEditorTagSearchBarText.isEmpty && !isExactMatchExist {
                         CreateTagView(
                             searchText: $viewModel.editorTagSearchBarText,
                             randomColor: $randomColor
@@ -59,7 +71,7 @@ struct EditingTagListView: View {
                     }
                     
                     // 필터링된 태그들을 ForEach로 표시
-                    ForEach(filteredTags, id: \.id) { tag in
+                    ForEach(editorTagsFilteredTags, id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag) {
                             viewModel.editorTags.append(tag)
                         }
