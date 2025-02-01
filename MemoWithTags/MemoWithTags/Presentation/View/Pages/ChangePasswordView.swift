@@ -180,7 +180,11 @@ extension ChangePasswordView {
                 case .success:
                     appState.navigation.pop()
                 case .failure(let error):
-                    appState.system.showAlert = true
+                    if error == .userNotFound {
+                        appState.system.showSessionAlert = true
+                    } else {
+                        appState.system.showAlert = true
+                    }
                     appState.system.errorMessage = error.localizedDescription()
                 }
             }

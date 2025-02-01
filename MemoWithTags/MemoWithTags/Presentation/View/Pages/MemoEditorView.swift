@@ -30,11 +30,6 @@ struct MemoEditorView: View {
                 Spacer()
                 
                 Menu {
-                    Button {
-                    } label: {
-                        Label("매모 잠그기", systemImage: "lock")
-                    }
-                    
                     Button(role: .destructive) {
                         viewModel.editorState = .create
                         viewModel.editorContent = ""
@@ -46,8 +41,11 @@ struct MemoEditorView: View {
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 19, weight: .regular))
-                        .rotationEffect(.degrees(90))
                         .foregroundStyle(Color.black)
+                        .padding(.vertical, 10)
+                        .background(Color.white)
+                        .rotationEffect(.degrees(90))
+
                 }
         
             }
@@ -55,7 +53,6 @@ struct MemoEditorView: View {
             .padding(.vertical, 12)
             
             Divider()
-            
             
             TextEditor(text: $viewModel.editorContent)
                 .overlay(Group { // placeholder
@@ -69,6 +66,33 @@ struct MemoEditorView: View {
                 .padding(.horizontal, 12)
             
             Spacer()
+            
+            HStack {
+                switch viewModel.editorState {
+                case .create:
+                    Text(dateFormat(date: Date()))
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Color.dateGray)
+                        .padding(.vertical, 3)
+                    
+                case let .update(target):
+                    Text(dateFormat(date: target.createdAt))
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Color.dateGray)
+                        .padding(.vertical, 3)
+                    
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(Color.lockIconGray)
+                        .font(.system(size: 13))
+                        .opacity(target.locked ? 1 : 0)
+                }
+                
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+
+
             
             HFlow {
                 ForEach(viewModel.editorTags, id: \.id) { tag in
@@ -90,12 +114,12 @@ struct MemoEditorView: View {
         viewModel.editorTags.removeAll { $0.id == tag.id }
     }
     
-    @ViewBuilder private func EditIcon(icon: String, selected: Bool, click: @escaping () -> Void) -> some View {
-        Image(systemName: icon)
-            .font(.system(size: 18))
-            .foregroundColor(selected ? .black : .tabBarNotSelectecdIconGray)
-            .onTapGesture {
-                click()
-            }
+    func dateFormat(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+
+        return dateFormatter.string(from: date)
     }
 }

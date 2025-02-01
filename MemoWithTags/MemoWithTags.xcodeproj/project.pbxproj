@@ -62,7 +62,6 @@
 		DA888AF72D2FA73300525291 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA888AF62D2FA72F00525291 /* SplashView.swift */; };
 		DA8F562A2D34152000B8C23F /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8F56292D34151B00B8C23F /* BaseViewModel.swift */; };
 		DAA6789F2D45512F00EFB929 /* TextFormatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA6789E2D45512600EFB929 /* TextFormatManager.swift */; };
-		DABE95252D2F8CA900604FB7 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABE95242D2F8CA300604FB7 /* SettingsViewModel.swift */; };
 		DABFE2542D28416000B314E2 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE21A2D28416000B314E2 /* Auth.swift */; };
 		DABFE2562D28416000B314E2 /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE21C2D28416000B314E2 /* Memo.swift */; };
 		DABFE2572D28416000B314E2 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE21D2D28416000B314E2 /* Tag.swift */; };
@@ -165,7 +164,6 @@
 		DA8F56292D34151B00B8C23F /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemoWithTags.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAA6789E2D45512600EFB929 /* TextFormatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFormatManager.swift; sourceTree = "<group>"; };
-		DABE95242D2F8CA300604FB7 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		DABFE21A2D28416000B314E2 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		DABFE21C2D28416000B314E2 /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		DABFE21D2D28416000B314E2 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
@@ -519,7 +517,6 @@
 				DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */,
 				55E610BB2D2A5FA600E452A8 /* MainViewModel.swift */,
 				55FD2B7D2D4B6615008BA108 /* DeprecatedMainViewModel.swift */,
-				DABE95242D2F8CA300604FB7 /* SettingsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -760,7 +757,6 @@
 				DABFE26D2D28416000B314E2 /* FetchTagUseCase.swift in Sources */,
 				DABFE26E2D28416000B314E2 /* UpdateMemoUseCase.swift in Sources */,
 				DABFE26F2D28416000B314E2 /* UpdateTagUseCase.swift in Sources */,
-				DABE95252D2F8CA900604FB7 /* SettingsViewModel.swift in Sources */,
 				55FD2B7E2D4B6615008BA108 /* DeprecatedMainViewModel.swift in Sources */,
 				DABFE2702D28416000B314E2 /* LoginView.swift in Sources */,
 				55ECA11A2D3661C6003E1517 /* DesignTagView.swift in Sources */,
