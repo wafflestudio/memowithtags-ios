@@ -98,7 +98,7 @@ struct LoginView: View {
                             .font(.system(size: 12, weight: .regular))
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
-                            .padding(.top, 8)
+                            .padding(.top, 4)
                     }
                     
                     HStack(spacing: 8) {

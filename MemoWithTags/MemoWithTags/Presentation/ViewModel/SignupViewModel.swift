@@ -9,6 +9,8 @@ import Foundation
 
 @MainActor
 final class SignupViewModel: BaseViewModel, ObservableObject {
+    @Published var isLoading = false
+    
     @Published var isValidLength: Bool = false
     @Published var isValidPasswordFormat: Bool = false
     
@@ -35,6 +37,8 @@ final class SignupViewModel: BaseViewModel, ObservableObject {
         checkPasswordValidity(password: password)
         let isPasswordSame = password == passwordRepeat
         
+        guard !isLoading else { return }
+        
         if nickname.count > 8 {
             appState.system.showAlert = true
             appState.system.errorMessage = "닉네임은 8자 이하입니다."
@@ -48,6 +52,7 @@ final class SignupViewModel: BaseViewModel, ObservableObject {
             appState.system.showAlert = true
             appState.system.errorMessage = RegisterError.passwordNotMatch.localizedDescription()
         } else {
+            isLoading = true
             let result = await useCases.signupUseCase.execute(nickname: nickname, email: email, password: password)
             
             switch result {
@@ -57,6 +62,7 @@ final class SignupViewModel: BaseViewModel, ObservableObject {
                 appState.system.showAlert = true
                 appState.system.errorMessage = error.localizedDescription()
             }
+            isLoading = false
         }
     }
 }

@@ -83,18 +83,5 @@ struct AppRootView: View {
                 dismissButton: .default(Text("확인"))
             )
         }
-        .alert(isPresented: container.appState.$system.showSessionAlert) {
-            return Alert(
-                title: Text("세션 만료"),
-                message: Text(container.appState.system.errorMessage),
-                dismissButton: .default(Text("확인")) {
-                    let _ = KeyChainManager.shared.deleteAccessToken()
-                    let _ = KeyChainManager.shared.deleteRefreshToken()
-                    
-                    container.appState.navigation.reset()
-                    container.appState.navigation.push(to: .login)
-                }
-            )
-        }
     }
 }
