@@ -212,15 +212,11 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		55FD2B4F2D4931F8008BA108 /* AIManager */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = AIManager;
 			sourceTree = "<group>";
 		};
 		55FD2B702D4A672D008BA108 /* FileManager */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = FileManager;
 			sourceTree = "<group>";
 		};
