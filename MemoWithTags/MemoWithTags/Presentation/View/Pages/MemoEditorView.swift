@@ -36,7 +36,6 @@ struct MemoEditorView: View {
                     }
                     
                     Button(role: .destructive) {
-                        viewModel.aiRecommendation = false
                         viewModel.editorState = .create
                         viewModel.editorContent = ""
                         viewModel.editorTags = []
