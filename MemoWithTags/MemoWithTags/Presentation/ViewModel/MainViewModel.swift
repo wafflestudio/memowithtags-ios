@@ -484,7 +484,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     /// editorContent를 읽고 recommendingMemos와 recommendingTags를 업데이트한다.
     func recommendMemosAndTags() {
-        print("recommendMemosAndTags()")
         Task {
             do {
                 // editorContent를 읽어서 임베딩 벡터 생성
@@ -518,7 +517,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 DispatchQueue.main.async {
                     self.recommendingMemos = recommendedMemos
                     self.recommendingTags = recommendedTags
-                    print(recommendedTags)
                 }
             } catch {
                 appState.system.showAlert = true

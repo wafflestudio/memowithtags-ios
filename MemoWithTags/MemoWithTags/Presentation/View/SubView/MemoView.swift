@@ -28,10 +28,16 @@ struct MemoView: View {
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
-            if !memo.tagIds.isEmpty {
+            if !memo.tagIds.isEmpty || memo.locked {
                 HFlow {
                     ForEach(viewModel.mapTags(from: memo.tagIds), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
+                    }
+                    
+                    if memo.locked {
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(Color.lockIconGray) // 원하는 색상 설정
+                            .font(.system(size: 14)) // 원하는 크기 설정
                     }
                 }
                 .padding(.top, 6)
@@ -100,7 +106,9 @@ struct MemoView: View {
                         .background(Color.backgroundGray)
                         .clipShape(Circle())
                         .onTapGesture {
-                            isExpanded.toggle()
+                            withAnimation(.spring) {
+                                isExpanded.toggle()
+                            }
                         }
 
                 }

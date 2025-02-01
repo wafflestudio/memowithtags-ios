@@ -18,6 +18,7 @@ extension Color {
     
     static let memoBackgroundWhite: Color = .init(red: 255 / 255, green: 255 / 255, blue: 255 / 255)
     static let memoTextBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
+    static let lockIconGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
     static let dateGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
     
     static let searchBarBackgroundGray: Color = .init(red: 229 / 255, green: 229 / 255, blue: 230 / 255)

@@ -116,6 +116,9 @@ struct SearchView: View {
 
         }
         .navigationBarBackButtonHidden()
+        .onAppear {
+            viewModel.searchMemosAndTags()
+        }
         .onDisappear {
             viewModel.clearSearch()
         }

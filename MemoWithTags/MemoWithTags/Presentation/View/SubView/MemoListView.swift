@@ -52,11 +52,11 @@ struct MemoListView: View {
         switch viewModel.sortMemo {
         case .byCreate:
             return viewModel.memos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
-                return memo1.createdAt > memo2.createdAt
+                return memo1.createdAt < memo2.createdAt
             }
         case .byUpdate:
             return viewModel.memos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
-                return memo1.updatedAt > memo2.updatedAt
+                return memo1.updatedAt < memo2.updatedAt
             }
         }
     }
