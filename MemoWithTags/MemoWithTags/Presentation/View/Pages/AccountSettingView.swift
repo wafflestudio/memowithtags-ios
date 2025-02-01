@@ -72,20 +72,22 @@ struct AccountSettingView: View {
                             .foregroundStyle(Color.dateGray)
                     }
                     
-                    HStack {
-                        Text("비밀번호 변경")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(Color.titleTextBlack)
-                        
-                        Spacer()
-                        
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 16, weight: .regular))
-                            .foregroundStyle(Color.dateGray)
-                    }
-                    .background(Color.white)
-                    .onTapGesture {
-                        viewModel.appState.navigation.push(to: .changePassword)
+                    if !viewModel.appState.user.isSocial {
+                        HStack {
+                            Text("비밀번호 변경")
+                                .font(.system(size: 14, weight: .regular))
+                                .foregroundStyle(Color.titleTextBlack)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 16, weight: .regular))
+                                .foregroundStyle(Color.dateGray)
+                        }
+                        .background(Color.white)
+                        .onTapGesture {
+                            viewModel.appState.navigation.push(to: .changePassword)
+                        }
                     }
                 }
                 .padding(.vertical, 13)
@@ -188,7 +190,8 @@ struct AccountSettingView: View {
                 Button {
                     //action
                     Task {
-                        
+                        showWithdrawalSheet = false
+                        await viewModel.withdrawal(email: email)
                     }
                 } label: {
                     Text("확인")

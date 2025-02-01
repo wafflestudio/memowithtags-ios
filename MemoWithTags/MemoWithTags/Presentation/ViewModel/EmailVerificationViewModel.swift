@@ -9,7 +9,12 @@ import SwiftUI
 
 @MainActor
 final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
+    @Published var isLoading = false
+    
     func verify(email: String, code: String) async {
+        guard !isLoading else { return }
+        
+        isLoading = true
         let result = await useCases.emailVerificationUseCase.execute(email: email, code: code)
 
         switch result {
@@ -19,5 +24,6 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
             appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription()
         }
+        isLoading = false
     }
 }

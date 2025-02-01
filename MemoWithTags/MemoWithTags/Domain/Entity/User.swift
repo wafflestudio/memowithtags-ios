@@ -11,6 +11,7 @@ struct User: Codable {
     let userNumber: Int
     let email: String
     let nickname: String
+    let isSocial: Bool
 }
 
 

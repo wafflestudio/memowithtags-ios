@@ -16,4 +16,5 @@ final class UserState: ObservableObject {
     @Published var userNumber: Int?
     @Published var userName: String?
     @Published var userEmail: String?
+    @Published var isSocial: Bool = false
 }
