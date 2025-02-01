@@ -369,6 +369,19 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         editorTags = []
     }
     
+    func withdrawal(email: String) async {
+        let result = await useCases.withdrawalUseCase.execute(email: email)
+        
+        switch result {
+        case .success:
+            appState.navigation.reset()
+            appState.navigation.push(to: .root)
+        case .failure(let error):
+            appState.system.showAlert = true
+            appState.system.errorMessage = error.localizedDescription()
+        }
+    }
+    
     // MARK: - Helper Functions
     
     /// 키보드를 숨깁니다.

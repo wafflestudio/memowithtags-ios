@@ -35,7 +35,7 @@ struct ResetPasswordView: View {
                 VStack(spacing: 0) {
                     VStack(spacing: 10) {
                         // 비밀번호 입력 필드
-                        VStack(spacing: 2) {
+                        VStack(alignment: .leading, spacing: 4) {
                             SecureField(
                                 "",
                                 text: $password,
@@ -58,15 +58,26 @@ struct ResetPasswordView: View {
                             }
                             
                             //조건 표시
-                            HStack {
-                                Spacer()
-                                Text("\(viewModel.satisfiedCount)/5")
-                                    .font(.system(size: 12, weight: .regular))
-                                    .foregroundStyle(
-                                        viewModel.isValidPassword ? Color.green : Color.dateGray
-                                    )
-                                    .padding(.horizontal, 6)
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                    Text("최소 8자 ~ 최대 16자")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                }
+                                
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                    Text("알파벳 대소문자, 숫자, 특수문자 포함")
+                                        .font(.system(size: 12, weight: .regular))
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                }
                             }
+                            .padding(.horizontal, 6)
                         }
                         
                         //비밀번호 확인 필드
@@ -147,8 +158,8 @@ struct ResetPasswordView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.isValidPassword = false
-            viewModel.satisfiedCount = 0
+            viewModel.isValidPasswordFormat = false
+            viewModel.isValidLength = false
         }
     }
 }

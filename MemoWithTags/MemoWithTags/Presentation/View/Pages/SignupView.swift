@@ -126,6 +126,7 @@ struct SignupView: View {
                                         .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                                 }
                             }
+                            .padding(.horizontal, 6)
                         }
                         
                         //비밀번호 확인 필드

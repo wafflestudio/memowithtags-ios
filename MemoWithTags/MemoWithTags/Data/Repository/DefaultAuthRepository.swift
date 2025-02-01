@@ -90,4 +90,10 @@ final class DefaultAuthRepository: AuthRepository {
         print("accessToken: \(dto.accessToken)")
         return dto
     }
+    
+    func withdrawal(email: String) async throws {
+        print("withdrawal")
+        let response = await AF.request(AuthRouter.withdrawal(email: email), interceptor: tokenInterceptor).serializingData().response
+        try handleError(response: response)
+    }
 }

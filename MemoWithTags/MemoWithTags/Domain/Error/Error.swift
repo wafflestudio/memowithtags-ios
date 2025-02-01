@@ -194,6 +194,8 @@ enum ChangePasswordError: Error {
     case notMatchCurrentPassword
     case networkError
     case unknown
+    case invalidPassword
+    case passwordNotMatch
     
     func localizedDescription() -> String {
         switch self {
@@ -201,6 +203,8 @@ enum ChangePasswordError: Error {
         case .notMatchCurrentPassword: return "기존 비밀번호가 일치하지 않습니다."
         case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
         case .unknown: return "알 수 없는 오류가 발생했습니다."
+        case .invalidPassword: return "새 비밀번호 형식이 잘못되었습니다."
+        case .passwordNotMatch: return "새 비밀번호가 일치하지 않습니다."
         }
     }
     
@@ -235,6 +239,28 @@ enum SocialLoginError: Error {
         switch baseError {
         case .UNAUTHORIZED: return .invalidCode
         case .BAD_REQUEST: return .emailAlreadyExists
+        case .INTERNAL_SERVER_ERROR: return .networkError
+        default: return .unknown
+        }
+    }
+}
+
+enum WithdrawalError: Error {
+    case userNotFound
+    case networkError
+    case unknown
+    
+    func localizedDescription() -> String {
+        switch self {
+        case .userNotFound: return "사용자를 찾을 수 없습니다."
+        case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
+        case .unknown: return "알 수 없는 오류가 발생했습니다."
+        }
+    }
+    
+    static func from(baseError: BaseError) -> WithdrawalError {
+        switch baseError {
+        case .UNAUTHORIZED: return .userNotFound
         case .INTERNAL_SERVER_ERROR: return .networkError
         default: return .unknown
         }

@@ -30,5 +30,7 @@ protocol AuthRepository: BaseRepository {
     func naverLogin(authCode: String) async throws -> SocialAuthDto
     ///구글 로그인 하는 함수
     func googleLogin(authCode: String) async throws -> SocialAuthDto
+    ///회원탈퇴하는 함수
+    func withdrawal(email: String) async throws
 }
 

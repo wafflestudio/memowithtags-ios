@@ -37,7 +37,7 @@ struct ChangePasswordView: View {
                 .textInputAutocapitalization(.never)
                 
                 // 비밀번호 입력 필드
-                VStack(spacing: 4) {
+                VStack(alignment: .leading, spacing: 4) {
                     SecureField(
                         "",
                         text: $newPassword,
@@ -55,15 +55,31 @@ struct ChangePasswordView: View {
                     )
                     .autocorrectionDisabled(true)
                     .textInputAutocapitalization(.never)
+                    .onChange(of: newPassword) {
+                        viewModel.checkPasswordValidity(password: newPassword)
+                    }
                     
                     //조건 표시
-                    HStack {
-                        Spacer()
-                        Text("\(newPassword.count)/8")
-                            .font(.system(size: 12, weight: .regular))
-                            .foregroundStyle(Color.dateGray)
-                            .padding(.horizontal, 6)
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                            Text("최소 8자 ~ 최대 16자")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                        }
+                        
+                        HStack {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                            Text("알파벳 대소문자, 숫자, 특수문자 포함")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                        }
                     }
+                    .padding(.horizontal, 6)
                 }
                 
                 //비밀번호 확인 필드
@@ -90,7 +106,7 @@ struct ChangePasswordView: View {
             
             Button {
                 Task {
-                    
+                    await viewModel.changePassword(currentPassword: currentPassword, newPassword: newPassword, newPasswordRepeat: newPasswordRepeat)
                 }
             } label: {
                 Text("완료")
@@ -123,12 +139,51 @@ struct ChangePasswordView: View {
             }
         }
         .navigationBarBackButtonHidden()
+        .onAppear {
+            viewModel.isValidPasswordFormat = false
+            viewModel.isValidLength = false
+        }
     }
 }
 
 extension ChangePasswordView {
     @MainActor
     final class ViewModel: BaseViewModel, ObservableObject {
-
+        @Published var isValidLength: Bool = false
+        @Published var isValidPasswordFormat: Bool = false
+        
+        ///정규식으로 비밀번호 형식 검사
+        func checkPasswordValidity(password: String) {
+            isValidLength = password.count >= 8 && password.count <= 16
+            let containsUppercase = password.range(of: "[A-Z]", options: .regularExpression) != nil
+            let containsLowercase = password.range(of: "[a-z]", options: .regularExpression) != nil
+            let containsNumber = password.range(of: "[0-9]", options: .regularExpression) != nil
+            let containsSpecialCharacter = password.range(of: "[!@#$%^&*?_+=-]", options: .regularExpression) != nil
+            
+            isValidPasswordFormat = containsUppercase && containsLowercase && containsNumber && containsSpecialCharacter
+        }
+        
+        func changePassword(currentPassword: String, newPassword: String, newPasswordRepeat: String) async {
+            checkPasswordValidity(password: newPassword)
+            let isPasswordSame = newPassword == newPasswordRepeat
+            
+            if !isValidPasswordFormat || !isValidLength {
+                appState.system.showAlert = true
+                appState.system.errorMessage = ChangePasswordError.invalidPassword.localizedDescription()
+            } else if !isPasswordSame {
+                appState.system.showAlert = true
+                appState.system.errorMessage = ChangePasswordError.passwordNotMatch.localizedDescription()
+            } else {
+                let result = await useCases.changePasswordUseCase.execute(currentPassword: currentPassword, newPassword: newPassword)
+                
+                switch result {
+                case .success:
+                    appState.navigation.pop()
+                case .failure(let error):
+                    appState.system.showAlert = true
+                    appState.system.errorMessage = error.localizedDescription()
+                }
+            }
+        }
     }
 }
