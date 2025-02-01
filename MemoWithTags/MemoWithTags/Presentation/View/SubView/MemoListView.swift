@@ -36,11 +36,24 @@ struct MemoListView: View {
                     }
                 }
             }
-            .onChange(of: viewModel.aiRecommendation) {
-                if !viewModel.aiRecommendation {
+            .onChange(of: viewModel.recommendingMemos) {
+                if viewModel.recommendingMemos.isEmpty {
                     highlightedMemoID = nil
                     isHighlighted = false
                 }
+            }
+        }
+    }
+    
+    private var sortedMemos: [Memo] {
+        switch viewModel.sortMemo {
+        case .byCreate:
+            return viewModel.memos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.createdAt < memo2.createdAt
+            }
+        case .byUpdate:
+            return viewModel.memos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
+                return memo1.updatedAt < memo2.updatedAt
             }
         }
     }

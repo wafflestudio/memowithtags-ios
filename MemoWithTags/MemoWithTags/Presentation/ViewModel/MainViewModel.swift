@@ -15,6 +15,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var isLoading: Bool = false
     
     // 여기 있는 모든 리스트들은 정렬되지 않은 리스트다.
+    // 단, recommendingMemos, recommendingTags, searchedMemos, searchedTag는 "관련성 기준"으로 정렬되어있다.
     
     // MARK: - Main Page Variables
     @Published var memos: [Memo] = []
@@ -50,7 +51,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case byUpdate
     }
     
-    @Published var aiRecommendation: Bool = false
     @Published var scrollTarget: Int = 0
     
     // MARK: Load and Save Opeartions between Filesystem
@@ -363,7 +363,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         }
         
         // 입력 필드 초기화
-        aiRecommendation = false
         editorState = .create
         editorContent = ""
         editorTags = []
@@ -521,8 +520,16 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         return sortedTags.map { $0.0 }
     }
     
-    /// editorContent를 읽고 recommendingMemos와 recommendingTags를 업데이트한다.
+    /// editorContent와 editorTags를 읽고 recommendingMemos와 recommendingTags를 업데이트한다.
     func recommendMemosAndTags() {
+        print("recommendMemosAndTags()")
+        // 편집창에 내용과 태그 모두 비어있으면 메모는 아무것도 추천 안하고, 태그는 관련성 없이 전부 추천함
+        if self.editorContent.isEmpty && self.editorTags.isEmpty {
+            self.recommendingMemos = []
+            self.recommendingTags = self.tags
+            return
+        }
+      
         Task {
             do {
                 // editorContent를 읽어서 임베딩 벡터 생성
@@ -586,15 +593,15 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     /// searchBarText를 읽어서 searchedMemos와 searchedTags를 업데이트한다.
     func searchMemosAndTags() {
+        // 검색창이 비어있으면 검색 결과를 전부 비우기
+        if self.searchBarText.isEmpty && self.searchBarSelectedTags.isEmpty {
+            self.searchedMemos = []
+            self.searchedTags = []
+            return
+        }
+        
         Task {
             do {
-                // 검색창이 비어있으면 검색 결과를 전부 비우기
-                if self.searchBarText.isEmpty && self.searchBarSelectedTags.isEmpty {
-                    self.searchedMemos = []
-                    self.searchedTags = []
-                    return
-                }
-                
                 // searchBarText를 읽어서 임베딩 벡터 생성
                 let embeddingVector = try await createEmbeddingVectorWithAI(text: self.searchBarText)
                 

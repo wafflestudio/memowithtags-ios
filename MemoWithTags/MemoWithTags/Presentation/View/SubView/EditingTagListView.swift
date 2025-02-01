@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditingTagListView: View {
     @ObservedObject var viewModel: MainViewModel
-
+    
     @State private var randomColor: Color.TagColor = Color.TagColor.allCases.randomElement()!
     
     // 상태 변수를 sheet(item:)에 맞게 수정
@@ -32,17 +32,19 @@ struct EditingTagListView: View {
                 .foregroundColor(Color.dividerGray)
                 .frame(width: 0.3, height: 32)
             
-//             태그 추천해주는 스크롤 라인
+            // 태그 추천해주는 스크롤 라인
             ScrollView(.horizontal) {
                 HStack(alignment: .center, spacing: 8) {
-                    ForEach(viewModel.recommendingTags, id: \.id) { tag in
-                        TagView(viewModel: viewModel, tag: tag) {
-                            viewModel.editorTags.append(tag)
-                        }
+                    
+                    let lowercasedEditorTagSearchBarText = viewModel.editorTagSearchBarText.lowercased()
+                    
+                    let filteredTags = viewModel.recommendingTags.filter { tag in
+                        let lowercasedTagName = tag.name.lowercased()
+                        return lowercasedEditorTagSearchBarText.isEmpty || lowercasedTagName.contains(lowercasedEditorTagSearchBarText)
                     }
                     
-                    // "Create Tag" TagView
-                    if canCreateTag() {
+                    if !lowercasedEditorTagSearchBarText.isEmpty && filteredTags.isEmpty {
+                        // 필터링 결과가 없으면 "Create Tag" TagView 표시
                         CreateTagView(
                             searchText: $viewModel.editorTagSearchBarText,
                             randomColor: $randomColor
@@ -55,22 +57,22 @@ struct EditingTagListView: View {
                             }
                         }
                     }
+                    
+                    // 필터링된 태그들을 ForEach로 표시
+                    ForEach(filteredTags, id: \.id) { tag in
+                        TagView(viewModel: viewModel, tag: tag) {
+                            viewModel.editorTags.append(tag)
+                        }
+                    }
+                    
                 }
             }
-            
-            // Spacer()
         }
         .padding(.vertical, 7)
         .padding(.horizontal, 10)
         .onAppear {
             generateRandomHexColor()
         }
-    }
-    
-    // Determine if a new tag can be created
-    private func canCreateTag() -> Bool {
-        let trimmedText = viewModel.editorTagSearchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !trimmedText.isEmpty && !viewModel.tags.contains { $0.name.lowercased() == trimmedText.lowercased() }
     }
     
     // Generate a random HEX color string from TagColor enum
