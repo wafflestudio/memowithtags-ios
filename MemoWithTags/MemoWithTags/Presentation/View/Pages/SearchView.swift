@@ -102,7 +102,7 @@ struct SearchView: View {
                         
                         ScrollView {
                             VStack(alignment: .leading, spacing: 12) {
-                                ForEach(sortedMemos, id: \.id) { memo in
+                                ForEach(viewModel.searchedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
                                         .shadow(color: Color.black.opacity(0.05), radius: 6)
                                 }
@@ -122,20 +122,6 @@ struct SearchView: View {
         }
         .onDisappear {
             viewModel.clearSearch()
-        }
-    }
-    
-    // viewModel.searchedMemo에서 sort한 결과를 반환하는 computed property
-    private var sortedMemos: [Memo] {
-        switch viewModel.sortSearch {
-        case .byCreate:
-            return viewModel.searchedMemos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
-                return memo1.createdAt > memo2.createdAt
-            }
-        case .byUpdate:
-            return viewModel.searchedMemos.sorted { (memo1: Memo, memo2: Memo) -> Bool in
-                return memo1.updatedAt > memo2.updatedAt
-            }
         }
     }
     
