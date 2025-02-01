@@ -57,5 +57,7 @@ struct MemoListView: View {
             }
         }
     }
+    
+
 }
 

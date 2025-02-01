@@ -38,7 +38,7 @@ struct ChangeNicknameView: View {
                     Spacer()
                     Text("\(nickname.count)/8")
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundStyle(Color.dateGray)
+                        .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
                         .padding(.horizontal, 6)
                 }
             }

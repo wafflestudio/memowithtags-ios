@@ -21,6 +21,7 @@ enum AuthRouter: Router {
     case kakaoLogin(authCode: String)
     case naverLogin(authCode: String)
     case googleLogin(authCode: String)
+    case withdrawal(email: String)
     
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL + "/auth")!
@@ -34,6 +35,8 @@ enum AuthRouter: Router {
             return .get
         case .changePassword, .setProfile:
             return .put
+        case .withdrawal:
+            return .delete
         }
     }
     
@@ -63,6 +66,8 @@ enum AuthRouter: Router {
             return "/login/google"
         case .naverLogin:
             return "/login/naver"
+        case .withdrawal:
+            return "/withdrawal"
         }
     }
     
@@ -88,6 +93,8 @@ enum AuthRouter: Router {
             return ["nickname": nickname]
         case let .changePassword(currentPassword, newPassword):
             return ["originalPassword": currentPassword, "newPassword": newPassword]
+        case let .withdrawal(email):
+            return ["email": email]
         }
     }
 }
