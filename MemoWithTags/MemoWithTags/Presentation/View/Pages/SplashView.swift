@@ -27,7 +27,12 @@ extension SplashView {
     final class ViewModel: BaseViewModel, ObservableObject {
         func checkLogin() {
             Task {
-                try? await Task.sleep(nanoseconds: 1_000_000_000) // 일부러 1초 딜레이
+                // AIModel warm-up: dummy 텍스트를 인코딩하여 초기화를 강제합니다.
+                do {
+                    _ = try AIModel.shared.encode(texts: ["dummy"])
+                } catch {
+                    print("AIModel warm-up 실패: \(error)")
+                }
                 
                 guard let _ = KeyChainManager.shared.readAccessToken(),
                       let _ = KeyChainManager.shared.readRefreshToken() else {

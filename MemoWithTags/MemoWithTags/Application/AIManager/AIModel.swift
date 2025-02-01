@@ -169,7 +169,8 @@ class AIModel {
         return dotProduct / (sqrt(normA) * sqrt(normB))
     }
     
-    /// 태그 추천을 수행하고 결과를 출력합니다.
+    /// 성능 평가를 위해 태그 추천을 수행하고 결과를 출력합니다.
+    /*
     func tagRecommendation(content: String, tags: [String]) throws {
         // 컨텐츠와 태그를 인코딩
         let contentEmbedding = try encode(texts: [content]).first!
@@ -193,6 +194,7 @@ class AIModel {
         }
         print("\n")
     }
+     */
     
     // MARK: - Helper Methods
     
@@ -219,7 +221,8 @@ class AIModel {
     }
 }
 
-
+/// 성능 평가를 위한 함수
+/*
 func tryAIModel() {
     // 예제 문장
     //let content = "할 일: 바지 뒤에 들어가는 부분 컨트롤하기 -> 뭘 덧대? 아니야 손바느질을 더 하자"
@@ -253,3 +256,4 @@ func tryAIModel() {
         print("AIModel 사용 중 오류가 발생했습니다: \(error)")
     }
 }
+*/
