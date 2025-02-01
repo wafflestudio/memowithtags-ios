@@ -80,7 +80,9 @@ struct SearchView: View {
 
                         
                         HFlow {
-                            ForEach(viewModel.searchedTags, id: \.id) { tag in
+                            ForEach(viewModel.searchedTags.filter { tag in
+                                !viewModel.searchBarSelectedTags.contains(where: { $0.id == tag.id })
+                            }, id: \.id) { tag in
                                 TagView(viewModel: viewModel, tag: tag) {
                                     appendTagToSelectedTags(tag)
                                 }

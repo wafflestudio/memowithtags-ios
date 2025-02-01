@@ -23,7 +23,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var recommendingMemos: [Memo] = []
     @Published var recommendingTags: [Tag] = []
     // 참고: 사용자가 태그 검색 창에 검색을 한다고 recommendingTags는 변하지 않는다.
-    // tagRecommendation에 recommendingTags가 그대로 보이는 것이 아니라, 검색을 하거나 create Tag를 하는 등 추가적인 과정이 있다.
+    // tagRecommendation에 recommendingTags가 그대로 보이는 것이 아니라, editor에 있는 tag를 제외하고 검색어와 안 맞는 tag를 제외하고 Create Tag를 하는 등 추가적인 과정이 있다.
     
     // MARK: - Search Page Variables
     @Published var searchBarText: String = ""
@@ -237,6 +237,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 self.tags.append(tag)
                 // 현재 수정하고 있는 메모에 tag를 추가해야 한다.
                 await saveMemosAndTagsToFileSystem()
+                
+                recommendMemosAndTags()
             case .failure(let error):
                 if error == .unsureUser {
                     appState.system.showSessionAlert = true
@@ -277,6 +279,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             case .success(let tag):
                 self.tags[updatingTagIndex] = tag
                 await saveMemosAndTagsToFileSystem()
+                
+                recommendMemosAndTags()
             case .failure(let error):
                 if error == .unsureUser {
                     appState.system.showSessionAlert = true
@@ -312,6 +316,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 self.searchedMemos[index].tagIds.removeAll { $0 == id }
             }
             await saveMemosAndTagsToFileSystem()
+            
+            recommendMemosAndTags()
         case .failure(let error):
             if error == .unsureUser {
                 appState.system.showSessionAlert = true
@@ -597,10 +603,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 let finalRecommendedMemos = groupAMemos + groupBMemos
                 
                 // 태그 추천
-                var recommendedTags = recommendTagsWithAI(contentEmbeddingVector: embeddingVector)
-                // 이미 편집창에 선택된 태그는 제외
-                let selectedTagIds = editorTags.map { $0.id }
-                recommendedTags = recommendedTags.filter { !selectedTagIds.contains($0.id) }
+                let recommendedTags = recommendTagsWithAI(contentEmbeddingVector: embeddingVector)
                 
                 // UI 업데이트
                 DispatchQueue.main.async {
@@ -666,16 +669,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 // 선택된 태그의 ID들을 추출
                 let selectedTagIds = searchBarSelectedTags.map { $0.id }
                 
-                // 그룹 B: threshold 이상인 메모들을 유사도 기준 내림차순으로 정렬 (이미 정렬된 결과)
-                let groupBMemos = searchMemosWithAI(searchTextEmbeddingVector: embeddingVector)
-                
                 // 그룹 A: 단순 문자열 매칭으로 검색 (선택된 태그를 모두 포함하고, content에 검색어가 포함된 메모)
                 let groupAMemos = memos.filter { memo in
                     // 메모의 내용이 검색어를 포함하고
-                    memo.content.contains(self.searchBarText) &&
+                    (self.searchBarText.isEmpty || memo.content.contains(self.searchBarText)) &&
                     // 선택된 태그를 모두 포함하는 경우
                     selectedTagIds.allSatisfy { memo.tagIds.contains($0) }
                 }
+                
+                // 그룹 B: threshold 이상인 메모들을 유사도 기준 내림차순으로 정렬 (이미 정렬된 결과)
+                let groupBMemos = searchMemosWithAI(searchTextEmbeddingVector: embeddingVector)
+                
                 
                 // 그룹 A와 그룹 B를 중복 없이 결합 (그룹 A가 앞쪽에 오도록)
                 var combinedMemos = groupAMemos
