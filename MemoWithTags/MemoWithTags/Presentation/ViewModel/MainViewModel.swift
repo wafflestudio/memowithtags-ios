@@ -15,6 +15,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var isLoading: Bool = false
     
     // 여기 있는 모든 리스트들은 정렬되지 않은 리스트다.
+    // 단, recommendingMemos, recommendingTags, searchedMemos, searchedTag는 "관련성 기준"으로 정렬되어있다.
     
     // MARK: - Main Page Variables
     @Published var memos: [Memo] = []
