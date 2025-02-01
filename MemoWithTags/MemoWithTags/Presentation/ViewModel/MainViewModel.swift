@@ -52,7 +52,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     // MARK: - Memo Scroll Target in MainView
     
+    /// scrollTaget이 0이면 아무 것도 강조되지 않는다.
+    /// 1부터 recommendedTags.count까지 있으면 그것 안에서 scroll이 되면서 강조된다.
+    /// AI Recommend에서 사용한다.
     @Published var scrollTarget: Int = 0
+    /// 기본적으로는 nil이다.
+    /// searchView에서 넘어올 때 사용한다.
+    @Published var scrollSingleTarget: UUID? = nil
     
     // MARK: - Load and Save Opeartions between Filesystem
     
