@@ -100,7 +100,9 @@ struct MemoView: View {
                         .background(Color.backgroundGray)
                         .clipShape(Circle())
                         .onTapGesture {
-                            isExpanded.toggle()
+                            withAnimation(.spring) {
+                                isExpanded.toggle()
+                            }
                         }
 
                 }

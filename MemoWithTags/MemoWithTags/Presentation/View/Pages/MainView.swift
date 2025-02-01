@@ -85,11 +85,7 @@ struct MainView: View {
                 MemoListView(viewModel: viewModel)
                 
                 // 메모 생성 or 수정 창
-                if #available(iOS 18.0, *) {
-                    EditingMemoView(viewModel: viewModel)
-                } else {
-                    // 애니메이션이 ios18부터 지원됨..
-                }
+                EditingMemoView(viewModel: viewModel)
                 
                 if keyboardManager.currentHeight > 0 {
                     EditingTagListView(viewModel: viewModel)
