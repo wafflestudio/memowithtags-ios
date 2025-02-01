@@ -193,10 +193,8 @@ struct MemoView: View {
     
     func dateFormat(date: Date) -> String {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-
         return dateFormatter.string(from: date)
     }
 }
