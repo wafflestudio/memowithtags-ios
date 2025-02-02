@@ -517,7 +517,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     /// contentEmbeddingVector와 self.memos의 각 embeddingVector와 similarity를 구해서,
     /// threshold 이상인 메모들을 similarity 기준 내림차순으로 정렬하여 반환한다.
     func recommendMemosWithAI(contentEmbeddingVector: [Float]) -> [Memo] {
-        let threshold: Float = 0.7
+        let threshold: Float = 0.5
         let memoSimilarities = memos.compactMap { memo -> (memo: Memo, similarity: Float)? in
             if let similarity = try? AIModel.shared.cosineSimilarity(vectorA: contentEmbeddingVector, vectorB: memo.embeddingVector),
                similarity >= threshold {
@@ -602,7 +602,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     /// searchTextEmbeddingVector와 self.memos의 각 embeddingVector와 similarity를 구해서,
     /// threshold 이상인 메모들을 similarity 기준 내림차순으로 정렬하여 반환한다.
     func searchMemosWithAI(searchTextEmbeddingVector: [Float]) -> [Memo] {
-        let threshold: Float = 0.7
+        let threshold: Float = 0.5
         let memoSimilarities = memos.compactMap { memo -> (memo: Memo, similarity: Float)? in
             if let similarity = try? AIModel.shared.cosineSimilarity(vectorA: searchTextEmbeddingVector, vectorB: memo.embeddingVector),
                similarity >= threshold {
@@ -618,7 +618,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     /// searchTextEmbeddingVector와 self.tags의 각 embeddingVector와 similarity를 구해서,
     /// threshold 이상인 태그들을 similarity 기준 내림차순으로 정렬하여 반환한다.
     func searchTagsWithAI(searchTextEmbeddingVector: [Float]) -> [Tag] {
-        let threshold: Float = 0.7
+        let threshold: Float = 0.5
         let tagSimilarities = tags.compactMap { tag -> (tag: Tag, similarity: Float)? in
             if let similarity = try? AIModel.shared.cosineSimilarity(vectorA: searchTextEmbeddingVector, vectorB: tag.embeddingVector),
                similarity >= threshold {
