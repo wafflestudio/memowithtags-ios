@@ -24,29 +24,28 @@ final class DefaultMemoRepository: MemoRepository {
         return dto
     }
 
-    func createMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date) async throws -> MemoDto {
+    func createMemo(content: String, tagIds: [Int], locked: Bool) async throws -> MemoDto {
         print("create memo")
         let response = await AF.request(
-            MemoRouter.createMemo(id: id, content: content, tagIds: tagIds, locked: locked, embeddingVector: embeddingVector, createdAt: createdAt, updatedAt: updatedAt), interceptor: tokenInterceptor
+            MemoRouter.createMemo(content: content, tagIds: tagIds, locked: locked), interceptor: tokenInterceptor
         ).serializingDecodable(MemoDto.self).response
-        
         let dto = try handleErrorDecodable(response: response)
 
         return dto
     }
 
-    func deleteMemo(id: UUID) async throws {
+    func deleteMemo(memoId: Int) async throws {
         print("delete memo")
         let response = await AF.request(
-            MemoRouter.deleteMemo(id: id), interceptor: tokenInterceptor
+            MemoRouter.deleteMemo(memoId: memoId), interceptor: tokenInterceptor
         ).serializingData().response
         try handleError(response: response)
     }
 
-    func updateMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date) async throws -> MemoDto {
+    func updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool) async throws -> MemoDto {
         print("update memo")
         let response = await AF.request(
-            MemoRouter.updateMemo(id: id, content: content, tagIds: tagIds, locked: locked, embeddingVector: embeddingVector, createdAt: createdAt, updatedAt: updatedAt),
+            MemoRouter.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked),
             interceptor: tokenInterceptor
         ).serializingDecodable(MemoDto.self).response
         let dto = try handleErrorDecodable(response: response)
@@ -54,3 +53,5 @@ final class DefaultMemoRepository: MemoRepository {
         return dto
     }
 }
+
+

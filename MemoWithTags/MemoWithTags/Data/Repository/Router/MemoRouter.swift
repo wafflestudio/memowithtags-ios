@@ -10,9 +10,9 @@ import Foundation
 
 enum MemoRouter: Router {
     case fetchMemos(content: String?, tagIds: [Int]?, dateRange: ClosedRange<Date>?, page: Int)
-    case createMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
-    case deleteMemo(id: UUID)
-    case updateMemo(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
+    case createMemo(content: String, tagIds: [Int], locked: Bool)
+    case deleteMemo(memoId: Int)
+    case updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool)
     
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL)!
@@ -37,14 +37,12 @@ enum MemoRouter: Router {
             return "/search-memo"
         case .createMemo:
             return "/memo"
-        case let .deleteMemo(id), let .updateMemo(id, _, _, _, _, _, _):
-            return "/memo/\(id)"
+        case let .deleteMemo(memoId), let .updateMemo(memoId, _, _, _):
+            return "/memo/\(memoId)"
         }
     }
     
     var parameters: Parameters? {
-        let formatter = ISO8601DateFormatter()
-        
         switch self {
         case let .fetchMemos(content, tagIds, dateRange, page):
             var params: [String: Any] = ["page": page]
@@ -56,32 +54,15 @@ enum MemoRouter: Router {
                 params["tagIds"] = tagIds.map { String($0) }.joined(separator: ",")
             }
             if let dateRange = dateRange {
+                let formatter = ISO8601DateFormatter()
                 params["startDate"] = formatter.string(from: dateRange.lowerBound)
                 params["endDate"] = formatter.string(from: dateRange.upperBound)
             }
             return params
-        case let .createMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
-            return [
-                "id": id.uuidString,
-                "content": content,
-                "tagIds": tagIds.map { $0.uuidString },
-                "locked": locked,
-                "embeddingVector": embeddingVector,
-                "createdAt": formatter.string(from: createdAt),
-                "updatedAt": formatter.string(from: updatedAt)
-            ]
-            
-        case let .updateMemo(id, content, tagIds, locked, embeddingVector, createdAt, updatedAt):
-            return [
-                "id": id.uuidString,
-                "content": content,
-                "tagIds": tagIds.map { $0.uuidString },
-                "locked": locked,
-                "embeddingVector": embeddingVector,
-                "createdAt": formatter.string(from: createdAt),
-                "updatedAt": formatter.string(from: updatedAt)
-            ]
-            
+        case let .createMemo(content, tagIds, locked):
+            return ["content": content, "tagIds": tagIds, "locked": locked]
+        case let .updateMemo(_, content, tagIds, locked):
+            return ["content": content, "tagIds": tagIds, "locked": locked]
         case .deleteMemo:
             return nil
         }

@@ -51,7 +51,7 @@ struct UpdateTagView: View {
                 },
                 trailing: Button("저장") {
                     Task {
-                        await viewModel.updateTag(id: tag.id, name: updatedName, color: selectedColor)
+                        await viewModel.updateTag(tagId: tag.id, name: updatedName, color: selectedColor)
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
