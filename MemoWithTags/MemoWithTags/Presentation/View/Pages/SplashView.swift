@@ -27,13 +27,6 @@ extension SplashView {
     final class ViewModel: BaseViewModel, ObservableObject {
         func checkLogin() {
             Task {
-                // AIModel warm-up: dummy 텍스트를 인코딩하여 초기화를 강제합니다.
-                do {
-                    _ = try AIModel.shared.encode(texts: ["dummy"])
-                } catch {
-                    print("AIModel warm-up 실패: \(error)")
-                }
-                
                 guard let _ = KeyChainManager.shared.readAccessToken(),
                       let _ = KeyChainManager.shared.readRefreshToken() else {
                     appState.user.isLoggedIn = false

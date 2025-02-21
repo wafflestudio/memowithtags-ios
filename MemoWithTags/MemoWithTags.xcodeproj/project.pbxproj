@@ -12,11 +12,7 @@
 		55E610C02D2A65C400E452A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E610BF2D2A65C400E452A8 /* SettingsView.swift */; };
 		55ECA11A2D3661C6003E1517 /* DesignTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55ECA1192D3661C6003E1517 /* DesignTagView.swift */; };
 		55ECA11E2D3A7DC4003E1517 /* BioAuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55ECA11D2D3A7DC4003E1517 /* BioAuthenticationManager.swift */; };
-		55FD2B6F2D4A66D0008BA108 /* DefaultFileManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD2B6E2D4A66D0008BA108 /* DefaultFileManagerRepository.swift */; };
-		55FD2B782D4A69F4008BA108 /* FileManagerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD2B772D4A69F4008BA108 /* FileManagerRepository.swift */; };
-		55FD2B7C2D4AA932008BA108 /* FileManagerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD2B7B2D4AA932008BA108 /* FileManagerError.swift */; };
 		55FD2B7E2D4B6615008BA108 /* DeprecatedMainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FD2B7D2D4B6615008BA108 /* DeprecatedMainViewModel.swift */; };
-		CC95136F6572E26A9B246CB4 /* Pods_MemoWithTags.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D590A81C9781EBC65012DF8 /* Pods_MemoWithTags.framework */; };
 		DA0A4E752D2B7AFE007E481D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 55E610D22D2AD5A500E452A8 /* Alamofire */; };
 		DA0A4EB82D2B9F0A007E481D /* EmailVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */; };
 		DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */; };
@@ -112,11 +108,7 @@
 		55E610BF2D2A65C400E452A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		55ECA1192D3661C6003E1517 /* DesignTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTagView.swift; sourceTree = "<group>"; };
 		55ECA11D2D3A7DC4003E1517 /* BioAuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioAuthenticationManager.swift; sourceTree = "<group>"; };
-		55FD2B6E2D4A66D0008BA108 /* DefaultFileManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFileManagerRepository.swift; sourceTree = "<group>"; };
-		55FD2B772D4A69F4008BA108 /* FileManagerRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerRepository.swift; sourceTree = "<group>"; };
-		55FD2B7B2D4AA932008BA108 /* FileManagerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerError.swift; sourceTree = "<group>"; };
 		55FD2B7D2D4B6615008BA108 /* DeprecatedMainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedMainViewModel.swift; sourceTree = "<group>"; };
-		7D590A81C9781EBC65012DF8 /* Pods_MemoWithTags.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MemoWithTags.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
 		DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSuccessView.swift; sourceTree = "<group>"; };
 		DA0DE63B2D43BD290006668A /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
@@ -206,19 +198,6 @@
 		DAE6341A2D37CE8A0098B9F0 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		55FD2B4F2D4931F8008BA108 /* AIManager */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = AIManager;
-			sourceTree = "<group>";
-		};
-		55FD2B702D4A672D008BA108 /* FileManager */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FileManager;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		DA98BFEE2D1D4B6B00F992AC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -226,21 +205,12 @@
 			files = (
 				DA2F3EDA2D313050006F156E /* Flow in Frameworks */,
 				DA0A4E752D2B7AFE007E481D /* Alamofire in Frameworks */,
-				CC95136F6572E26A9B246CB4 /* Pods_MemoWithTags.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8122874CF5DFD1822C466294 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				7D590A81C9781EBC65012DF8 /* Pods_MemoWithTags.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		DA3C9E572D291BBF00F28D07 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,7 +218,6 @@
 				55ECA11D2D3A7DC4003E1517 /* BioAuthenticationManager.swift */,
 				DA0DE63B2D43BD290006668A /* KeyboardManager.swift */,
 				DAA6789E2D45512600EFB929 /* TextFormatManager.swift */,
-				55FD2B4F2D4931F8008BA108 /* AIManager */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -306,7 +275,6 @@
 			isa = PBXGroup;
 			children = (
 				DA4018592D32C7D3008500E2 /* BaseError.swift */,
-				55FD2B7B2D4AA932008BA108 /* FileManagerError.swift */,
 			);
 			path = Error;
 			sourceTree = "<group>";
@@ -336,7 +304,6 @@
 				DABFE2282D28416000B314E2 /* BaseRepository.swift */,
 				DABFE2272D28416000B314E2 /* AuthRepository.swift */,
 				DABFE22A2D28416000B314E2 /* MemoRepository.swift */,
-				55FD2B772D4A69F4008BA108 /* FileManagerRepository.swift */,
 				DABFE22B2D28416000B314E2 /* TagRepository.swift */,
 			);
 			path = Repository;
@@ -384,7 +351,6 @@
 			children = (
 				DABFE2522D28416000B314E2 /* MemoWithTags */,
 				DA98BFF22D1D4B6B00F992AC /* Products */,
-				8122874CF5DFD1822C466294 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -433,7 +399,6 @@
 				DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */,
 				DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */,
 				DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */,
-				55FD2B6E2D4A66D0008BA108 /* DefaultFileManagerRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -461,7 +426,6 @@
 		DABFE23D2D28416000B314E2 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
-				55FD2B702D4A672D008BA108 /* FileManager */,
 				DABFE2342D28416000B314E2 /* Auth */,
 				DABFE2862D28585300B314E2 /* Memo */,
 				DABFE2852D28582E00B314E2 /* Tag */,
@@ -570,10 +534,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				55FD2B4F2D4931F8008BA108 /* AIManager */,
-				55FD2B702D4A672D008BA108 /* FileManager */,
-			);
 			name = MemoWithTags;
 			packageProductDependencies = (
 				55E610D22D2AD5A500E452A8 /* Alamofire */,
@@ -667,8 +627,6 @@
 				DA53E5192D338A0700C7C9F2 /* DIContainer.swift in Sources */,
 				DABFE2542D28416000B314E2 /* Auth.swift in Sources */,
 				DAA6789F2D45512F00EFB929 /* TextFormatManager.swift in Sources */,
-				55FD2B7C2D4AA932008BA108 /* FileManagerError.swift in Sources */,
-				55FD2B6F2D4A66D0008BA108 /* DefaultFileManagerRepository.swift in Sources */,
 				DA3641CA2D396F350001EB20 /* ResetPasswordView.swift in Sources */,
 				DA40185F2D32D336008500E2 /* UserDto.swift in Sources */,
 				DA3641CC2D3971EC0001EB20 /* ResetPasswordViewModel.swift in Sources */,
@@ -754,7 +712,6 @@
 				55E610BC2D2A5FA600E452A8 /* MainViewModel.swift in Sources */,
 				DABFE27D2D28416000B314E2 /* MemoWithTagsApp.swift in Sources */,
 				DA7230A72D34CD5C0065C65A /* SystemState.swift in Sources */,
-				55FD2B782D4A69F4008BA108 /* FileManagerRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
