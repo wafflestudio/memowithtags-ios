@@ -22,7 +22,7 @@ struct ResetPasswordView: View {
             Color.backgroundGray.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
-                //title
+                //MARK: - title
                 HStack(spacing: 4) {
                     Text("비밀번호 재설정")
                         .font(.system(size: 21, weight: .semibold))
@@ -34,7 +34,7 @@ struct ResetPasswordView: View {
                 //signup panel
                 VStack(spacing: 0) {
                     VStack(spacing: 10) {
-                        // 비밀번호 입력 필드
+                        //MARK: - 비밀번호 입력 필드
                         VStack(alignment: .leading, spacing: 4) {
                             SecureField(
                                 "",
@@ -80,7 +80,7 @@ struct ResetPasswordView: View {
                             .padding(.horizontal, 6)
                         }
                         
-                        //비밀번호 확인 필드
+                        //MARK: - 비밀번호 확인 필드
                         SecureField(
                             "",
                             text: $passwordRepeat,
@@ -100,7 +100,7 @@ struct ResetPasswordView: View {
                         .textInputAutocapitalization(.never)
                     }
                     
-                    //회원가입 버튼
+                    //MARK: - 확인 버튼
                     Button {
                         //action
                         Task {
@@ -120,6 +120,7 @@ struct ResetPasswordView: View {
                     .padding(.top, 16)
                     .disabled(password.isEmpty || passwordRepeat.isEmpty)
                     
+                    //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "이전", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()
@@ -138,11 +139,6 @@ struct ResetPasswordView: View {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.highlightRed)
                             .frame(width: 12, height: 24)
-                        
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#F1F1F3"))
-                            .frame(width: 12, height: 24)
-                        
                     }
                     .padding(.top, 36)
                 }
@@ -160,86 +156,6 @@ struct ResetPasswordView: View {
         .onAppear {
             viewModel.isValidPasswordFormat = false
             viewModel.isValidLength = false
-        }
-    }
-}
-
-struct ResetPasswordSuccessView: View {
-    @ObservedObject var viewModel: ViewModel
-    
-    var body: some View {
-        ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 36) {
-                //title
-                HStack(spacing: 4) {
-                    Text("비밀번호가 재설정되었습니다!")
-                        .font(.system(size: 21, weight: .semibold))
-                        .foregroundStyle(Color.titleTextBlack)
-                }
-                .padding(.vertical, 8)
-                .background(.clear)
-                
-                //auth panel
-                VStack(spacing: 0) {
-                    //환영글
-                    VStack(spacing: 2) {
-                        HStack(spacing: 2) {
-                            HStack(spacing: 3) {
-                                Text("Memo with")
-                                    .font(.system(size: 17, weight: .semibold))
-                                    .foregroundStyle(Color.titleTextBlack)
-                                
-                                DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
-                            }
-                            Text("를 통해")
-                                .font(.system(size: 15, weight: .regular))
-                                .foregroundStyle(Color.titleTextBlack)
-                        }
-                        Text("복잡한 메모들을 간단하고 효율적으로 정리해보세요!")
-                            .font(.system(size: 15, weight: .regular))
-                            .foregroundStyle(Color.titleTextBlack)
-                    }
-                    .padding(.top, 8)
-                    .padding(.bottom, 4)
-                    
-                    //시작버튼
-                    Button {
-                        //action
-                        viewModel.start()
-                    } label: {
-                        Text("로그인하러 가기")
-                            .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .padding(.vertical, 12)
-                    }
-                    .background(Color(hex: "#FF9C9C"))
-                    .cornerRadius(22)
-                    .padding(.top, 16)
-                }
-                .padding(.top, 18)
-                .padding(.bottom, 16)
-                .padding(.horizontal, 16)
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-            }
-            .padding(.horizontal, 12)
-            .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
-
-        }
-        .navigationBarBackButtonHidden()
-    }
-}
-
-extension ResetPasswordSuccessView {
-    @MainActor
-    final class ViewModel: BaseViewModel, ObservableObject {
-        func start() {
-            appState.navigation.reset()
-            appState.navigation.push(to: .login)
         }
     }
 }

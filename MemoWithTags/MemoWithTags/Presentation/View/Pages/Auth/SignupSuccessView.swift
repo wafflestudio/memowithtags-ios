@@ -15,7 +15,7 @@ struct SignupSuccessView: View {
             Color.backgroundGray.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
-                //title
+                //MARK: - title
                 HStack(spacing: 4) {
                     Text("회원가입이 완료되었습니다!")
                         .font(.system(size: 21, weight: .semibold))
@@ -26,7 +26,7 @@ struct SignupSuccessView: View {
                 
                 //auth panel
                 VStack(spacing: 0) {
-                    //환영글
+                    //MARK: - 환영글
                     VStack(spacing: 2) {
                         HStack(spacing: 2) {
                             HStack(spacing: 3) {
@@ -47,7 +47,7 @@ struct SignupSuccessView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 4)
                     
-                    //시작버튼
+                    //MARK: - 시작버튼
                     Button {
                         //action
                         viewModel.start()

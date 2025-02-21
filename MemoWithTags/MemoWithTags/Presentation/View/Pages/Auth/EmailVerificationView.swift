@@ -20,26 +20,26 @@ struct EmailVerificationView: View {
             Color.backgroundGray.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
-                //title
+                //MARK: - title
                 HStack(spacing: 4) {
-                    Text("이메일로 회원가입")
+                    Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
                         .font(.system(size: 21, weight: .semibold))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
                 
-                //auth panel
                 VStack(spacing: 0) {
                     Text("이메일로 발송된 인증번호를 입력해주세요.")
                         .padding(.vertical, 8)
                         .font(.system(size: 15, weight: .regular))
                         .foregroundStyle(Color.titleTextBlack)
                     
-                    // 인증 코드 입력란
+                    //MARK: - 인증 코드 입력란
                     SeparatedTextField(length: 6, value: $code)
                         .padding(.top, 8)
                     
+                    //MARK: - 확인 버튼
                     Button {
                         //action
                         Task {
@@ -59,6 +59,7 @@ struct EmailVerificationView: View {
                     .padding(.top, 16)
                     .disabled(code.count < 6)
                     
+                    //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "이전", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()

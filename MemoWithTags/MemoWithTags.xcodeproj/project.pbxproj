@@ -100,7 +100,8 @@
 		DAE504052D465E0C0089B7D0 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */; };
 		DAE504072D4664C40089B7D0 /* SetProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE504062D4664BE0089B7D0 /* SetProfileUseCase.swift */; };
 		DAE504092D4664D90089B7D0 /* ChangePassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE504082D4664D10089B7D0 /* ChangePassword.swift */; };
-		DAE6341B2D37CEB80098B9F0 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6341A2D37CE8A0098B9F0 /* ForgotPasswordView.swift */; };
+		DAFFD2032D68DAF900C44EF1 /* EmailEnterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */; };
+		DAFFD2052D68E5B900C44EF1 /* EmailEnterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -196,7 +197,8 @@
 		DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
 		DAE504062D4664BE0089B7D0 /* SetProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileUseCase.swift; sourceTree = "<group>"; };
 		DAE504082D4664D10089B7D0 /* ChangePassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePassword.swift; sourceTree = "<group>"; };
-		DAE6341A2D37CE8A0098B9F0 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnterView.swift; sourceTree = "<group>"; };
+		DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnterViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -461,20 +463,11 @@
 			isa = PBXGroup;
 			children = (
 				DA888AF62D2FA72F00525291 /* SplashView.swift */,
-				DABFE23E2D28416000B314E2 /* LoginView.swift */,
-				DA2DA6622D2A9487000C0495 /* SignupView.swift */,
-				DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */,
-				DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */,
-				DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */,
-				DAE6341A2D37CE8A0098B9F0 /* ForgotPasswordView.swift */,
-				DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */,
 				DA3C9E532D29072C00F28D07 /* MainView.swift */,
 				DA212CD42D42A136005D1E15 /* MemoEditorView.swift */,
 				55E610BD2D2A65B200E452A8 /* SearchView.swift */,
-				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
-				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
-				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
-				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
+				DAFFD2012D68D93F00C44EF1 /* Auth */,
+				DAFFD2062D68F1B400C44EF1 /* Settings */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -495,8 +488,9 @@
 			children = (
 				DA8F56292D34151B00B8C23F /* BaseViewModel.swift */,
 				DABFE2462D28416000B314E2 /* LoginViewModel.swift */,
-				DABFE24A2D28416000B314E2 /* SignupViewModel.swift */,
+				DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */,
 				DABFE2892D286BD200B314E2 /* EmailVerificationViewModel.swift */,
+				DABFE24A2D28416000B314E2 /* SignupViewModel.swift */,
 				DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */,
 				55E610BB2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift */,
 				55FD2B7D2D4B6615008BA108 /* MainViewModel.swift */,
@@ -518,6 +512,31 @@
 				DABFE2202D28416000B314E2 /* Preview Content */,
 			);
 			path = MemoWithTags;
+			sourceTree = "<group>";
+		};
+		DAFFD2012D68D93F00C44EF1 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				DABFE23E2D28416000B314E2 /* LoginView.swift */,
+				DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */,
+				DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */,
+				DA2DA6622D2A9487000C0495 /* SignupView.swift */,
+				DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */,
+				DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */,
+				DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		DAFFD2062D68F1B400C44EF1 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
+				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
+				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
+				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -606,6 +625,7 @@
 				DABFE2542D28416000B314E2 /* Auth.swift in Sources */,
 				DAA6789F2D45512F00EFB929 /* TextFormatManager.swift in Sources */,
 				DA3641CA2D396F350001EB20 /* ResetPasswordView.swift in Sources */,
+				DAFFD2052D68E5B900C44EF1 /* EmailEnterViewModel.swift in Sources */,
 				DA40185F2D32D336008500E2 /* UserDto.swift in Sources */,
 				DA3641CC2D3971EC0001EB20 /* ResetPasswordViewModel.swift in Sources */,
 				DA8F562A2D34152000B8C23F /* BaseViewModel.swift in Sources */,
@@ -630,6 +650,7 @@
 				DA2DA6632D2A9492000C0495 /* SignupView.swift in Sources */,
 				DA40185A2D32C7FC008500E2 /* BaseError.swift in Sources */,
 				55ECA11E2D3A7DC4003E1517 /* BioAuthenticationManager.swift in Sources */,
+				DAFFD2032D68DAF900C44EF1 /* EmailEnterView.swift in Sources */,
 				DABFE25D2D28416000B314E2 /* BaseRepository.swift in Sources */,
 				DA40185D2D32D161008500E2 /* AuthDto.swift in Sources */,
 				55E610BE2D2A65B200E452A8 /* SearchView.swift in Sources */,
@@ -650,7 +671,6 @@
 				556EF46D2D68B161001BE9B3 /* DesignTagView.swift in Sources */,
 				556EF46E2D68B161001BE9B3 /* EditingTagListView.swift in Sources */,
 				556EF46F2D68B161001BE9B3 /* TagView.swift in Sources */,
-				DAE6341B2D37CEB80098B9F0 /* ForgotPasswordView.swift in Sources */,
 				DABFE2612D28416000B314E2 /* EmailVerificationUseCase.swift in Sources */,
 				DA4018612D32D35C008500E2 /* MemoDto.swift in Sources */,
 				DABFE2622D28416000B314E2 /* ForgotPasswordUseCase.swift in Sources */,

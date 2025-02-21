@@ -71,10 +71,7 @@ struct LoginView: View {
                         )
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
-                    }
-                    
-                    VStack(spacing: 6) {
-                        //로그인 버튼
+                        
                         Button {
                             //action
                             Task {
@@ -91,19 +88,20 @@ struct LoginView: View {
                         }
                         .background(email.isEmpty || password.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                         .cornerRadius(22)
-                        .padding(.top, 16)
+                        .padding(.top, 6)
                         .disabled(email.isEmpty || password.isEmpty)
                     }
                     
+                    
                     HStack(spacing: 8) {
                         DesignTagView(text: "회원가입", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#FFBDBD", cornerRadius: 4) {
-                            viewModel.appState.navigation.push(to: .signup)
+                            viewModel.appState.navigation.push(to: .emailEnter)
                         }
                         
                         Spacer()
                         
                         DesignTagView(text: "비밀번호 찾기", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#F1F1F3", cornerRadius: 4) {
-                            viewModel.appState.navigation.push(to: .forgotPassword)
+                            viewModel.appState.navigation.push(to: .resetPasswordEmailEnter)
                         }
                     }
                     

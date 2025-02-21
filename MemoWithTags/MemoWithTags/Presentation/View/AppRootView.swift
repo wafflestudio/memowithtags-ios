@@ -15,8 +15,9 @@ struct AppRootView: View {
     // stateobject로 관리해야하는 viewmodel들 = 큼직큼직한 뷰들
     @StateObject private var mainViewModel: MainViewModel
     @StateObject private var loginViewModel: LoginViewModel
-    @StateObject private var signupViewModel: SignupViewModel
+    @StateObject private var emailEnterViewModel: EmailEnterViewModel
     @StateObject private var emailVerificationViewModel: EmailVerificationViewModel
+    @StateObject private var signupViewModel: SignupViewModel
     @StateObject private var resetPasswordViewModel: ResetPasswordViewModel
     
     
@@ -26,8 +27,9 @@ struct AppRootView: View {
         
         _mainViewModel = StateObject(wrappedValue: MainViewModel(container: container))
         _loginViewModel = StateObject(wrappedValue: LoginViewModel(container: container))
-        _signupViewModel = StateObject(wrappedValue: SignupViewModel(container: container))
+        _emailEnterViewModel = StateObject(wrappedValue: EmailEnterViewModel(container: container))
         _emailVerificationViewModel = StateObject(wrappedValue: EmailVerificationViewModel(container: container))
+        _signupViewModel = StateObject(wrappedValue: SignupViewModel(container: container))
         _resetPasswordViewModel = StateObject(wrappedValue: ResetPasswordViewModel(container: container))
     }
     
@@ -40,24 +42,25 @@ struct AppRootView: View {
                         SplashView(viewModel: .init(container: container))
                     case .main:
                         MainView(viewModel: mainViewModel)
+                    case .search:
+                        SearchView(viewModel: mainViewModel)
+                    //MARK: - 로그인
                     case .login:
                         LoginView(viewModel: loginViewModel)
+                    //MARK: - 회원가입, 비밀번호 찾기
+                    case .emailEnter, .resetPasswordEmailEnter:
+                        EmailEnterView(viewModel: emailEnterViewModel)
+                    case .emailVerification(let email), .resetPasswordEmailVerification(let email):
+                        EmailVerificationView(viewModel: emailVerificationViewModel, email: email)
                     case .signup:
                         SignupView(viewModel: signupViewModel)
-                    case .emailVerification(let email):
-                        EmailVerificationView(viewModel: emailVerificationViewModel, email: email)
-                    case .signupSuccess:
+                    case .signupSuccess, .resetPasswordSuccess:
                         SignupSuccessView(viewModel: .init(container: container))
-                    case .forgotPassword:
-                        ForgotPasswordView(viewModel: .init(container: container))
-                    case .forgotPasswordEmailVerification(let email):
-                        ForgotPasswordEmailVerificationView(viewModel: .init(container: container), email: email)
-                    case .resetPassword(let email, let code):
-                        ResetPasswordView(viewModel: resetPasswordViewModel, email: email, code: code)
-                    case .resetPasswordSuccess:
-                        ResetPasswordSuccessView(viewModel: .init(container: container))
                     case .nicknameSetting:
                         NicknameSettingView(viewModel: .init(container: container))
+                    case .resetPassword(let email, let code):
+                        ResetPasswordView(viewModel: resetPasswordViewModel, email: email, code: code)
+                    //MARK: - 세팅
                     case .settings:
                         SettingsView(viewModel: mainViewModel)
                     case .accountSetting:
@@ -66,8 +69,6 @@ struct AppRootView: View {
                         ChangePasswordView(viewModel: .init(container: container))
                     case .changeNickname:
                         ChangeNicknameView(viewModel: .init(container: container))
-                    case .search:
-                        SearchView(viewModel: mainViewModel)
                     }
                 }
         }

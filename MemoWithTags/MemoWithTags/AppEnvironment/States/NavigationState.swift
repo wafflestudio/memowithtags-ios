@@ -8,23 +8,27 @@
 import SwiftUI
 
 enum Route: Hashable {
-    //page 설정
     case root
     case main
+    case search
+    //MARK: - 로그인
     case login
-    case signup
+    //MARK: - 회원가입
+    case emailEnter
     case emailVerification(email: String)
+    case signup
     case signupSuccess
-    case forgotPassword
-    case forgotPasswordEmailVerification(email: String)
+    case nicknameSetting
+    //MARK: - 비밀번호 찾기
+    case resetPasswordEmailEnter
+    case resetPasswordEmailVerification(email: String)
     case resetPassword(email: String, code: String)
     case resetPasswordSuccess
-    case nicknameSetting
+    //MARK: - 세팅
     case settings
     case accountSetting
     case changeNickname
     case changePassword
-    case search
 }
 
 @MainActor
