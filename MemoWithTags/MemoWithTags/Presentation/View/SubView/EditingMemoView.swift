@@ -14,16 +14,17 @@ struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
     @Namespace var namespace
-    @State private var showEditor: Bool = false
     
-    @State private var memoEditingTask: Task<Void, Never>? = nil
-    @FocusState private var isFocused: Bool
+    @State var dynamicHeight: CGFloat = 40
+    @StateObject var context = RichTextContext()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 6) {
             // 메모글 쓰는 곳
-            DynamicHeightTextEditor(text: $viewModel.editorContent, maxHeight: 100)
-                .focused($isFocused)
+            DynamicHeightTextEditor(
+                text: $viewModel.editorContent,
+                maxHeight: 100
+            )
             
             // 메모에 넣은 태그들
             HFlow {
@@ -33,48 +34,27 @@ struct EditingMemoView: View {
                     }
                 }
             }
-            .padding(.top, 6)
             
-            //editor 밑에 버튼들
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때
-                    Image(systemName: "arrow.down.left.and.arrow.up.right")
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.dateGray)
-                        .onTapGesture {
-                            showEditor = true
-                        }
-                    
                     Spacer()
-                    
-                    Image(systemName: "xmark")
-                        .font(.system(size: 16))
-                        .foregroundColor(Color(hex: "#FF9C9C"))
-                        .onTapGesture {
-                            isFocused = false
-                            viewModel.editorState = .create
-                            viewModel.editorContent = ""
-                            viewModel.editorTags = []
-                        }
                     
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 20))
                         .foregroundColor(.black)
                         .onTapGesture {
                             Task {
-                                isFocused = false
                                 await viewModel.submit()
                             }
                         }
-                        .padding(.bottom, 3)
-                    
+
                 case .update: // 업데이트 모드일 때
                     Image(systemName: "arrow.down.left.and.arrow.up.right")
                         .font(.system(size: 17, weight: .regular))
                         .foregroundColor(.dateGray)
                         .onTapGesture {
-                            showEditor = true
+                            viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "zoom"))
                         }
                     
                     Spacer()
@@ -87,7 +67,6 @@ struct EditingMemoView: View {
                         .background(Color.highlightRed)
                         .clipShape(Circle())
                         .onTapGesture {
-                            isFocused = false
                             viewModel.editorState = .create
                             viewModel.editorContent = ""
                             viewModel.editorTags = []
@@ -106,8 +85,8 @@ struct EditingMemoView: View {
                             }
                         }
                 }
+                
             }
-            .padding(.top, 6)
         }
         .padding(.top, 9)
         .padding(.bottom, 12)
@@ -115,89 +94,9 @@ struct EditingMemoView: View {
         .background(Color.memoBackgroundWhite)
         .cornerRadius(14)
         .matchedTransitionSource(id: "zoom", in: namespace)
-        .fullScreenCover(isPresented: $showEditor) {
-            MemoEditorView(viewModel: viewModel)
-                .navigationTransition(.zoom(sourceID: "zoom", in: namespace))
-                .interactiveDismissDisabled()
-        }
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
-        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
-        .overlay(Group {
-            HStack(spacing: 18) {
-                Text("\(viewModel.scrollTarget == 0 ? "-" : String(viewModel.scrollTarget)) / \(viewModel.recommendingMemos.count)")
-                    .font(.system(size: 11, weight: .medium))
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(Color.black)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(
-                        Rectangle()
-                            .fill(Color.memoBackgroundWhite)
-                            .cornerRadius(20)
-                    )
-                    .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
-                
-                Image(systemName: "chevron.up")
-                    .font(.system(size: 14, weight: .regular))
-                    .background(
-                        Circle()
-                            .fill(Color.memoBackgroundWhite)
-                            .frame(width: 27, height: 27)
-                    )
-                    .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
-                    .onTapGesture {
-                        if viewModel.scrollTarget < viewModel.recommendingMemos.count {
-                            viewModel.scrollTarget += 1
-                        }
-                    }
-                
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 14, weight: .regular))
-                    .background(
-                        Circle()
-                            .fill(Color.memoBackgroundWhite)
-                            .frame(width: 27, height: 27)
-                    )
-                    .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
-                    .onTapGesture {
-                        if viewModel.scrollTarget > 1 {
-                            viewModel.scrollTarget -= 1
-                        }
-                    }
-            }
-        }.offset(x: -20, y: -36).opacity(viewModel.recommendingMemos.isEmpty ? 0 : 1), alignment: .topTrailing)
-        .onChange(of: viewModel.recommendingMemos) {
-            viewModel.scrollTarget = 0
-        }
-        .onChange(of: viewModel.editorContent) {
-            // 실행하고 있는 recommendingTask를 종료
-            memoEditingTask?.cancel()
-            
-            // 새로운 recommendingTask 생성
-            memoEditingTask = Task {
-                do {
-                    try await Task.sleep(nanoseconds: 500_000_000)
-                    viewModel.recommendMemosAndTags()
-                } catch {
-                    // 취소된 경우 아무 작업도 하지 않아도 된다.
-                }
-            }
-        }
-        .onChange(of: viewModel.editorTags) {
-            // 실행하고 있는 recommendingTask를 종료
-            memoEditingTask?.cancel()
-            
-            // 새로운 recommendingTask 생성
-            memoEditingTask = Task {
-                do {
-                    try await Task.sleep(nanoseconds: 500_000_000)
-                    viewModel.recommendMemosAndTags()
-                } catch {
-                    // 취소된 경우 아무 작업도 하지 않아도 된다.
-                }
-            }
-        }
+        .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 2)
     }
     
     

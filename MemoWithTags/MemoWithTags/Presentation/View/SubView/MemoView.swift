@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Flow
-import RichTextKit
 
 struct MemoView: View {
     let memo: Memo
@@ -15,29 +14,23 @@ struct MemoView: View {
     
     @ObservedObject var viewModel: MainViewModel
     @State private var isExpanded: Bool = false
+    @State private var currentlyLocked = false
     
     @Namespace var namespace
-    @State private var showEditor: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : lineLimit)
-                .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
+                .blur(radius: currentlyLocked ? 6 : 0)
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
-            if !memo.tagIds.isEmpty || memo.locked {
+            if !memo.tags.isEmpty {
                 HFlow {
-                    ForEach(viewModel.mapTags(from: memo.tagIds), id: \.id) { tag in
+                    ForEach(memo.tags, id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
-                    }
-                    
-                    if memo.locked {
-                        Image(systemName: "lock.fill")
-                            .foregroundColor(Color.lockIconGray) // 원하는 색상 설정
-                            .font(.system(size: 14)) // 원하는 크기 설정
                     }
                 }
                 .padding(.top, 6)
@@ -55,7 +48,7 @@ struct MemoView: View {
                     Spacer()
                     
                     HStack(spacing: 4) {
-                        Text("관련 검색")
+                        Text("관련 메모 검색")
                             .font(.system(size: 11, weight: .medium))
                         
                             .foregroundStyle(Color.titleTextBlack)
@@ -76,7 +69,7 @@ struct MemoView: View {
                     }
                     
                     HStack(spacing: 4) {
-                        Text("간편 수정")
+                        Text("검색하며 수정")
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(Color.titleTextBlack)
                         
@@ -90,27 +83,8 @@ struct MemoView: View {
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
-                        viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
-                        
-                        if viewModel.appState.navigation.current != .main {
-                            viewModel.appState.navigation.pop()
-                        }
-                        
+                        viewModel.editorTags = memo.tags
                     }
-                    
-                    //접기 버트
-                    Image(systemName: "chevron.up")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.memoTextBlack.opacity(0.6))
-                        .frame(width: 27, height: 27)
-                        .background(Color.backgroundGray)
-                        .clipShape(Circle())
-                        .onTapGesture {
-                            withAnimation(.spring) {
-                                isExpanded.toggle()
-                            }
-                        }
-
                 }
                 .padding(.top, 10)
             }
@@ -121,13 +95,19 @@ struct MemoView: View {
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
+        .onAppear {
+            currentlyLocked = memo.locked
+        }
+        .onChange(of: memo.locked) {
+            currentlyLocked = memo.locked
+        }
         .onTapGesture {
-            if memo.locked && !viewModel.appState.user.isBioAuthenticated {
+            if currentlyLocked {
                 Task {
                     let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
                     if authenticated {
                         withAnimation(.spring()) {
-                            viewModel.appState.user.isBioAuthenticated = true
+                            currentlyLocked = false
                         }
                     }
                 }
@@ -138,8 +118,8 @@ struct MemoView: View {
             } else {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
-                viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
-                showEditor = true
+                viewModel.editorTags = memo.tags
+                viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "editor\(memo.id)"))
             }
         }
         .contextMenu {
@@ -156,14 +136,9 @@ struct MemoView: View {
             
             Button {
                 Task {
-                    if !viewModel.appState.user.isBioAuthenticated {
-                        let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-                        if authenticated {
-                            viewModel.appState.user.isBioAuthenticated = true
-                            await viewModel.updateMemo(id: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-                        }
-                    } else {
-                        await viewModel.updateMemo(id: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+                    if authenticated {
+                        await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
                     }
                 }
             } label: {
@@ -174,39 +149,25 @@ struct MemoView: View {
                 }
             }
             
-            // searchView에서만 나타나는 추가 메뉴 항목: 메인 페이지에서 해당 메모 보기
-            if viewModel.appState.navigation.current == .search {
-                Button {
-                    // 메인 페이지로 돌아갑니다.
-                    viewModel.appState.navigation.pop()
-                    // scrollSingleTarget에 누른 메모의 id를 넘깁니다.
-                    viewModel.scrollSingleTarget = memo.id
-                } label: {
-                    Label("이 메모를 메인 화면에서 보기", systemImage: "arrow.left")
-                }
-            }
-            
             Button(role: .destructive) {
                 Task {
-                    await viewModel.deleteMemo(id: memo.id)
+                    await viewModel.deleteMemo(memoId: memo.id)
                 }
 
             } label: {
                 Label("삭제하기", systemImage: "trash")
             }
         }
-        .fullScreenCover(isPresented: $showEditor) {
-            MemoEditorView(viewModel: viewModel)
-                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
-                .interactiveDismissDisabled()
-        }
         .padding(.horizontal, 12)
+        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
     }
     
     func dateFormat(date: Date) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+
         return dateFormatter.string(from: date)
     }
 }

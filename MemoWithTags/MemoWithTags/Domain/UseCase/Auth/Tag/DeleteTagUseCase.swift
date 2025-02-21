@@ -8,7 +8,7 @@
 import Foundation
 
 protocol DeleteTagUseCase {
-    func execute(id: UUID) async -> Result<Void, TagError>
+    func execute(tagId: Int) async -> Result<Void, TagError>
 }
 
 class DefaultDeleteTagUseCase: DeleteTagUseCase {
@@ -18,9 +18,9 @@ class DefaultDeleteTagUseCase: DeleteTagUseCase {
         self.tagRepository = tagRepository
     }
 
-    func execute(id: UUID) async -> Result<Void, TagError> {
+    func execute(tagId: Int) async -> Result<Void, TagError>{
         do {
-            try await tagRepository.deleteTag(id: id)
+            try await tagRepository.deleteTag(tagId: tagId)
             return .success(())
         } catch let error as BaseError {
             return .failure(.from(baseError: error))

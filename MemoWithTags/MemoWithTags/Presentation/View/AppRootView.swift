@@ -78,7 +78,7 @@ struct AppRootView: View {
         }
         .alert(isPresented: container.appState.$system.showAlert) {
             return Alert(
-                title: Text("Error"),
+                title: Text("에러"),
                 message: Text(container.appState.system.errorMessage),
                 dismissButton: .default(Text("확인"))
             )

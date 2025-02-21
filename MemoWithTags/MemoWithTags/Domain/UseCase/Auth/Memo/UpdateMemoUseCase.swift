@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UpdateMemoUseCase {
-    func execute(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date) async -> Result<Memo, MemoError>
+    func execute(memoId: Int, content: String, tagIds: [Int], locked: Bool) async -> Result<Memo, MemoError>
 }
 
 class DefaultUpdateMemoUseCase: UpdateMemoUseCase {
@@ -18,9 +18,9 @@ class DefaultUpdateMemoUseCase: UpdateMemoUseCase {
         self.memoRepository = memoRepository
     }
 
-    func execute(id: UUID, content: String, tagIds: [UUID], locked: Bool, embeddingVector: [Float], createdAt: Date, updatedAt: Date) async -> Result<Memo, MemoError> {
+    func execute(memoId: Int, content: String, tagIds: [Int], locked: Bool) async -> Result<Memo, MemoError> {
         do {
-            let dto = try await memoRepository.updateMemo(id: id, content: content, tagIds: tagIds, locked: locked, embeddingVector: embeddingVector, createdAt: createdAt, updatedAt: updatedAt)
+            let dto = try await memoRepository.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
             let memo = dto.toMemo()
             return .success(memo)
         } catch let error as BaseError {

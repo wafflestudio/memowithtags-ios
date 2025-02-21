@@ -10,9 +10,9 @@ import Alamofire
 
 enum TagRouter: Router {
     case fetchTags
-    case createTag(id: UUID, name: String, colorHex: String, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
-    case deleteTag(id: UUID)
-    case updateTag(id: UUID, name: String, colorHex: String, embeddingVector: [Float], createdAt: Date, updatedAt: Date)
+    case createTag(name: String, colorHex: String)
+    case deleteTag(tagId: Int)
+    case updateTag(tagId: Int, name: String, colorHex: String)
     
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL)!
@@ -37,41 +37,24 @@ enum TagRouter: Router {
             return "/tag"
         case .createTag:
             return "/tag"
-        case let .deleteTag(id):
-            return "/tag/\(id)"
-        case let .updateTag(id, _, _, _, _, _):
-            return "/tag/\(id)"
+        case let .deleteTag(tagId):
+            return "/tag/\(tagId)"
+        case let .updateTag(tagId, _, _):
+            return "/tag/\(tagId)"
         }
     }
     
     var parameters: Parameters? {
-        let formatter = ISO8601DateFormatter()
-        
         switch self {
         case .fetchTags:
             return nil
-        case let .createTag(id, name, colorHex, embeddingVector, createdAt, updatedAt):
-            return [
-                "id": id.uuidString,
-                "name": name,
-                "colorHex": colorHex,
-                "embeddingVector": embeddingVector,
-                "createdAt": formatter.string(from: createdAt),
-                "updatedAt": formatter.string(from: updatedAt)
-            ]
-            
+        case let .createTag(name, colorHex):
+            return ["name": name, "colorHex": colorHex]
         case .deleteTag:
             return nil
-            
-        case let .updateTag(id, name, colorHex, embeddingVector, createdAt, updatedAt):
-            return [
-                "id": id.uuidString,
-                "name": name,
-                "colorHex": colorHex,
-                "embeddingVector": embeddingVector,
-                "createdAt": formatter.string(from: createdAt),
-                "updatedAt": formatter.string(from: updatedAt)
-            ]
+        case let .updateTag(_, name, colorHex):
+            return ["name": name, "colorHex": colorHex]
         }
     }
 }
+

@@ -7,14 +7,16 @@
 import Foundation
 
 struct Memo: Codable, Identifiable, Equatable  {
-    let id: UUID
+    let id: Int
     var content: String
-    var tagIds: [UUID]
+    var tagIds: [Int]
+    var tags: [Tag]
     var locked: Bool
-    var embeddingVector: [Float]
     var createdAt: Date
     var updatedAt: Date
 }
+
+
 
 struct PaginatedMemos {
     let memos: [Memo]

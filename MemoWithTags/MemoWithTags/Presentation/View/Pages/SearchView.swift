@@ -42,12 +42,10 @@ struct SearchView: View {
                                 
                                 // 새로운 searchTask 생성
                                 searchTask = Task {
-                                    do {
-                                        try await Task.sleep(nanoseconds: 500_000_000)
-                                        viewModel.searchMemosAndTags()
-                                    } catch {
-                                        // 취소된 경우 아무 작업도 하지 않아도 된다.
-                                    }
+                                    // 0.5초 기다리기
+                                    try? await Task.sleep(nanoseconds: 500_000_000)
+                                    
+                                    await firstSearch()
                                 }
                             }
                             .onAppear {
@@ -82,9 +80,7 @@ struct SearchView: View {
 
                         
                         HFlow {
-                            ForEach(viewModel.searchedTags.filter { tag in
-                                !viewModel.searchBarSelectedTags.contains(where: { $0.id == tag.id })
-                            }, id: \.id) { tag in
+                            ForEach(viewModel.searchedTags, id: \.id) { tag in
                                 TagView(viewModel: viewModel, tag: tag) {
                                     appendTagToSelectedTags(tag)
                                     viewModel.searchBarText = ""
@@ -106,10 +102,9 @@ struct SearchView: View {
                             .padding(.horizontal, 26)
                         
                         ScrollView {
-                            VStack(alignment: .leading, spacing: 12) {
+                            LazyVStack(alignment: .leading, spacing: 12) {
                                 ForEach(viewModel.searchedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
-                                        .shadow(color: Color.black.opacity(0.05), radius: 6)
                                 }
                             }
                          }
@@ -123,7 +118,9 @@ struct SearchView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.searchMemosAndTags()
+            Task {
+                await firstSearch()
+            }
         }
         .onDisappear {
             viewModel.clearSearch()
@@ -132,11 +129,46 @@ struct SearchView: View {
     
     private func removeTagFromSelectedTags(_ tag: Tag) {
         viewModel.searchBarSelectedTags.removeAll { $0.id == tag.id }
-        viewModel.searchMemosAndTags()
+        Task {
+            await firstSearch()
+        }
     }
     
     private func appendTagToSelectedTags(_ tag: Tag) {
         viewModel.searchBarSelectedTags.append(tag)
-        viewModel.searchMemosAndTags()
+        Task {
+            await firstSearch()
+        }
+    }
+    
+    private func firstSearch() async {
+        // 이전 검색 결과를 모두 리셋
+        viewModel.searchedMemos = []
+        viewModel.searchedTags = []
+        viewModel.searchCurrentPage = 0
+        viewModel.searchTotalPages = 1
+        
+        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // 검색할 text와 tag가 있는지 확인
+        if !trimmedText.isEmpty || !viewModel.searchBarSelectedTags.isEmpty {
+            // 선택한 tag들의 id를 뽑아서 tagId list로 만듦
+            let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
+            
+            // Perform the search with content and selected tag IDs
+            await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
+            
+            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
+            viewModel.searchedTags = viewModel.tags.filter { tag in
+                tag.name.lowercased().contains(trimmedText.lowercased()) && !selectedTagIds.contains(tag.id)
+            }
+        }
+    }
+    
+    private func fetchNextPage() async {
+        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
+        await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
     }
 }
+
