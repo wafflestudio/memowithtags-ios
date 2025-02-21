@@ -54,7 +54,6 @@ struct EditingMemoView: View {
                         .font(.system(size: 17, weight: .regular))
                         .foregroundColor(.dateGray)
                         .onTapGesture {
-                            viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "zoom"))
                         }
                     
                     Spacer()
@@ -93,7 +92,6 @@ struct EditingMemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .cornerRadius(14)
-        .matchedTransitionSource(id: "zoom", in: namespace)
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 2)
