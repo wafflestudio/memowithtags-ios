@@ -22,7 +22,6 @@
 		DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */; };
 		DA0DE63C2D43BD290006668A /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0DE63B2D43BD290006668A /* KeyboardManager.swift */; };
 		DA19C4E92D3FF9AF00ACDC00 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19C4E82D3FF9A200ACDC00 /* DeepLinkHandler.swift */; };
-		DA212CD12D429ADD005D1E15 /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA212CD02D429ADD005D1E15 /* RichTextKit */; };
 		DA212CD52D42A13C005D1E15 /* MemoEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA212CD42D42A136005D1E15 /* MemoEditorView.swift */; };
 		DA27DDA02D3464020044D3C1 /* GetUserInfoUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA27DD9F2D3463F70044D3C1 /* GetUserInfoUseCase.swift */; };
 		DA2DA6632D2A9492000C0495 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2DA6622D2A9487000C0495 /* SignupView.swift */; };
@@ -108,7 +107,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		235F9A93ABB08BBB2DAEB2F3 /* Pods-MemoWithTags.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MemoWithTags.debug.xcconfig"; path = "Target Support Files/Pods-MemoWithTags/Pods-MemoWithTags.debug.xcconfig"; sourceTree = "<group>"; };
 		55E610BB2D2A5FA600E452A8 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		55E610BD2D2A65B200E452A8 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		55E610BF2D2A65C400E452A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -119,7 +117,6 @@
 		55FD2B7B2D4AA932008BA108 /* FileManagerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerError.swift; sourceTree = "<group>"; };
 		55FD2B7D2D4B6615008BA108 /* DeprecatedMainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedMainViewModel.swift; sourceTree = "<group>"; };
 		7D590A81C9781EBC65012DF8 /* Pods_MemoWithTags.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MemoWithTags.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		97762970CAB89E1E4FB8489E /* Pods-MemoWithTags.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MemoWithTags.release.xcconfig"; path = "Target Support Files/Pods-MemoWithTags/Pods-MemoWithTags.release.xcconfig"; sourceTree = "<group>"; };
 		DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
 		DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSuccessView.swift; sourceTree = "<group>"; };
 		DA0DE63B2D43BD290006668A /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
@@ -229,7 +226,6 @@
 			files = (
 				DA2F3EDA2D313050006F156E /* Flow in Frameworks */,
 				DA0A4E752D2B7AFE007E481D /* Alamofire in Frameworks */,
-				DA212CD12D429ADD005D1E15 /* RichTextKit in Frameworks */,
 				CC95136F6572E26A9B246CB4 /* Pods_MemoWithTags.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -388,7 +384,6 @@
 			children = (
 				DABFE2522D28416000B314E2 /* MemoWithTags */,
 				DA98BFF22D1D4B6B00F992AC /* Products */,
-				ED455D93690BC41F3E88DD3E /* Pods */,
 				8122874CF5DFD1822C466294 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -559,15 +554,6 @@
 			path = Memo;
 			sourceTree = "<group>";
 		};
-		ED455D93690BC41F3E88DD3E /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				235F9A93ABB08BBB2DAEB2F3 /* Pods-MemoWithTags.debug.xcconfig */,
-				97762970CAB89E1E4FB8489E /* Pods-MemoWithTags.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -592,7 +578,6 @@
 			packageProductDependencies = (
 				55E610D22D2AD5A500E452A8 /* Alamofire */,
 				DA2F3ED92D313050006F156E /* Flow */,
-				DA212CD02D429ADD005D1E15 /* RichTextKit */,
 			);
 			productName = MemoWithTags;
 			productReference = DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */;
@@ -625,7 +610,6 @@
 			packageReferences = (
 				55E610D12D2AD5A500E452A8 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				DA2F3ED82D313050006F156E /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */,
-				DA212CCF2D429ADD005D1E15 /* XCRemoteSwiftPackageReference "RichTextKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DA98BFF22D1D4B6B00F992AC /* Products */;
@@ -898,7 +882,6 @@
 		};
 		DA98C0002D1D4B6D00F992AC /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 235F9A93ABB08BBB2DAEB2F3 /* Pods-MemoWithTags.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -932,7 +915,6 @@
 		};
 		DA98C0012D1D4B6D00F992AC /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 97762970CAB89E1E4FB8489E /* Pods-MemoWithTags.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -996,14 +978,6 @@
 				minimumVersion = 5.10.2;
 			};
 		};
-		DA212CCF2D429ADD005D1E15 /* XCRemoteSwiftPackageReference "RichTextKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielsaidi/RichTextKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.2;
-			};
-		};
 		DA2F3ED82D313050006F156E /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tevelee/SwiftUI-Flow";
@@ -1019,11 +993,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 55E610D12D2AD5A500E452A8 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		DA212CD02D429ADD005D1E15 /* RichTextKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DA212CCF2D429ADD005D1E15 /* XCRemoteSwiftPackageReference "RichTextKit" */;
-			productName = RichTextKit;
 		};
 		DA2F3ED92D313050006F156E /* Flow */ = {
 			isa = XCSwiftPackageProductDependency;
