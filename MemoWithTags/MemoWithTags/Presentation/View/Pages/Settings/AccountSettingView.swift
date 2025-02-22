@@ -191,7 +191,7 @@ struct AccountSettingView: View {
                     //action
                     Task {
                         showWithdrawalSheet = false
-                        await viewModel.withdrawal(email: email)
+//                        await viewModel.withdrawal(email: email)
                     }
                 } label: {
                     Text("확인")

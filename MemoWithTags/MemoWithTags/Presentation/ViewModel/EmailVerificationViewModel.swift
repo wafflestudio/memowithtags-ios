@@ -15,15 +15,17 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
         guard !isLoading else { return }
         
         isLoading = true
+        
         let result = await useCases.emailVerificationUseCase.execute(email: email, code: code)
 
         switch result {
         case .success:
-            appState.navigation.push(to: .signupSuccess)
+            appState.navigation.push(to: .signup)
         case .failure(let error):
             appState.system.showAlert = true
             appState.system.errorMessage = error.localizedDescription()
         }
+        
         isLoading = false
     }
 }

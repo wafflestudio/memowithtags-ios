@@ -11,7 +11,6 @@ struct SignupView: View {
     @ObservedObject var viewModel: SignupViewModel
     
     @State private var nickname: String = ""
-    @State private var email: String = ""
     @State private var password: String = ""
     @State private var passwordRepeat: String = ""
     
@@ -33,8 +32,8 @@ struct SignupView: View {
                 //signup panel
                 VStack(spacing: 0) {
                     VStack(spacing: 10) {
+                        //MARK: - 닉네임 입력 필드
                         VStack(spacing: 4) {
-                            // 닉네임 입력 필드
                             TextField (
                                 "",
                                 text: $nickname,
@@ -63,27 +62,7 @@ struct SignupView: View {
                             }
                         }
                         
-                        //이메일 입력 필드
-                        TextField (
-                            "",
-                            text: $email,
-                            prompt:
-                                Text("이메일")
-                                .font(.system(size: 16, weight: .regular))
-                                .foregroundStyle(Color(hex: "#94979F"))
-                        )
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
-                        .font(.system(size: 16, weight: .regular))
-                        .background(.white)
-                        .overlay (
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color(hex: "#181E2226"), lineWidth: 1)
-                        )
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        
-                        // 비밀번호 입력 필드
+                        //MARK: - 비밀번호 입력 필드
                         VStack(alignment: .leading, spacing: 4) {
                             SecureField(
                                 "",
@@ -129,7 +108,7 @@ struct SignupView: View {
                             .padding(.horizontal, 6)
                         }
                         
-                        //비밀번호 확인 필드
+                        //MARK: - 비밀번호 확인 필드
                         SecureField(
                             "",
                             text: $passwordRepeat,
@@ -149,11 +128,11 @@ struct SignupView: View {
                         .textInputAutocapitalization(.never)
                     }
                     
-                    //회원가입 버튼
+                    //MARK: - 회원가입 버튼
                     Button {
                         //action
                         Task {
-                            await viewModel.signup(nickname: nickname, email: email, password: password, passwordRepeat: passwordRepeat)
+//                            await viewModel.signup(nickname: nickname, email: email, password: password, passwordRepeat: passwordRepeat)
                         }
                     } label: {
                         Text("다음")
@@ -163,11 +142,12 @@ struct SignupView: View {
                             .padding(.vertical, 12)
 
                     }
-                    .background(nickname.isEmpty || email.isEmpty || password.isEmpty || passwordRepeat.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(nickname.isEmpty || password.isEmpty || passwordRepeat.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                     .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(nickname.isEmpty || email.isEmpty || password.isEmpty || passwordRepeat.isEmpty)
+                    .disabled(nickname.isEmpty || password.isEmpty || passwordRepeat.isEmpty)
                     
+                    //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "로그인", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#F1F1F3", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()
@@ -195,10 +175,10 @@ struct SignupView: View {
                 .padding(.horizontal, 16)
                 .background(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
+                .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
             }
             .padding(.horizontal, 12)
             .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         }
         .navigationBarBackButtonHidden()
         .onAppear {

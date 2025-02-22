@@ -94,7 +94,6 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .onAppear {
             currentlyLocked = memo.locked
         }
@@ -119,7 +118,6 @@ struct MemoView: View {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
                 viewModel.editorTags = memo.tags
-                viewModel.appState.navigation.push(to: .memoEditor(namespace: namespace, id: "editor\(memo.id)"))
             }
         }
         .contextMenu {

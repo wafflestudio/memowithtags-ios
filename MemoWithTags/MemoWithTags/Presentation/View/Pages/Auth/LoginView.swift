@@ -71,10 +71,7 @@ struct LoginView: View {
                         )
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
-                    }
-                    
-                    VStack(spacing: 6) {
-                        //로그인 버튼
+                        
                         Button {
                             //action
                             Task {
@@ -91,25 +88,20 @@ struct LoginView: View {
                         }
                         .background(email.isEmpty || password.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                         .cornerRadius(22)
-                        .padding(.top, 16)
+                        .padding(.top, 6)
                         .disabled(email.isEmpty || password.isEmpty)
-                        
-                        Text("한 번 로그인하면 이 기기 외 다른 기기에서는 로그인이 불가능합니다!")
-                            .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 4)
                     }
+                    
                     
                     HStack(spacing: 8) {
                         DesignTagView(text: "회원가입", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#FFBDBD", cornerRadius: 4) {
-                            viewModel.appState.navigation.push(to: .signup)
+                            viewModel.appState.navigation.push(to: .emailEnter)
                         }
                         
                         Spacer()
                         
                         DesignTagView(text: "비밀번호 찾기", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#F1F1F3", cornerRadius: 4) {
-                            viewModel.appState.navigation.push(to: .forgotPassword)
+                            viewModel.appState.navigation.push(to: .resetPasswordEmailEnter)
                         }
                     }
                     
@@ -127,22 +119,6 @@ struct LoginView: View {
                         Link(destination: URL(string: "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ed92cd34690fb718013b559ebd98353a&redirect_uri=http://ec2-43-201-64-202.ap-northeast-2.compute.amazonaws.com:8080/api/v1/auth/code/kakao")!) {
                             Image(.kakaoIcon)
                                 .resizable()
-                                .frame(width: 40, height: 40)
-                        }
-
-                        // 네이버 로그인 버튼
-                        Link(destination: URL(string: "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=07oGdnrenHyLis9d_r7T&redirect_uri=http://ec2-43-201-64-202.ap-northeast-2.compute.amazonaws.com:8080/api/v1/auth/code/naver")!) {
-                            Image(.naverIcon)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 40, height: 40)
-                        }
-                        
-                        // 구글 로그인 버튼
-                        Link(destination: URL(string: "https://accounts.google.com/o/oauth2/v2/auth?client_id=596067660858-dtgcrfdb30tinv7ga272vnv0v53a2o9c.apps.googleusercontent.com&redirect_uri=http://ec2-43-201-64-202.ap-northeast-2.compute.amazonaws.com:8080/api/v1/auth/code/google&response_type=code&scope=email%20profile")!) {
-                            Image(.googleIcon)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
                                 .frame(width: 40, height: 40)
                         }
                         

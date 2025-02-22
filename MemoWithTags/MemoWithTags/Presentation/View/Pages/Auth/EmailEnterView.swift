@@ -1,0 +1,107 @@
+//
+//  EmailView.swift
+//  MemoWithTags
+//
+//  Created by 최진모 on 2/22/25.
+//
+
+import SwiftUI
+
+struct EmailEnterView: View {
+    @ObservedObject var viewModel: EmailEnterViewModel
+    
+    @State private var email: String = ""
+    
+    var body: some View {
+        ZStack {
+            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 36) {
+                
+                //MARK: - 타이틀
+                HStack(spacing: 4) {
+                    Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
+                        .font(.system(size: 21, weight: .semibold))
+                        .foregroundStyle(Color.titleTextBlack)
+                }
+                .padding(.vertical, 8)
+                .background(.clear)
+                
+                //login panel
+                VStack(spacing: 0) {
+                    //MARK: - 이메일 입력 필드
+                    TextField (
+                        "",
+                        text: $email,
+                        prompt:
+                            Text("이메일")
+                            .font(.system(size: 16, weight: .regular))
+                            .foregroundStyle(Color(hex: "#94979F"))
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .font(.system(size: 16, weight: .regular))
+                    .background(.white)
+                    .overlay (
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                    )
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+                    
+                    //MARK: - 확인 버튼
+                    Button {
+                        //action
+                        Task {
+                            await viewModel.sendEmailCode(email: email)
+                        }
+                    } label: {
+                        Text("다음")
+                            .frame(maxWidth: .infinity)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .padding(.vertical, 12)
+
+                    }
+                    .background(email.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .cornerRadius(22)
+                    .padding(.top, 16)
+                    .disabled(email.isEmpty)
+                    
+                    //MARK: - 아래 버튼들
+                    HStack(spacing: 8) {
+                        DesignTagView(text: "이전", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {
+                            viewModel.appState.navigation.pop()
+                        }
+                        
+                        Spacer()
+                        
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.highlightRed)
+                            .frame(width: 12, height: 24)
+                        
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color(hex: "#F1F1F3"))
+                            .frame(width: 12, height: 24)
+                        
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color(hex: "#F1F1F3"))
+                            .frame(width: 12, height: 24)
+                        
+                    }
+                    .padding(.top, 36)
+                }
+                .padding(.top, 18)
+                .padding(.bottom, 16)
+                .padding(.horizontal, 16)
+                .background(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+            }
+            .padding(.horizontal, 12)
+            .background(.clear)
+
+        }
+        .navigationBarBackButtonHidden()
+    }
+}
