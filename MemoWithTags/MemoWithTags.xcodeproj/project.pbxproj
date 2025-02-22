@@ -445,8 +445,6 @@
 				DA6ACEB12D4139B5006427B3 /* NaverLoginUseCase.swift */,
 				DA6ACEB32D413A2B006427B3 /* GoogleLoginUseCase.swift */,
 				DA60F2032D4DFF9F00F562FA /* WithdrawalUseCase.swift */,
-				556EF4472D68AC96001BE9B3 /* Memo */,
-				556EF44C2D68AC96001BE9B3 /* Tag */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -455,6 +453,8 @@
 			isa = PBXGroup;
 			children = (
 				DABFE2342D28416000B314E2 /* Auth */,
+				556EF4472D68AC96001BE9B3 /* Memo */,
+				556EF44C2D68AC96001BE9B3 /* Tag */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
