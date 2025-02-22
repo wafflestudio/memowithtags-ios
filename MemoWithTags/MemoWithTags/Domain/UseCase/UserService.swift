@@ -39,7 +39,7 @@ final class DefaultUserService: UserService {
     //MARK: - 닉네임 변경
     func changeNickname(nickname: String) async -> Result<Void, ChangeNicknameError> {
         do {
-            try await authRepository.setProfile(nickname: nickname)
+            try await authRepository.changeNickname(nickname: nickname)
             return .success(())
         } catch {
             return .failure(.from(baseError: error as! BaseError))

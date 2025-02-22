@@ -97,6 +97,7 @@ enum RegisterError: Error {
     case invalidEmail
     case networkError
     case unknown
+    case tokenSaveError
     case invalidPassword
     case passwordNotMatch
     
@@ -106,6 +107,7 @@ enum RegisterError: Error {
         case .invalidEmail: return "인증에 실패한 이메일입니다."
         case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
         case .unknown: return "알 수 없는 오류가 발생했습니다."
+        case .tokenSaveError: return "인증 토큰을 저장하는 중 오류가 발생했습니다."
         case .invalidPassword: return "비밀번호 형식이 잘못되었습니다."
         case .passwordNotMatch: return "비밀번호가 일치하지 않습니다."
         }

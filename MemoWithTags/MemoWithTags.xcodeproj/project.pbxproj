@@ -48,7 +48,6 @@
 		DA40186B2D32DC2E008500E2 /* DefaultAuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */; };
 		DA40186F2D32DCB8008500E2 /* DefaultMemoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */; };
 		DA4018712D32DD02008500E2 /* DefaultTagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */; };
-		DA4018732D32DD5D008500E2 /* BaseRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4018722D32DD5D008500E2 /* BaseRepositoryImpl.swift */; };
 		DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */; };
 		DA40BABE2D468ED1002A5893 /* ChangeNickname.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */; };
 		DA53E5192D338A0700C7C9F2 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */; };
@@ -132,7 +131,6 @@
 		DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultAuthRepository.swift; sourceTree = "<group>"; };
 		DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultMemoRepository.swift; sourceTree = "<group>"; };
 		DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTagRepository.swift; sourceTree = "<group>"; };
-		DA4018722D32DD5D008500E2 /* BaseRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRepositoryImpl.swift; sourceTree = "<group>"; };
 		DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNickname.swift; sourceTree = "<group>"; };
 		DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
@@ -221,7 +219,6 @@
 		DA4018522D32AA07008500E2 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				DA4018582D32C7A1008500E2 /* Error */,
 				DABFE2232D28416000B314E2 /* Network */,
 				DABFE22C2D28416000B314E2 /* Repository */,
 			);
@@ -267,14 +264,6 @@
 			path = Interface;
 			sourceTree = "<group>";
 		};
-		DA4018582D32C7A1008500E2 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				DA4018592D32C7D3008500E2 /* BaseError.swift */,
-			);
-			path = Error;
-			sourceTree = "<group>";
-		};
 		DA40185B2D32D054008500E2 /* Dto */ = {
 			isa = PBXGroup;
 			children = (
@@ -289,6 +278,7 @@
 		DA4018672D32D543008500E2 /* Error */ = {
 			isa = PBXGroup;
 			children = (
+				DA4018592D32C7D3008500E2 /* BaseError.swift */,
 				DA8886C82D6A25E100ED6C1A /* AuthError.swift */,
 				DA8886CA2D6A2EE000ED6C1A /* UserError.swift */,
 				DA8886CC2D6A310400ED6C1A /* SocialLoginError.swift */,
@@ -379,7 +369,6 @@
 			children = (
 				DA40185B2D32D054008500E2 /* Dto */,
 				DABFE2262D28416000B314E2 /* Router */,
-				DA4018722D32DD5D008500E2 /* BaseRepositoryImpl.swift */,
 				DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */,
 				DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */,
 				DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */,
@@ -612,7 +601,6 @@
 				DA888AF52D2FA03B00525291 /* NavigationState.swift in Sources */,
 				DABFE2882D28634600B314E2 /* User.swift in Sources */,
 				DA8886CF2D6A317800ED6C1A /* MemoError.swift in Sources */,
-				DA4018732D32DD5D008500E2 /* BaseRepositoryImpl.swift in Sources */,
 				DABFE2822D28481100B314E2 /* MemoRouter.swift in Sources */,
 				DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */,
 				DA8886C52D6A1AA000ED6C1A /* UserService.swift in Sources */,

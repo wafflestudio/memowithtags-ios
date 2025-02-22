@@ -62,21 +62,50 @@ final class DefaultAuthService: AuthService {
     
     //MARK: - 인증코드 전송
     func sendCode(email: String) async -> Result<Void, SendCodeError> {
-        <#code#>
+        do {
+            try await authRepository.sendEmail(email: email)
+            return .success(())
+        } catch let error {
+            return .failure(.from(baseError: error as! BaseError))
+        }
     }
     
     //MARK: - 인증코드 검증
     func verifyCode(email: String, code: String) async -> Result<Void, VerifyCodeError> {
-        <#code#>
+        do {
+            try await authRepository.verifyEmail(email: email, code: code)
+            return .success(())
+        } catch let error {
+            return .failure(.from(baseError: error as! BaseError))
+        }
     }
     
     //MARK: - 회원가입
     func register(email: String, passsword: String, nickname: String) async -> Result<Void, RegisterError> {
-        <#code#>
+        do {
+            let dto = try await authRepository.register(nickname: nickname, email: email, password: passsword)
+            let auth = dto.toAuth()
+            
+            let isAccessSaved = KeyChainManager.shared.saveAccessToken(token: auth.accessToken)
+            let isRefreshSaved = KeyChainManager.shared.saveRefreshToken(token: auth.refreshToken)
+            
+            if isAccessSaved && isRefreshSaved {
+                return .success(())
+            } else {
+                return .failure(.tokenSaveError)
+            }
+        } catch let error {
+            return .failure(.from(baseError: error as! BaseError))
+        }
     }
     
     //MARK: - 비밀번호 재설정
     func resetPassword(email: String, newPassword: String) async -> Result<Void, ResetPasswordError> {
-        <#code#>
+        do {
+            try await authRepository.resetPassword(email: email, newPassword: newPassword)
+            return .success(())
+        } catch let error {
+            return .failure(.from(baseError: error as! BaseError))
+        }
     }
 }

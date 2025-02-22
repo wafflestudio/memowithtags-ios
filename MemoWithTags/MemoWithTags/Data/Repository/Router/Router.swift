@@ -34,7 +34,7 @@ extension Router {
             }
         }
         
-        print("🙏 url: \(request)")
+        print("👉 url: \(request)")
         
         return request
     }

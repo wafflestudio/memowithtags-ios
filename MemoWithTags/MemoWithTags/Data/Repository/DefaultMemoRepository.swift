@@ -12,8 +12,9 @@ final class DefaultMemoRepository: MemoRepository {
     
     let tokenInterceptor = TokenInterceptor()
     
+    //MARK: - 메모 가져오기
     func fetchMemos(content: String?, tagIds: [Int]?, dateRange: ClosedRange<Date>?, page: Int) async throws -> MemoResponseDto {
-        print("fetch memos")
+        print("🙏 fetch memos")
         let response = await AF.request(
             MemoRouter.fetchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: page),
             interceptor: tokenInterceptor
@@ -24,8 +25,9 @@ final class DefaultMemoRepository: MemoRepository {
         return dto
     }
 
+    //MARK: - 메모 생성
     func createMemo(content: String, tagIds: [Int], locked: Bool) async throws -> MemoDto {
-        print("create memo")
+        print("🙏 create memo")
         let response = await AF.request(
             MemoRouter.createMemo(content: content, tagIds: tagIds, locked: locked), interceptor: tokenInterceptor
         ).serializingDecodable(MemoDto.self).response
@@ -34,16 +36,18 @@ final class DefaultMemoRepository: MemoRepository {
         return dto
     }
 
+    //MARK: - 메모 삭제
     func deleteMemo(memoId: Int) async throws {
-        print("delete memo")
+        print("🙏 delete memo")
         let response = await AF.request(
             MemoRouter.deleteMemo(memoId: memoId), interceptor: tokenInterceptor
         ).serializingData().response
         try handleError(response: response)
     }
 
+    //MARK: - 메모 수정
     func updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool) async throws -> MemoDto {
-        print("update memo")
+        print("🙏 update memo")
         let response = await AF.request(
             MemoRouter.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked),
             interceptor: tokenInterceptor
