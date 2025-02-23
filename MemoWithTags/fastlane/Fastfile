@@ -16,8 +16,8 @@
 default_platform(:ios)
 
 APP_NAME = "MemoWithTags"
-XCODEPROJ_NAME = "MemoWithTags.xcodeproj"
-BUNDLE_IDENTIFIER = "com.wafflestudio.MemoWithTags"
+XCODEPROJ_NAME = ENV['XCODEPROJ_NAME']
+BUNDLE_IDENTIFIER = ENV['BUNDLE_IDENTIFIER']
 
 TEAM_ID = ENV['TEAM_ID']
 
@@ -29,6 +29,9 @@ MATCH_PASSWORD = ENV['MATCH_PASSWORD']
 
 VERSION_NUMBER = ENV['VERSION_NUMBER']
 BUILD_NUMBER = ENV['BUILD_NUMBER']
+
+GIT_TAG_NAME = ENV['GIT_TAG_NAME']
+GIT_PAT = ENV['GIT_PAT']
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
@@ -52,6 +55,44 @@ platform :ios do
     end
   end
 
+  desc "Upload app to App Store"
+  lane :release do
+    begin
+      release = get_github_release(url: "wafflestudio/22-5-team2-iOS", version: GIT_TAG_NAME, api_token: GIT_PAT)
+      setup_ci
+      match(type: "appstore", app_identifier: [BUNDLE_IDENTIFIER], readonly: true)
+      update_xcodeproj(type: "appstore")
+      increment_version_number_in_xcodeproj(version_number: VERSION_NUMBER)
+      increment_build_number_in_xcodeproj(build_number: BUILD_NUMBER)
+      build_app(scheme: APP_NAME,
+      output_directory: "./archive",
+      silent: true,
+      clean: true)
+      app_store_connect_api_key(
+        key_id: APP_STORE_CONNECT_API_KEY_ID,
+        issuer_id: APP_STORE_CONNECT_API_ISSUER_ID,
+        key_content: APP_STORE_CONNECT_API_KEY_CONTENT,
+      )
+      upload_to_app_store(
+        force: true,
+        app_version: VERSION_NUMBER,
+        skip_screenshots: true,
+        submit_for_review: true,
+        automatic_release: false,
+        precheck_include_in_app_purchases: false,
+        release_notes: {
+          'default' => release['body'],
+          'ko' => release['body'],
+        },
+        submission_information: { 
+          add_id_info_uses_idfa: false,
+          export_compliance_uses_encryption: false
+        }
+      )
+      upload_to_testflight(app_version: VERSION_NUMBER)
+    end
+  end
+
   desc "Update xcodeproj file"
   private_lane :update_xcodeproj do |options|
     code_sign_identity = options[:type] == 'appstore' ? 'iPhone Distribution' : 'iPhone Developer'
@@ -63,6 +104,6 @@ platform :ios do
       bundle_identifier: BUNDLE_IDENTIFIER,
       code_sign_identity: code_sign_identity,
       profile_name: ENV["sigh_#{BUNDLE_IDENTIFIER}_#{options[:type]}_profile-name"],
-      )
+    )
   end
 end

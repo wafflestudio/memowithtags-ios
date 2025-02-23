@@ -48,7 +48,7 @@ struct AppRootView: View {
                     //MARK: - 로그인
                     case .login:
                         LoginView(viewModel: loginViewModel)
-                        
+
                     //MARK: - 회원가입, 비밀번호 찾기
                     case .emailEnter, .resetPasswordEmailEnter:
                         EmailEnterView(viewModel: emailEnterViewModel)
@@ -62,7 +62,7 @@ struct AppRootView: View {
                         NicknameSettingView(viewModel: .init(container: container))
                     case .resetPassword(let email, let code):
                         ResetPasswordView(viewModel: resetPasswordViewModel, email: email, code: code)
-                        
+                      
                     //MARK: - 세팅
                     case .settings:
                         SettingsView(viewModel: mainViewModel)

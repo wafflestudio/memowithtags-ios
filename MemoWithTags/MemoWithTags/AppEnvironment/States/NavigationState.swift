@@ -21,13 +21,13 @@ enum Route: Hashable {
     case signup
     case signupSuccess
     case nicknameSetting
-    
+  
     //MARK: - 비밀번호 찾기
     case resetPasswordEmailEnter
     case resetPasswordEmailVerification(email: String)
     case resetPassword(email: String, code: String)
     case resetPasswordSuccess
-    
+  
     //MARK: - 세팅
     case settings
     case accountSetting
