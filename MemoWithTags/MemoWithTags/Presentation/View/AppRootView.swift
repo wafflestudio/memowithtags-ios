@@ -23,7 +23,7 @@ struct AppRootView: View {
     
     init(container: DIContainer) {
         self.container = container
-        self.deepLinkHandler = .init(appState: container.appState, kakaoLoginUseCase: container.useCases.kakaoLoginUseCase, naverLoginUseCase: container.useCases.naverLoginUseCase, googleLoginUseCase: container.useCases.googleLoginUseCase)
+        self.deepLinkHandler = .init(appState: container.appState, socialLoginService: container.useCases.socialLoginService)
         
         _mainViewModel = StateObject(wrappedValue: MainViewModel(container: container))
         _loginViewModel = StateObject(wrappedValue: LoginViewModel(container: container))

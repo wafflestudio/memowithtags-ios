@@ -17,6 +17,7 @@ struct ChangePasswordView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 10) {
+                //MARK: - 기존 비밀번호 입력 필드
                 SecureField (
                     "",
                     text: $currentPassword,
@@ -36,7 +37,7 @@ struct ChangePasswordView: View {
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
                 
-                // 비밀번호 입력 필드
+                //MARK: - 세 비밀번호 입력 필드
                 VStack(alignment: .leading, spacing: 4) {
                     SecureField(
                         "",
@@ -82,7 +83,7 @@ struct ChangePasswordView: View {
                     .padding(.horizontal, 6)
                 }
                 
-                //비밀번호 확인 필드
+                //MARK: - 새 비밀번호 확인 필드
                 SecureField(
                     "",
                     text: $newPasswordRepeat,
@@ -104,6 +105,7 @@ struct ChangePasswordView: View {
             
             Spacer()
             
+            //MARK: - 확인 버튼
             Button {
                 Task {
                     await viewModel.changePassword(currentPassword: currentPassword, newPassword: newPassword, newPasswordRepeat: newPasswordRepeat)
@@ -149,41 +151,49 @@ struct ChangePasswordView: View {
 extension ChangePasswordView {
     @MainActor
     final class ViewModel: BaseViewModel, ObservableObject {
+        @Published var isLoading = false
+        
         @Published var isValidLength: Bool = false
         @Published var isValidPasswordFormat: Bool = false
         
         ///정규식으로 비밀번호 형식 검사
         func checkPasswordValidity(password: String) {
-            isValidLength = password.count >= 8 && password.count <= 16
             let containsUppercase = password.range(of: "[A-Z]", options: .regularExpression) != nil
             let containsLowercase = password.range(of: "[a-z]", options: .regularExpression) != nil
             let containsNumber = password.range(of: "[0-9]", options: .regularExpression) != nil
             let containsSpecialCharacter = password.range(of: "[!@#$%^&*?_+=-]", options: .regularExpression) != nil
             
+            isValidLength = password.count >= 8 && password.count <= 16
             isValidPasswordFormat = containsUppercase && containsLowercase && containsNumber && containsSpecialCharacter
         }
         
         func changePassword(currentPassword: String, newPassword: String, newPasswordRepeat: String) async {
-            checkPasswordValidity(password: newPassword)
-            let isPasswordSame = newPassword == newPasswordRepeat
+            guard !isLoading else { return }
             
-            if !isValidPasswordFormat || !isValidLength {
-                appState.system.showAlert = true
-                appState.system.errorMessage = ChangePasswordError.invalidPassword.localizedDescription()
-            } else if !isPasswordSame {
-                appState.system.showAlert = true
-                appState.system.errorMessage = ChangePasswordError.passwordNotMatch.localizedDescription()
-            } else {
-                let result = await useCases.changePasswordUseCase.execute(currentPassword: currentPassword, newPassword: newPassword)
-                
-                switch result {
-                case .success:
-                    appState.navigation.pop()
-                case .failure(let error):
-                    appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
-                }
+            checkPasswordValidity(password: newPassword)
+            
+            guard isValidLength && isValidPasswordFormat else {
+                appState.system.alert(error: ChangePasswordError.invalidPassword)
+                return
             }
+            
+            guard newPassword == newPasswordRepeat else {
+                appState.system.alert(error: ChangePasswordError.passwordNotMatch)
+                return
+            }
+            
+            isLoading = true
+            
+            let result = await useCases.userService.changePassword(currentPassword: currentPassword, newPassword: newPassword)
+            
+            switch result {
+            case .success:
+                appState.navigation.pop()
+            case .failure(let error):
+                appState.system.alert(error: error)
+            }
+            
+            isLoading = false
         }
     }
 }

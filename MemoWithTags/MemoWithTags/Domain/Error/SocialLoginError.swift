@@ -11,6 +11,7 @@ enum SocialLoginError: Error {
     case networkError
     case unknown
     case tokenSaveError
+    case invalidAccess
     
     var localizedDescription: String {
         switch self {
@@ -19,6 +20,7 @@ enum SocialLoginError: Error {
         case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
         case .unknown: return "알 수 없는 오류가 발생했습니다."
         case .tokenSaveError: return "인증 토큰을 저장하는 중 오류가 발생했습니다."
+        case .invalidAccess: return "유효하지 않은 접근입니다."
         }
     }
     

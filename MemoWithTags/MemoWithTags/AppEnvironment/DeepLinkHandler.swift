@@ -10,9 +10,7 @@ import Foundation
 @MainActor
 struct DeepLinkHandler {
     let appState: AppState
-    let kakaoLoginUseCase: KakaoLoginUseCase
-    let naverLoginUseCase: NaverLoginUseCase
-    let googleLoginUseCase: GoogleLoginUseCase
+    let socialLoginService: SocialLoginService
     
     func handle(url: URL) async {
         guard url.scheme == "memowithtags",
@@ -20,19 +18,19 @@ struct DeepLinkHandler {
               let service = url.pathComponents.last,
               let code = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first(where: { $0.name == "code" })?.value
         else {
-            appState.system.showAlert = true
-            appState.system.errorMessage = "유효하지 않은 접근"
+            appState.system.alert(error: SocialLoginError.invalidAccess)
             return
         }
         
         do {
             switch service {
             case "kakao":
-                let result = await kakaoLoginUseCase.execute(authCode: code)
+                let result = await socialLoginService.kakaoLogin(authCode: code)
                 
                 switch result {
                 case .success(let auth):
                     appState.user.isLoggedIn = true
+                    
                     if auth.isNewUser {
                         appState.navigation.push(to: .nicknameSetting)
                     } else {
@@ -40,15 +38,16 @@ struct DeepLinkHandler {
                     }
 
                 case .failure(let error):
-                    appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
+                    appState.system.alert(error: error)
                 }
+                
             case "google":
-                let result = await googleLoginUseCase.execute(authCode: code)
+                let result = await socialLoginService.googleLogin(authCode: code)
                 
                 switch result {
                 case .success(let auth):
                     appState.user.isLoggedIn = true
+                    
                     if auth.isNewUser {
                         appState.navigation.push(to: .nicknameSetting)
                     } else {
@@ -56,15 +55,16 @@ struct DeepLinkHandler {
                     }
                     
                 case .failure(let error):
-                    appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
+                    appState.system.alert(error: error)
                 }
+                
             case "naver":
-                let result = await naverLoginUseCase.execute(authCode: code)
+                let result = await socialLoginService.naverLogin(authCode: code)
                 
                 switch result {
                 case .success(let auth):
                     appState.user.isLoggedIn = true
+                    
                     if auth.isNewUser {
                         appState.navigation.push(to: .nicknameSetting)
                     } else {
@@ -72,12 +72,11 @@ struct DeepLinkHandler {
                     }
                     
                 case .failure(let error):
-                    appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
+                    appState.system.alert(error: error)
                 }
+                
             default:
-                appState.system.showAlert = true
-                appState.system.errorMessage = "유효하지 않은 접근"
+                appState.system.alert(error: SocialLoginError.invalidAccess)
             }
         }
     }
