@@ -14,7 +14,7 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
     @Published var isValidLength: Bool = false
     @Published var isValidPasswordFormat: Bool = false
     
-    ///정규식으로 비밀번호 형식 검사
+    /// 정규식으로 비밀번호 형식 검사
     func checkPasswordValidity(password: String) {
         isValidLength = password.count >= 8 && password.count <= 16
         let containsUppercase = password.range(of: "[A-Z]", options: .regularExpression) != nil
@@ -33,24 +33,27 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
         
         if !isValidLength || !isValidPasswordFormat {
             appState.system.showAlert = true
-            appState.system.errorMessage = ResetPasswordError.invalidPassword.localizedDescription()
+            // 괄호 없는 localizedDescription
+            appState.system.errorMessage = ResetPasswordError.invalidPassword.localizedDescription
         } else if !isPasswordSame {
             appState.system.showAlert = true
-            appState.system.errorMessage = ResetPasswordError.passwordNotMatch.localizedDescription()
+            appState.system.errorMessage = ResetPasswordError.passwordNotMatch.localizedDescription
         } else {
             isLoading = true
             
-            let result = await useCases.resetPasswordUseCase.execute(email: email, code: code, newPassword: password)
+            let result = await useCases.authService.resetPassword(email: email, newPassword: password)
             
             switch result {
             case .success:
                 appState.navigation.push(to: .resetPasswordSuccess)
             case .failure(let error):
                 appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription()
+                appState.system.errorMessage = error.localizedDescription
                 appState.navigation.pop()
             }
+            
             isLoading = false
         }
     }
 }
+

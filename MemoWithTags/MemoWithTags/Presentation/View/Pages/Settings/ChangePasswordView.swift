@@ -169,19 +169,19 @@ extension ChangePasswordView {
             
             if !isValidPasswordFormat || !isValidLength {
                 appState.system.showAlert = true
-                appState.system.errorMessage = ChangePasswordError.invalidPassword.localizedDescription()
+                appState.system.errorMessage = ChangePasswordError.invalidPassword.localizedDescription
             } else if !isPasswordSame {
                 appState.system.showAlert = true
-                appState.system.errorMessage = ChangePasswordError.passwordNotMatch.localizedDescription()
+                appState.system.errorMessage = ChangePasswordError.passwordNotMatch.localizedDescription
             } else {
-                let result = await useCases.changePasswordUseCase.execute(currentPassword: currentPassword, newPassword: newPassword)
+                let result = await useCases.userService.changePassword(currentPassword: currentPassword, newPassword: newPassword)
                 
                 switch result {
                 case .success:
                     appState.navigation.pop()
                 case .failure(let error):
                     appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
+                    appState.system.errorMessage = error.localizedDescription
                 }
             }
         }

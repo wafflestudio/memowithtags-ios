@@ -100,14 +100,14 @@ extension NicknameSettingView {
                 appState.system.showAlert = true
                 appState.system.errorMessage = "닉네임은 8자 이하입니다."
             } else {
-                let result = await useCases.setProfileUseCase.execute(nickname: nickname)
+                let result = await useCases.userService.changeNickname(nickname: nickname)
                 
                 switch result {
                 case .success:
                     appState.navigation.push(to: .signupSuccess)
                 case .failure(let error):
                     appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
+                    appState.system.errorMessage = error.localizedDescription
                 }
             }
         }
