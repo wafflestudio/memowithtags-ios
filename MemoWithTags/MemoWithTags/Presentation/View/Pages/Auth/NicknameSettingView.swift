@@ -17,6 +17,7 @@ struct NicknameSettingView: View {
             Color.backgroundGray.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
+                //MARK: - title
                 HStack(spacing: 4) {
                     Text("닉네임 설정")
                         .font(.system(size: 21, weight: .semibold))
@@ -28,7 +29,7 @@ struct NicknameSettingView: View {
                 //login panel
                 VStack(spacing: 0) {
                     VStack(spacing: 4) {
-                        // 닉네임 설정 필드
+                        //MARK: - 닉네임 설정 필드
                         TextField (
                             "",
                             text: $nickname,
@@ -57,7 +58,7 @@ struct NicknameSettingView: View {
                         }
                     }
                     
-                    //확인 버튼
+                    //MARK: - 확인 버튼
                     Button {
                         //action
                         Task {
@@ -95,21 +96,23 @@ struct NicknameSettingView: View {
 extension NicknameSettingView {
     @MainActor
     final class ViewModel: BaseViewModel, ObservableObject {
+        @Published var isLoading = false
+        
         func setNickname(nickname: String) async {
-            if nickname.count > 8 {
-                appState.system.showAlert = true
-                appState.system.errorMessage = "닉네임은 8자 이하입니다."
-            } else {
-                let result = await useCases.setProfileUseCase.execute(nickname: nickname)
-                
-                switch result {
-                case .success:
-                    appState.navigation.push(to: .signupSuccess)
-                case .failure(let error):
-                    appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
-                }
+            guard !isLoading else { return }
+            
+            isLoading = true
+            
+            let result = await useCases.userService.changeNickname(nickname: nickname)
+            
+            switch result {
+            case .success:
+                appState.navigation.push(to: .signupSuccess)
+            case .failure(let error):
+                appState.system.alert(error: error)
             }
+            
+            isLoading = false
         }
     }
 }

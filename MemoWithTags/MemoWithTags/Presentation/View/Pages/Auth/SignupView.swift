@@ -10,6 +10,7 @@ import SwiftUI
 struct SignupView: View {
     @ObservedObject var viewModel: SignupViewModel
     
+    let email: String
     @State private var nickname: String = ""
     @State private var password: String = ""
     @State private var passwordRepeat: String = ""
@@ -20,7 +21,7 @@ struct SignupView: View {
             Color.backgroundGray.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
-                //title
+                //MARK: - title
                 HStack(spacing: 4) {
                     Text("이메일로 회원가입")
                         .font(.system(size: 21, weight: .semibold))
@@ -132,7 +133,7 @@ struct SignupView: View {
                     Button {
                         //action
                         Task {
-//                            await viewModel.signup(nickname: nickname, email: email, password: password, passwordRepeat: passwordRepeat)
+                            await viewModel.signup(nickname: nickname, email: email, password: password, passwordRepeat: passwordRepeat)
                         }
                     } label: {
                         Text("다음")
@@ -182,8 +183,7 @@ struct SignupView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.isValidPasswordFormat = false
-            viewModel.isValidLength = false
+            viewModel.checkPasswordValidity(password: password)
         }
     }
 }

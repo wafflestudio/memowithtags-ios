@@ -53,7 +53,7 @@ struct EmailEnterView: View {
                     Button {
                         //action
                         Task {
-                            await viewModel.sendEmailCode(email: email)
+                            await viewModel.sendCode(email: email)
                         }
                     } label: {
                         Text("다음")

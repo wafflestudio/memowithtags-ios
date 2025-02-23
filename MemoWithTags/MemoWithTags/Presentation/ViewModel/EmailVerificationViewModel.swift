@@ -16,14 +16,20 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
         
         isLoading = true
         
-        let result = await useCases.emailVerificationUseCase.execute(email: email, code: code)
+        let result = await useCases.authService.verifyCode(email: email, code: code)
 
         switch result {
         case .success:
-            appState.navigation.push(to: .signup)
+            switch appState.navigation.current {
+            case .emailEnter:
+                appState.navigation.push(to: .signup(email: email))
+            case .resetPasswordEmailEnter:
+                appState.navigation.push(to: .resetPassword(email: email))
+            default: break
+            }
+            
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false

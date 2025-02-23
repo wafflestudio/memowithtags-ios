@@ -17,13 +17,30 @@ final class EmailEnterViewModel: BaseViewModel, ObservableObject {
         return emailPredicate.evaluate(with: email)
     }
     
-    func sendEmailCode(email: String) async {
-        let isValidEmail = checkEmailValidity(email: email)
-        
+    func sendCode(email: String) async {
         guard !isLoading else { return }
         
-        guard isValidEmail else {
+        guard checkEmailValidity(email: email) else {
+            appState.system.alert(error: SendCodeError.invalidEmail)
             return
+        }
+        
+        isLoading = true
+    
+        let result = await useCases.authService.sendCode(email: email)
+
+        switch result {
+        case .success:
+            switch appState.navigation.current {
+            case .emailEnter:
+                appState.navigation.push(to: .emailVerification(email: email))
+            case .resetPasswordEmailEnter:
+                appState.navigation.push(to: .resetPasswordEmailVerification(email: email))
+            default: break
+            }
+
+        case .failure(let error):
+            appState.system.alert(error: error)
         }
         
         isLoading = true

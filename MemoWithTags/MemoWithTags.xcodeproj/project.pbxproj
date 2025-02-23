@@ -462,8 +462,8 @@
 			children = (
 				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
 				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
-				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
 				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
+				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";

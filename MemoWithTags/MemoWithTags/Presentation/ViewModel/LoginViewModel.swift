@@ -19,25 +19,25 @@ final class LoginViewModel: BaseViewModel, ObservableObject {
     }
     
     func login(email: String, password: String) async {
-        if !checkEmailValidity(email: email) {
-            appState.system.showAlert = true
-            appState.system.errorMessage = LoginError.invalidEmail.localizedDescription()
+        guard !isLoading else { return }
+        
+        guard checkEmailValidity(email: email) else {
+            appState.system.alert(error: LoginError.invalidEmail)
             return
         }
         
-        guard !isLoading else { return }
-        
         isLoading = true
-        let result = await useCases.loginUseCase.execute(email: email, password: password)
+        
+        let result = await useCases.authService.login(email: email, password: password)
 
         switch result {
         case .success:
             appState.user.isLoggedIn = true
             appState.navigation.push(to: .main)
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
+        
         isLoading = false
     }
 }

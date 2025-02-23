@@ -11,8 +11,6 @@ struct ResetPasswordView: View {
     @ObservedObject var viewModel: ResetPasswordViewModel
     
     let email: String
-    let code: String
-        
     @State private var password: String = ""
     @State private var passwordRepeat: String = ""
     
@@ -104,8 +102,7 @@ struct ResetPasswordView: View {
                     Button {
                         //action
                         Task {
-                            print(email, code, password, passwordRepeat)
-                            await viewModel.resetPassword(email: email, password: password, passwordRepeat: passwordRepeat, code: code)
+                            await viewModel.resetPassword(email: email, password: password, passwordRepeat: passwordRepeat)
                         }
                     } label: {
                         Text("확인")
@@ -154,8 +151,7 @@ struct ResetPasswordView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.isValidPasswordFormat = false
-            viewModel.isValidLength = false
+            viewModel.checkPasswordValidity(password: password)
         }
     }
 }

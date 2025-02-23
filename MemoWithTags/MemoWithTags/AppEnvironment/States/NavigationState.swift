@@ -18,14 +18,14 @@ enum Route: Hashable {
     //MARK: - 회원가입
     case emailEnter
     case emailVerification(email: String)
-    case signup
+    case signup(email: String)
     case signupSuccess
     case nicknameSetting
   
     //MARK: - 비밀번호 찾기
     case resetPasswordEmailEnter
     case resetPasswordEmailVerification(email: String)
-    case resetPassword(email: String, code: String)
+    case resetPassword(email: String)
     case resetPasswordSuccess
   
     //MARK: - 세팅
