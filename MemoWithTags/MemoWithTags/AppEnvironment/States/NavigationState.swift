@@ -11,19 +11,23 @@ enum Route: Hashable {
     case root
     case main
     case search
+    
     //MARK: - 로그인
     case login
+    
     //MARK: - 회원가입
     case emailEnter
     case emailVerification(email: String)
     case signup
     case signupSuccess
     case nicknameSetting
+    
     //MARK: - 비밀번호 찾기
     case resetPasswordEmailEnter
     case resetPasswordEmailVerification(email: String)
     case resetPassword(email: String, code: String)
     case resetPasswordSuccess
+    
     //MARK: - 세팅
     case settings
     case accountSetting

@@ -228,9 +228,9 @@
 		DA4018532D32AA11008500E2 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				DA4018672D32D543008500E2 /* Error */,
 				DABFE23D2D28416000B314E2 /* UseCase */,
 				DA4018552D32BE64008500E2 /* Entity */,
+				DA4018672D32D543008500E2 /* Error */,
 				DA4018572D32BE9F008500E2 /* Interface */,
 			);
 			path = Domain;
