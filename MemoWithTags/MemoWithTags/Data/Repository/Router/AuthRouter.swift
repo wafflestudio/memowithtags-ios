@@ -9,19 +9,23 @@ import Foundation
 import Alamofire
 
 enum AuthRouter: Router {
-    case register(nickname: String, email: String, password: String)
     case login(email: String, password: String)
-    case forgotPassword(email: String)
-    case resetPassword(email: String, code: String, newPassword: String)
+    case sendEmail(email: String)
     case verifyEmail(email: String, code: String)
+    case register(nickname: String, email: String, password: String)
+    case resetPassword(email: String, newPassword: String)
+    
     case refreshToken(token: String)
+    
     case getUserInfo
-    case setProfile(nickname: String)
+    case changeNickname(nickname: String)
     case changePassword(currentPassword: String, newPassword: String)
+    case withdrawal(email: String)
+    
     case kakaoLogin(authCode: String)
     case naverLogin(authCode: String)
     case googleLogin(authCode: String)
-    case withdrawal(email: String)
+    
     
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL + "/auth")!
@@ -29,11 +33,11 @@ enum AuthRouter: Router {
     
     var method: HTTPMethod {
         switch self {
-        case .register, .login, .forgotPassword, .resetPassword, .verifyEmail, .refreshToken:
+        case .register, .login, .resetPassword, .sendEmail, .verifyEmail, .refreshToken:
             return .post
         case .getUserInfo, .kakaoLogin, .naverLogin, .googleLogin:
             return .get
-        case .changePassword, .setProfile:
+        case .changePassword, .changeNickname:
             return .put
         case .withdrawal:
             return .delete
@@ -42,59 +46,65 @@ enum AuthRouter: Router {
     
     var path: String {
         switch self {
-        case .register:
-            return "/register"
         case .login:
             return "/login"
-        case .forgotPassword:
-            return "/forgot-password"
-        case .resetPassword:
-            return "/reset-password"
+        case .sendEmail:
+            return "/send-email"
         case .verifyEmail:
             return "/verify-email"
+        case .register:
+            return "/register"
+        case .resetPassword:
+            return "/reset-password"
+            
         case .refreshToken:
             return "/refresh-token"
+            
         case .getUserInfo:
             return "/me"
-        case .setProfile:
+        case .changeNickname:
             return "/nickname"
         case .changePassword:
             return "/password"
+        case .withdrawal:
+            return "/withdrawal"
+            
         case .kakaoLogin:
             return "/login/kakao"
         case .googleLogin:
             return "/login/google"
         case .naverLogin:
             return "/login/naver"
-        case .withdrawal:
-            return "/withdrawal"
         }
     }
     
     var parameters: Parameters? {
         switch self {
-        case let .register(nickname, email, password):
-            return ["nickname": nickname, "email": email, "password": password]
         case let .login(email, password):
             return ["email": email, "password": password]
+        case let .sendEmail(email):
+            return ["email": email]
         case let .verifyEmail(email, code):
             return ["email": email, "verificationCode": code]
-        case let .forgotPassword(email):
-            return ["email": email]
-        case let .resetPassword(email, code, newPassword):
-            return ["email": email, "verificationCode": code, "password": newPassword]
+        case let .register(nickname, email, password):
+            return ["nickname": nickname, "email": email, "password": password]
+        case let .resetPassword(email, newPassword):
+            return ["email": email, "password": newPassword]
+            
         case let .refreshToken(token):
             return ["refreshToken": token]
+            
         case .getUserInfo:
             return nil
-        case let .kakaoLogin(code), let .googleLogin(code), let .naverLogin(code):
-            return ["code": code]
-        case let .setProfile(nickname):
+        case let .changeNickname(nickname):
             return ["nickname": nickname]
         case let .changePassword(currentPassword, newPassword):
             return ["originalPassword": currentPassword, "newPassword": newPassword]
         case let .withdrawal(email):
             return ["email": email]
+            
+        case let .kakaoLogin(code), let .googleLogin(code), let .naverLogin(code):
+            return ["code": code]
         }
     }
 }
