@@ -163,6 +163,17 @@ struct MemoView: View {
                 }
             }
             
+            // searchView에서만 나타나는 추가 메뉴 항목: 메인 페이지에서 해당 메모 보기
+            if viewModel.appState.navigation.current == .search {
+                Button {
+                    // 메인 페이지로 돌아갑니다.
+                    viewModel.appState.navigation.pop()
+                    // 이 부분을 새로 구현해야 한다.
+                } label: {
+                    Label("이 메모를 메인 화면에서 보기", systemImage: "arrow.left")
+                }
+            }
+            
             Button(role: .destructive) {
                 Task {
                     await viewModel.deleteMemo(memoId: memo.id)
