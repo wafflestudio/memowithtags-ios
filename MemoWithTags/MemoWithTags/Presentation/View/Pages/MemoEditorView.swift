@@ -33,7 +33,7 @@ struct MemoEditorView: View {
                     Button(role: .destructive) {
                         viewModel.editorState = .create
                         viewModel.editorContent = ""
-                        viewModel.editorTags = []
+                        viewModel.editorTagIds = []
                         dismiss()
                     } label: {
                         Label("변경사항 삭제하기", systemImage: "trash")
@@ -95,9 +95,9 @@ struct MemoEditorView: View {
 
             
             HFlow {
-                ForEach(viewModel.editorTags, id: \.id) { tag in
+                ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
                     TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-                        removeTagFromSelectedTags(tag)
+                        removeTagFromSelectedTags(tag.id)
                     }
                 }
             }
@@ -110,8 +110,8 @@ struct MemoEditorView: View {
         }
     }
     
-    private func removeTagFromSelectedTags(_ tag: Tag) {
-        viewModel.editorTags.removeAll { $0.id == tag.id }
+    private func removeTagFromSelectedTags(_ tagId: Int) {
+        viewModel.editorTagIds.removeAll{ $0 == tagId }
     }
     
     func dateFormat(date: Date) -> String {

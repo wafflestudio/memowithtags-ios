@@ -20,6 +20,7 @@ struct MemoView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
+            //MARK: - 메모 내용
             Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : lineLimit)
@@ -27,9 +28,10 @@ struct MemoView: View {
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
-            if !memo.tags.isEmpty {
+            //MARK: - 메모 내 태그들
+            if !memo.tagIds.isEmpty {
                 HFlow {
-                    ForEach(memo.tags, id: \.id) { tag in
+                    ForEach(viewModel.getTags(from: memo.tagIds), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
                     }
                 }
@@ -37,7 +39,7 @@ struct MemoView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             
-            // 한번 클릭 했을 때 나오는 밑에 버튼들
+            //MARK: - 메모 펼쳤을 때 나오는 밑에 버튼들
             if isExpanded {
                 HStack(alignment: .bottom) {
                     Text(dateFormat(date: memo.createdAt))
@@ -48,7 +50,7 @@ struct MemoView: View {
                     Spacer()
                     
                     HStack(spacing: 4) {
-                        Text("관련 메모 검색")
+                        Text("관련 검색")
                             .font(.system(size: 11, weight: .medium))
                         
                             .foregroundStyle(Color.titleTextBlack)
@@ -69,7 +71,7 @@ struct MemoView: View {
                     }
                     
                     HStack(spacing: 4) {
-                        Text("검색하며 수정")
+                        Text("간편 수정")
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(Color.titleTextBlack)
                         
@@ -83,11 +85,24 @@ struct MemoView: View {
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
-                        viewModel.editorTags = memo.tags
+                        viewModel.editorTagIds = memo.tagIds
                     }
+                    
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundStyle(Color.titleTextBlack.opacity(0.6))
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 8)
+                        .background(Color(hex: "#F5F5F5"))
+                        .clipShape(Circle())
+                        .onTapGesture {
+                            isExpanded.toggle()
+                        }
+                    
                 }
                 .padding(.top, 10)
             }
+            //MARK: -
         }
         .padding(.top, 9)
         .padding(.bottom, 12)
@@ -100,6 +115,7 @@ struct MemoView: View {
         .onChange(of: memo.locked) {
             currentlyLocked = memo.locked
         }
+        //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
             if currentlyLocked {
                 Task {
@@ -117,9 +133,10 @@ struct MemoView: View {
             } else {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
-                viewModel.editorTags = memo.tags
+                viewModel.editorTagIds = memo.tagIds
             }
         }
+        //MARK: - context menu
         .contextMenu {
             Button {
                 viewModel.clearSearch()

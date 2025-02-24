@@ -28,9 +28,9 @@ struct EditingMemoView: View {
             
             // 메모에 넣은 태그들
             HFlow {
-                ForEach(viewModel.editorTags, id: \.id) { tag in
+                ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
                     TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-                        removeTagFromSelectedTags(tag)
+                        removeTagFromSelectedTags(tag.id)
                     }
                 }
             }
@@ -68,7 +68,7 @@ struct EditingMemoView: View {
                         .onTapGesture {
                             viewModel.editorState = .create
                             viewModel.editorContent = ""
-                            viewModel.editorTags = []
+                            viewModel.editorTagIds = []
                         }
                     
                     Image(systemName: "checkmark")
@@ -98,7 +98,7 @@ struct EditingMemoView: View {
     }
     
     
-    private func removeTagFromSelectedTags(_ tag: Tag) {
-        viewModel.editorTags.removeAll { $0.id == tag.id }
+    private func removeTagFromSelectedTags(_ tagId: Int) {
+        viewModel.editorTagIds.removeAll{ $0 == tagId }
     }
 }

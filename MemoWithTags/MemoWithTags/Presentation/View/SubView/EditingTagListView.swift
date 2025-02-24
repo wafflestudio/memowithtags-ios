@@ -38,7 +38,7 @@ struct EditingTagListView: View {
                 HStack(alignment: .center, spacing: 8) {
                     ForEach(filterTags(), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag) {
-                            viewModel.editorTags.append(tag)
+                            viewModel.editorTagIds.append(tag.id)
                         }
                     }
                     
