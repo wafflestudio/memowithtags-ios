@@ -13,13 +13,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     @Published var isLoading: Bool = false
     
-    // mainPage 변수들
+    //MARK: - mainPage 변수들
     @Published var memos: [Memo] = []
     @Published var tags: [Tag] = []
     @Published var mainCurrentPage: Int = 0
     @Published var mainTotalPages: Int = 1
     
-    // searchPage 변수들
+    //MARK: - searchPage 변수들
     @Published var searchBarText: String = ""
     @Published var searchBarSelectedTags: [Tag] = []
     @Published var searchedMemos: [Memo] = []
@@ -27,7 +27,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var searchCurrentPage: Int = 0
     @Published var searchTotalPages: Int = 1
     
-    // editor의 변수들 (축소, 확대 상태 모두)
+    //MARK: - editor의 변수들 (축소, 확대 상태 모두)
     @Published var editorState: EditorState = .create
     @Published var editorContent: String = ""
     @Published var editorTags: [Tag] = []
@@ -36,7 +36,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case update(target: Memo)
     }
     
-    // 메모 정렬과 관련된 변수
+    //MARK: - 메모 정렬과 관련된 변수
     @Published var sortMemo: Sort = .byCreate
     @Published var sortSearch: Sort = .byCreate
     enum Sort {
@@ -44,7 +44,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case byUpdate
     }
     
-    // mainView에서 첫 fetch를 할 때나, pagination을 할 때 모두 사용된다.
+    //MARK: - 메모 전부 가져오기
     func fetchMemos() async {
         guard !isLoading else { return }
         
@@ -57,7 +57,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             return
         }
         
-        let result = await useCases.fetchMemoUseCase.execute(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage)
+        let result = await useCases.memoService.fetchMemo(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage)
         
         switch result {
         case .success(let paginatedMemos):
@@ -71,14 +71,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             self.mainTotalPages = paginatedMemos.totalPages
             
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
-    // searchView에서 첫 fetch를 할 때나, pagination을 할 때 모두 사용된다.
+    //MARK: - 메모 검색
     func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
         guard !isLoading else { return }
         
@@ -91,7 +90,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             return
         }
         
-        let result = await useCases.fetchMemoUseCase.execute(content: content, tagIds: tagIds, dateRange: dateRange, page: self.searchCurrentPage)
+        let result = await useCases.memoService.fetchMemo(content: content, tagIds: tagIds, dateRange: dateRange, page: searchCurrentPage)
         
         switch result {
         case .success(let paginatedMemos):
@@ -107,18 +106,18 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .failure(let error):
             // SearchView에서 wait이 끝나고 searchMemo가 실행되는 와중에 새로운 Task가 생성되어서 Task가 사라지면 MemoError.unknown이 뜬다. 이것은 정상적인 결과이기 때문에 무시한다.
             if (error != MemoError.unknown) {
-                appState.system.showAlert = true
-                appState.system.errorMessage = error.localizedDescription()
+                appState.system.alert(error: error)
             }
         }
         
         isLoading = false
     }
     
+    //MARK: - 메모 생성
     func createMemo(content: String, tagIds: [Int], locked: Bool) async {
         isLoading = true
         
-        let result = await useCases.createMemoUseCase.execute(content: content, tagIds: tagIds, locked: locked)
+        let result = await useCases.memoService.createMemo(content: content, tagIds: tagIds, locked: locked)
         
         switch result {
         case .success(let memo):
@@ -126,17 +125,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
             self.memos.insert(memoWithFilledTags, at: 0)
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
+    //MARK: - 메모 수정
     func updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool) async {
         isLoading = true
         
-        let result = await useCases.updateMemoUseCase.execute(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
+        let result = await useCases.memoService.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
         switch result {
         case .success(let memo):
             var memoWithFilledTags = memo
@@ -145,64 +144,63 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 self.memos[index] = memoWithFilledTags
             }
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
+    //MARK: - 메모 삭제
     func deleteMemo(memoId: Int) async {
         isLoading = true
         
-        let result = await useCases.deleteMemoUseCase.execute(memoId: memoId)
+        let result = await useCases.memoService.deleteMemo(memoId: memoId)
         switch result {
         case .success:
             self.memos.removeAll { $0.id == memoId }
             self.searchedMemos.removeAll { $0.id == memoId }
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
+    //MARK: - 태그 전부 가져오기
     func fetchTags() async {
         isLoading = true
         
-        let result = await useCases.fetchTagUseCase.execute()
+        let result = await useCases.tagService.fetchTag()
         switch result {
         case .success(let fetchedTags):
             self.tags = fetchedTags
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
+    //MARK: - 태그 생성
     func createTag(name: String, color: Color.TagColor) async {
         isLoading = true
         
-        let result = await useCases.createTagUseCase.execute(name: name, color: color)
+        let result = await useCases.tagService.createTag(name: name, color: color)
         switch result {
         case .success(let tag):
             self.tags.append(tag)
-//            self.editingMemoSelectedTags.append(tag)
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
+    //MARK: - 태그 수정
     func updateTag(tagId: Int, name: String, color: Color.TagColor) async {
         isLoading = true
         
-        let result = await useCases.updateTagUseCase.execute(tagId: tagId, name: name, color: color)
+        let result = await useCases.tagService.updateTag(tagId: tagId, name: name, color: color)
         switch result {
         case .success(let tag):
             // Main과 Search의 tag 변경
@@ -226,17 +224,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 }
             }
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
+    //MARK: - 태그 삭제
     func deleteTag(tagId: Int) async {
         isLoading = true
         
-        let result = await useCases.deleteTagUseCase.execute(tagId: tagId)
+        let result = await useCases.tagService.deleteTag(tagId: tagId)
         switch result {
         case .success:
             // Main과 Search의 tag 삭제
@@ -251,14 +249,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
                 self.searchedMemos[index].tags.removeAll { $0.id == tagId }
             }
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
-    ///main view에서 onApear때 쓰는 함수
+    //MARK: - main view에서 onApear때 쓰는 함수
     func initMemo() async {
         if tags.isEmpty {
             await fetchTags()
@@ -268,11 +265,11 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         }
     }
     
-    ///settings view에서 유저정보 가져오는 함수
+    //MARK: - settings view에서 유저정보 가져오는 함수
     func getUserInfo() async {
         isLoading = true
         
-        let result = await useCases.getUserInfoUseCase.execute()
+        let result = await useCases.userService.getUser()
         
         switch result {
         case .success(let user):
@@ -280,16 +277,15 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.user.userName = user.nickname
             appState.user.userEmail = user.email
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
         
         isLoading = false
     }
     
-    ///settings view에서 로그아웃하는 함수
+    //MARK: - settings view에서 로그아웃하는 함수
     func logout() async {
-        let result = await useCases.logoutUseCase.execute()
+        let result = await useCases.authService.logout()
         
         switch result {
         case .success:
@@ -304,17 +300,16 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             appState.navigation.reset()
             appState.navigation.push(to: .root)
         case .failure(let error):
-            appState.system.showAlert = true
-            appState.system.errorMessage = error.localizedDescription()
+            appState.system.alert(error: error)
         }
     }
     
-    ///태그 추천 해주는 함수: editor에 들어간 것들 뺴고
+    //MARK: - 태그 추천 해주는 함수: editor에 들어간 것들 뺴고
     func recommendTags() -> [Tag] {
         tags.filter { !editorTags.contains($0) }
     }
     
-    ///editor에서 submit 했을 때 작동
+    //MARK: - editor에서 submit 했을 때 작동
     func submit() async {
         let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedContent.isEmpty else { return }
@@ -343,7 +338,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
-    /// tag id --> tag 맵핑하는 함수
+    //MARK: - tag id --> tag 맵핑하는 함수
     private func getTags(from tagIDs: [Int]) -> [Tag] {
         return tags.filter { tagIDs.contains($0.id) }
     }

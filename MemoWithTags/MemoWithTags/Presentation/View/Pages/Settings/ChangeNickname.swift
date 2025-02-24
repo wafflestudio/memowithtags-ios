@@ -85,21 +85,23 @@ struct ChangeNicknameView: View {
 extension ChangeNicknameView {
     @MainActor
     final class ViewModel: BaseViewModel, ObservableObject {
+        @Published var isLoading = false
+        
         func setNickname(nickname: String) async {
-            if nickname.count > 8 {
-                appState.system.showAlert = true
-                appState.system.errorMessage = "닉네임은 8자 이하입니다."
-            } else {
-                let result = await useCases.setProfileUseCase.execute(nickname: nickname)
-                
-                switch result {
-                case .success:
-                    appState.navigation.pop()
-                case .failure(let error):
-                    appState.system.showAlert = true
-                    appState.system.errorMessage = error.localizedDescription()
-                }
+            guard !isLoading else { return }
+            
+            isLoading = true
+            
+            let result = await useCases.userService.changeNickname(nickname: nickname)
+            
+            switch result {
+            case .success:
+                appState.navigation.pop()
+            case .failure(let error):
+                appState.system.alert(error: error)
             }
+            
+            isLoading = false
         }
     }
 }

@@ -23,7 +23,7 @@ struct AppRootView: View {
     
     init(container: DIContainer) {
         self.container = container
-        self.deepLinkHandler = .init(appState: container.appState, kakaoLoginUseCase: container.useCases.kakaoLoginUseCase, naverLoginUseCase: container.useCases.naverLoginUseCase, googleLoginUseCase: container.useCases.googleLoginUseCase)
+        self.deepLinkHandler = .init(appState: container.appState, socialLoginService: container.useCases.socialLoginService)
         
         _mainViewModel = StateObject(wrappedValue: MainViewModel(container: container))
         _loginViewModel = StateObject(wrappedValue: LoginViewModel(container: container))
@@ -54,14 +54,14 @@ struct AppRootView: View {
                         EmailEnterView(viewModel: emailEnterViewModel)
                     case .emailVerification(let email), .resetPasswordEmailVerification(let email):
                         EmailVerificationView(viewModel: emailVerificationViewModel, email: email)
-                    case .signup:
-                        SignupView(viewModel: signupViewModel)
+                    case .signup(let email):
+                        SignupView(viewModel: signupViewModel, email: email)
                     case .signupSuccess, .resetPasswordSuccess:
                         SignupSuccessView(viewModel: .init(container: container))
                     case .nicknameSetting:
                         NicknameSettingView(viewModel: .init(container: container))
-                    case .resetPassword(let email, let code):
-                        ResetPasswordView(viewModel: resetPasswordViewModel, email: email, code: code)
+                    case .resetPassword(let email):
+                        ResetPasswordView(viewModel: resetPasswordViewModel, email: email)
                       
                     //MARK: - 세팅
                     case .settings:
@@ -83,7 +83,7 @@ struct AppRootView: View {
         .alert(isPresented: container.appState.$system.showAlert) {
             return Alert(
                 title: Text("에러"),
-                message: Text(container.appState.system.errorMessage),
+                message: Text(container.appState.system.error?.localizedDescription ?? "Unable to define error"),
                 dismissButton: .default(Text("확인"))
             )
         }

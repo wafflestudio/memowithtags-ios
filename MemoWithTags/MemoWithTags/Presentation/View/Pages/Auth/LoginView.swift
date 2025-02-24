@@ -19,7 +19,7 @@ struct LoginView: View {
             Color.backgroundGray.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
-                //title
+                //MARK: - title
                 HStack(spacing: 4) {
                     Text("Memo with")
                         .font(.system(size: 22, weight: .semibold))
@@ -33,7 +33,7 @@ struct LoginView: View {
                 //login panel
                 VStack(spacing: 20) {
                     VStack(spacing: 10) {
-                        //이메일 입력 필드
+                        //MARK: - 이메일 입력 필드
                         TextField (
                             "",
                             text: $email,
@@ -53,7 +53,7 @@ struct LoginView: View {
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         
-                        // 비밀번호 입력 필드
+                        //MARK: - 비밀번호 입력 필드
                         SecureField(
                             "",
                             text: $password,
@@ -72,6 +72,7 @@ struct LoginView: View {
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
                         
+                        //MARK: - 확인 버튼
                         Button {
                             //action
                             Task {
@@ -92,7 +93,7 @@ struct LoginView: View {
                         .disabled(email.isEmpty || password.isEmpty)
                     }
                     
-                    
+                    //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "회원가입", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#FFBDBD", cornerRadius: 4) {
                             viewModel.appState.navigation.push(to: .emailEnter)
@@ -114,6 +115,7 @@ struct LoginView: View {
                                 .background(Color.white)
                         }
                     
+                    //MARK: - 소셜 로그인 버튼들
                     HStack(spacing: 18) {
                         // 카카오 로그인 버튼
                         Link(destination: URL(string: "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ed92cd34690fb718013b559ebd98353a&redirect_uri=http://ec2-43-201-64-202.ap-northeast-2.compute.amazonaws.com:8080/api/v1/auth/code/kakao")!) {

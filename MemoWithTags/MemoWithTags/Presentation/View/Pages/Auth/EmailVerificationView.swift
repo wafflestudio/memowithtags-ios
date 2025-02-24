@@ -98,6 +98,7 @@ struct EmailVerificationView: View {
     }
 }
 
+//MARK: - 숫자 하나 입력 필드
 struct CharacterField: View {
     @Binding var character: String
     @FocusState var isFocused: Bool
@@ -125,6 +126,7 @@ struct CharacterField: View {
     }
 }
 
+//MARK: - 인증코드 입력 필드
 struct SeparatedTextField: View {
     var length: Int
     @Binding var value: String

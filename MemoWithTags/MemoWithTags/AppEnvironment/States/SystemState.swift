@@ -10,5 +10,10 @@ import Foundation
 @MainActor
 final class SystemState: ObservableObject {
     @Published var showAlert: Bool = false
-    @Published var errorMessage: String = ""
+    @Published var error: Error? = nil
+    
+    func alert(error: Error) {
+        self.showAlert = true
+        self.error = error
+    }
 }
