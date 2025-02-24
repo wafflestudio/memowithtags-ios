@@ -43,6 +43,6 @@ final class EmailEnterViewModel: BaseViewModel, ObservableObject {
             appState.system.alert(error: error)
         }
         
-        isLoading = true
+        isLoading = false
     }
 }

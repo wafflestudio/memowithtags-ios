@@ -21,9 +21,9 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
         switch result {
         case .success:
             switch appState.navigation.current {
-            case .emailEnter:
+            case .emailVerification:
                 appState.navigation.push(to: .signup(email: email))
-            case .resetPasswordEmailEnter:
+            case .resetPasswordEmailVerification:
                 appState.navigation.push(to: .resetPassword(email: email))
             default: break
             }
