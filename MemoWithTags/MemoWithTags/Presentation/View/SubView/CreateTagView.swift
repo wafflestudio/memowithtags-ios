@@ -12,10 +12,7 @@ struct CreateTagView: View {
     @Binding var randomColor: Color.TagColor
     
     var body: some View {
-        HStack(alignment: .center, spacing: 4) {
-            Text("Create")
-                .font(.custom("Pretendard", size: 16))
-            
+        HStack(alignment: .center, spacing: 2) {
             Text(searchText)
                 .font(.system(size: 15, weight: .regular))
                 .foregroundColor(Color.tagTextColor)
@@ -25,6 +22,9 @@ struct CreateTagView: View {
                 .cornerRadius(4)
                 .lineLimit(1)
                 .truncationMode(.tail)
+            
+            Text("만들기")
+                .font(.custom("Pretendard", size: 16))
         }
     }
 }
