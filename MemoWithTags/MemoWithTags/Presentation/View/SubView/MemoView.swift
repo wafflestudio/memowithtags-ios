@@ -14,23 +14,29 @@ struct MemoView: View {
     
     @ObservedObject var viewModel: MainViewModel
     @State private var isExpanded: Bool = false
-    @State private var currentlyLocked = false
     
     @Namespace var namespace
+    @State private var showEditor: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : lineLimit)
-                .blur(radius: currentlyLocked ? 6 : 0)
+                .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
-            if !memo.tags.isEmpty {
+            if !memo.tagIds.isEmpty || memo.locked {
                 HFlow {
-                    ForEach(memo.tags, id: \.id) { tag in
+                    ForEach(viewModel.mapTags(from: memo.tagIds), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
+                    }
+                    
+                    if memo.locked {
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(Color.lockIconGray)
+                            .font(.system(size: 14))
                     }
                 }
                 .padding(.top, 6)
@@ -82,7 +88,7 @@ struct MemoView: View {
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
-                        viewModel.editorTags = memo.tags
+                        viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
                         if viewModel.appState.navigation.current != .main {
                             viewModel.appState.navigation.pop()
                         }
@@ -110,19 +116,14 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .onAppear {
-            currentlyLocked = memo.locked
-        }
-        .onChange(of: memo.locked) {
-            currentlyLocked = memo.locked
-        }
+        .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .onTapGesture {
-            if currentlyLocked {
+            if memo.locked && !viewModel.appState.user.isBioAuthenticated {
                 Task {
                     let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
                     if authenticated {
                         withAnimation(.spring()) {
-                            currentlyLocked = false
+                            viewModel.appState.user.isBioAuthenticated = true
                         }
                     }
                 }
@@ -133,7 +134,8 @@ struct MemoView: View {
             } else {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
-                viewModel.editorTags = memo.tags
+                viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
+                showEditor = true
             }
         }
         .contextMenu {

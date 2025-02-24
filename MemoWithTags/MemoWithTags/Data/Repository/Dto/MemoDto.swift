@@ -23,7 +23,6 @@ struct MemoDto: Decodable {
             id: id,
             content: content,
             tagIds: tagIds,
-            tags: [],
             locked: locked,
             createdAt: dateFormatter.date(from: createdAt) ?? Date(),
             updatedAt: dateFormatter.date(from: updatedAt) ?? Date()

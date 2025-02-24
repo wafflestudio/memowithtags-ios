@@ -61,13 +61,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let paginatedMemos):
-            let updatedMemos = paginatedMemos.memos.map { memo -> Memo in
-                var updatedMemo = memo
-                updatedMemo.tags = getTags(from: updatedMemo.tagIds)
-                return updatedMemo
-            }
-            
-            self.memos.append(contentsOf: updatedMemos)
+            self.memos.append(contentsOf: paginatedMemos.memos)
             self.mainTotalPages = paginatedMemos.totalPages
             
         case .failure(let error):
@@ -94,13 +88,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let paginatedMemos):
-            let updatedMemos = paginatedMemos.memos.map { memo -> Memo in
-                var updatedMemo = memo
-                updatedMemo.tags = getTags(from: updatedMemo.tagIds)
-                return updatedMemo
-            }
-            
-            self.searchedMemos.append(contentsOf: updatedMemos)
+            self.searchedMemos.append(contentsOf: paginatedMemos.memos)
             self.searchTotalPages = paginatedMemos.totalPages
 
         case .failure(let error):
@@ -121,9 +109,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
-            var memoWithFilledTags = memo
-            memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
-            self.memos.insert(memoWithFilledTags, at: 0)
+            self.memos.insert(memo, at: 0)
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -138,10 +124,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         let result = await useCases.memoService.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
         switch result {
         case .success(let memo):
-            var memoWithFilledTags = memo
-            memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
             if let index = self.memos.firstIndex(where: { $0.id == memoId }) {
-                self.memos[index] = memoWithFilledTags
+                self.memos[index] = memo
             }
         case .failure(let error):
             appState.system.alert(error: error)
@@ -207,22 +191,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             if let index = self.tags.firstIndex(where: { $0.id == tagId }) {
                 self.tags[index] = tag
             }
-            if let index = self.searchedTags.firstIndex(where: { $0.id == tagId }) {
-                self.searchedTags[index] = tag
-            }
-            
-            // Main과 Search의 tag 변경
-            for index in memos.indices {
-                if let tagIndex = memos[index].tags.firstIndex(where: { $0.id == tagId }) {
-                    memos[index].tags[tagIndex] = tag
-                }
-            }
-            // Main과 Search의 memo에 있는 tag 변경
-            for index in searchedMemos.indices {
-                if let tagIndex = searchedMemos[index].tags.firstIndex(where: { $0.id == tagId }) {
-                    searchedMemos[index].tags[tagIndex] = tag
-                }
-            }
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -243,10 +211,10 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             
             // Main과 Search의 memo에 있는 tag 삭제
             for index in memos.indices {
-                self.memos[index].tags.removeAll { $0.id == tagId }
+                self.memos[index].tagIds.removeAll { $0 == tagId }
             }
             for index in searchedMemos.indices {
-                self.searchedMemos[index].tags.removeAll { $0.id == tagId }
+                self.searchedMemos[index].tagIds.removeAll { $0 == tagId }
             }
         case .failure(let error):
             appState.system.alert(error: error)
@@ -338,9 +306,11 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
-    //MARK: - tag id --> tag 맵핑하는 함수
-    private func getTags(from tagIDs: [Int]) -> [Tag] {
-        return tags.filter { tagIDs.contains($0.id) }
+    // tagIds의 순서에 따라 Tag를 반환한다.
+    func mapTags(from tagIds: [Int]) -> [Tag] {
+        return tagIds.compactMap { id in
+            tags.first { $0.id == id }
+        }
     }
     
     func clearMain() {
