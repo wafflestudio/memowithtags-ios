@@ -16,7 +16,7 @@ struct MemoView: View {
     @State private var isExpanded: Bool = false
     
     @Namespace var namespace
-    @State private var showEditor: Bool = false
+    @State private var showFullScreenEditor: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -135,7 +135,7 @@ struct MemoView: View {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
                 viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
-                showEditor = true
+                showFullScreenEditor = true
             }
         }
         .contextMenu {
@@ -184,6 +184,11 @@ struct MemoView: View {
             } label: {
                 Label("삭제하기", systemImage: "trash")
             }
+        }
+        .fullScreenCover(isPresented: $showFullScreenEditor) {
+            MemoEditorView(viewModel: viewModel)
+                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
+                .interactiveDismissDisabled()
         }
         .padding(.horizontal, 12)
         .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
