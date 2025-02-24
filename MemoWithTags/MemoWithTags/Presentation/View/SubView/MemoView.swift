@@ -48,9 +48,8 @@ struct MemoView: View {
                     Spacer()
                     
                     HStack(spacing: 4) {
-                        Text("관련 메모 검색")
+                        Text("관련 검색")
                             .font(.system(size: 11, weight: .medium))
-                        
                             .foregroundStyle(Color.titleTextBlack)
                         Image(.searchIcon)
                             .resizable()
@@ -69,7 +68,7 @@ struct MemoView: View {
                     }
                     
                     HStack(spacing: 4) {
-                        Text("검색하며 수정")
+                        Text("간편 수정")
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(Color.titleTextBlack)
                         
@@ -84,7 +83,24 @@ struct MemoView: View {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
                         viewModel.editorTags = memo.tags
+                        if viewModel.appState.navigation.current != .main {
+                            viewModel.appState.navigation.pop()
+                        }
                     }
+                    
+                    // 접기 버튼
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundStyle(Color.memoTextBlack.opacity(0.6))
+                        .frame(width: 27, height: 27)
+                        .background(Color.backgroundGray)
+                        .clipShape(Circle())
+                        .onTapGesture {
+                            withAnimation(.spring) {
+                                isExpanded = false
+                            }
+                        }
+
                 }
                 .padding(.top, 10)
             }
