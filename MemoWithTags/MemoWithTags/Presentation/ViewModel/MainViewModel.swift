@@ -71,7 +71,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         isLoading = false
     }
-    
+
     //MARK: - 검색된 메모 페이지별로 가져오기
     func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
         guard !isLoading else { return }
@@ -124,7 +124,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.memoService.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
-        
+
         switch result {
         case .success(let memo):
             if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
@@ -147,7 +147,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.memoService.deleteMemo(memoId: memoId)
-        
+
         switch result {
         case .success:
             self.memos.removeAll { $0.id == memoId }
@@ -166,7 +166,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.fetchTag()
-        
+
         switch result {
         case .success(let tags):
             self.tags = tags
@@ -182,7 +182,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.createTag(name: name, color: color)
-        
+
         switch result {
         case .success(let tag):
             self.tags.append(tag)
@@ -198,7 +198,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.updateTag(tagId: tagId, name: name, color: color)
-        
+
         switch result {
         case .success(let tag):
             if let index = self.tags.firstIndex(where: { $0.id == tagId }) {
@@ -217,7 +217,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.deleteTag(tagId: tagId)
-        
+
         switch result {
         case .success:
             self.tags.removeAll { $0.id == tagId }
