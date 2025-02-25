@@ -20,13 +20,13 @@ struct EditingMemoView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // 메모글 쓰는 곳
+            //MARK: - 메모글 쓰는 곳
             DynamicHeightTextEditor(
                 text: $viewModel.editorContent,
                 maxHeight: 100
             )
             
-            // 메모에 넣은 태그들
+            //MARK: - 메모에 넣은 태그들
             HFlow {
                 ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
                     TagView(viewModel: viewModel, tag: tag, addXmark: true) {
@@ -35,6 +35,7 @@ struct EditingMemoView: View {
                 }
             }
             
+            //MARK: - 아래 버튼들
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때

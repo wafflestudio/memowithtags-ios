@@ -109,6 +109,7 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         .onAppear {
             currentlyLocked = memo.locked
         }
@@ -136,45 +137,47 @@ struct MemoView: View {
                 viewModel.editorTagIds = memo.tagIds
             }
         }
-        //MARK: - context menu
-        .contextMenu {
-            Button {
-                viewModel.clearSearch()
-                viewModel.searchBarText = memo.content
-                // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
-                if viewModel.appState.navigation.current != .search {
-                    viewModel.appState.navigation.push(to: .search)
-                }
-            } label: {
-                Label("이 메모 내용으로 검색하기", systemImage: "text.magnifyingglass")
-            }
-            
-            Button {
-                Task {
-                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-                    if authenticated {
-                        await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-                    }
-                }
-            } label: {
-                if memo.locked {
-                    Label("잠금 해제하기", systemImage: "lock.open")
-                } else {
-                    Label("매모 잠그기", systemImage: "lock")
-                }
-            }
-            
-            Button(role: .destructive) {
-                Task {
-                    await viewModel.deleteMemo(memoId: memo.id)
-                }
-
-            } label: {
-                Label("삭제하기", systemImage: "trash")
-            }
+        .onLongPressGesture {
+            print("hi")
         }
+//        //MARK: - context menu
+//        .contextMenu {
+//            Button {
+//                viewModel.clearSearch()
+//                viewModel.searchBarText = memo.content
+//                // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
+//                if viewModel.appState.navigation.current != .search {
+//                    viewModel.appState.navigation.push(to: .search)
+//                }
+//            } label: {
+//                Label("이 메모 내용으로 검색하기", systemImage: "text.magnifyingglass")
+//            }
+//            
+//            Button {
+//                Task {
+//                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+//                    if authenticated {
+//                        await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+//                    }
+//                }
+//            } label: {
+//                if memo.locked {
+//                    Label("잠금 해제하기", systemImage: "lock.open")
+//                } else {
+//                    Label("매모 잠그기", systemImage: "lock")
+//                }
+//            }
+//            
+//            Button(role: .destructive) {
+//                Task {
+//                    await viewModel.deleteMemo(memoId: memo.id)
+//                }
+//
+//            } label: {
+//                Label("삭제하기", systemImage: "trash")
+//            }
+//        }
         .padding(.horizontal, 12)
-        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
     }
     
     func dateFormat(date: Date) -> String {
