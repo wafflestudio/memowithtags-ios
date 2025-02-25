@@ -41,7 +41,7 @@ struct TagView: View {
             .contextMenu {
                 Button(action: {
                     viewModel.clearSearch()
-                    viewModel.searchBarSelectedTags.append(tag)
+                    viewModel.searchBarSelectedTagIds.append(tag.id)
                     // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
                     if viewModel.appState.navigation.current != .search {
                         viewModel.appState.navigation.push(to: .search)

@@ -9,7 +9,6 @@ import SwiftUI
 import Flow
 import RichTextKit
 
-@available(iOS 18.0, *)
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     

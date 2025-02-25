@@ -21,9 +21,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     //MARK: - searchPage 변수들
     @Published var searchBarText: String = ""
-    @Published var searchBarSelectedTags: [Tag] = []
+    @Published var searchBarSelectedTagIds: [Int] = []
     @Published var searchedMemos: [Memo] = []
-    @Published var searchedTags: [Tag] = []
+    @Published var searchedTagIds: [Int] = []
     @Published var searchCurrentPage: Int = 0
     @Published var searchTotalPages: Int = 1
     
@@ -130,6 +130,11 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
                 self.memos[index] = memo
             }
+            
+            if let index = self.searchedMemos.firstIndex(where: { $0.id == memo.id }) {
+                self.searchedMemos[index] = memo
+            }
+            
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -304,13 +309,35 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         hideKeyboard()
     }
     
-    //MARK: - 태그 추천 해주는 함수(editor에 들어간 것들 뺴고)
-    func recommendTags() -> [Tag] {
-        tags.filter { !getTags(from: editorTagIds).contains($0) }
+    //MARK: - 새로운 검색어, 태그에 대한 검색 수행
+    func search() async {
+        // 이전 검색 결과를 모두 리셋
+        searchedMemos = []
+        searchedTagIds = []
+        searchCurrentPage = 0
+        searchTotalPages = 1
+        
+        let trimmedText = searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if !trimmedText.isEmpty || !searchBarSelectedTagIds.isEmpty {
+            await searchMemos(content: trimmedText, tagIds: searchBarSelectedTagIds)
+            
+            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
+            let searchedTags = tags.filter { tag in
+                tag.name.lowercased().contains(trimmedText.lowercased()) && !searchBarSelectedTagIds.contains(tag.id)
+            }
+            
+            searchedTagIds = searchedTags.map { $0.id }
+        }
     }
     
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    //MARK: - 태그 추천 해주는 함수(editor에 들어간 것들 뺴고)
+    func recommendTags() -> [Tag] {
+        tags.filter { !editorTagIds.contains($0.id) }
     }
     
     //MARK: - tag id --> tag 맵핑하는 함수
@@ -318,6 +345,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         return tags.filter { tagIDs.contains($0.id) }
     }
     
+    //MARK: - clear 함수들
     func clearMain() {
         memos = []
         tags = []
@@ -331,9 +359,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     func clearSearch() {
         searchBarText = ""
-        searchBarSelectedTags = []
+        searchBarSelectedTagIds = []
         searchedMemos = []
-        searchedTags = []
+        searchedTagIds = []
         searchCurrentPage = 0
         searchTotalPages = 1
     }

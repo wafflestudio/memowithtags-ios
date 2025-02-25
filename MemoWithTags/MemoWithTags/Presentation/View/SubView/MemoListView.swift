@@ -5,7 +5,6 @@ struct MemoListView: View {
     
     var body: some View {
         ScrollView {
-            
             LazyVStack(alignment: .leading, spacing: 12) {
                 //MARK: - 메모 리스트
                 ForEach(viewModel.memos) { memo in
@@ -26,9 +25,9 @@ struct MemoListView: View {
                     }
                 }
             }
+            .padding(.top, 20)
 
         }
         .rotationEffect(.degrees(180))
-        
     }
 }
