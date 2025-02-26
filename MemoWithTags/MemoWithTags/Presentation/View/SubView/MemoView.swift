@@ -116,7 +116,6 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
@@ -140,49 +139,45 @@ struct MemoView: View {
                 showFullScreenEditor = true
             }
         }
+        .customContextMenu(isPresented: $isMenuVisible)
         //MARK: - context menu
-        .contextMenu {
-            Button {
-                Task {
-                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-                    if authenticated {
-                        await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-                    }
-                }
-            } label: {
-                if memo.locked {
-                    Label("잠금 해제", systemImage: "lock.open")
-                } else {
-                    Label("메모 잠금", systemImage: "lock")
-                }
-            }
-            // searchView에서만 나타나는 추가 메뉴 항목: 메인 페이지에서 해당 메모 보기
-            if viewModel.appState.navigation.current == .search {
-                Button {
-                    // 메인 페이지로 돌아갑니다.
-                    viewModel.appState.navigation.pop()
-                    // 이 부분을 새로 구현해야 한다.
-                } label: {
-                    Label("이 메모를 메인 화면에서 보기", systemImage: "arrow.left")
-                }
-            }
-            
-            Button(role: .destructive) {
-                Task {
-                    await viewModel.deleteMemo(memoId: memo.id)
-                }
-
-            } label: {
-                Label("메모 삭제", systemImage: "trash")
-            }
-        }
-        .fullScreenCover(isPresented: $showFullScreenEditor) {
-            MemoEditorView(viewModel: viewModel)
-                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
-                .interactiveDismissDisabled()
-        }
+//        .contextMenu {
+//            Button {
+//                Task {
+//                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+//                    if authenticated {
+//                        await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+//                    }
+//                }
+//            } label: {
+//                if memo.locked {
+//                    Label("잠금 해제", systemImage: "lock.open")
+//                } else {
+//                    Label("메모 잠금", systemImage: "lock")
+//                }
+//            }
+//            // searchView에서만 나타나는 추가 메뉴 항목: 메인 페이지에서 해당 메모 보기
+//            if viewModel.appState.navigation.current == .search {
+//                Button {
+//                    // 메인 페이지로 돌아갑니다.
+//                    viewModel.appState.navigation.pop()
+//                    // 이 부분을 새로 구현해야 한다.
+//                } label: {
+//                    Label("이 메모를 메인 화면에서 보기", systemImage: "arrow.left")
+//                }
+//            }
+//            
+//            Button(role: .destructive) {
+//                Task {
+//                    await viewModel.deleteMemo(memoId: memo.id)
+//                }
+//
+//            } label: {
+//                Label("메모 삭제", systemImage: "trash")
+//            }
+//        }
         .padding(.horizontal, 12)
-
+//
     }
     
     func dateFormat(date: Date) -> String {

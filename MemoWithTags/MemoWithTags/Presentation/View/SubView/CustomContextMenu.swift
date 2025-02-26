@@ -9,16 +9,30 @@ import SwiftUI
 
 struct CustomContextMenu: ViewModifier {
     @Binding var isPresented: Bool
-    let menuContent: () -> AnyView
     
     @State private var frame: CGRect = .zero
     
     func body(content: Content) -> some View {
+        content
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear {
+                            self.frame = proxy.frame(in: .global)
+                        }
+                        .onChange(of: proxy.frame(in: .global)) {
+                            self.frame = proxy.frame(in: .global)
+                        }
+                }
+            )
+            .onLongPressGesture {
+                isPresented.toggle()
+            }
     }
 }
 
 extension View {
-    func customContextMenu(isPresented: Binding<Bool>, @ViewBuilder menuContent: @escaping () -> AnyView) -> some View {
-        self.modifier(CustomContextMenu(isPresented: isPresented, menuContent: menuContent))
+    func customContextMenu(isPresented: Binding<Bool>) -> some View {
+        self.modifier(CustomContextMenu(isPresented: isPresented))
     }
 }
