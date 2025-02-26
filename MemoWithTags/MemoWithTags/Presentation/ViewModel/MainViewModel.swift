@@ -130,11 +130,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
                 self.memos[index] = memo
             }
-            
             if let index = self.searchedMemos.firstIndex(where: { $0.id == memo.id }) {
                 self.searchedMemos[index] = memo
             }
-            
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -204,7 +202,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             if let index = self.tags.firstIndex(where: { $0.id == tagId }) {
                 self.tags[index] = tag
             }
-            
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -221,7 +218,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         switch result {
         case .success:
             self.tags.removeAll { $0.id == tagId }
-            
+            // Main과 Search의 memo에 있는 tag 삭제
+            for index in memos.indices {
+                self.memos[index].tagIds.removeAll { $0 == tagId }
+            }
+            for index in searchedMemos.indices {
+                self.searchedMemos[index].tagIds.removeAll { $0 == tagId }
+            }
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -341,8 +344,10 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     }
     
     //MARK: - tag id --> tag 맵핑하는 함수
-    func getTags(from tagIDs: [Int]) -> [Tag] {
-        return tags.filter { tagIDs.contains($0.id) }
+    func getTags(from tagIds: [Int]) -> [Tag] {
+        return tagIds.compactMap { id in
+            tags.first { $0.id == id }
+        }
     }
     
     //MARK: - clear 함수들

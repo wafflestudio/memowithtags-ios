@@ -10,15 +10,13 @@ import Flow
 
 struct MemoView: View {
     let memo: Memo
-    
     @ObservedObject var viewModel: MainViewModel
     
     @State private var isExpanded: Bool = false
-    @State private var isMenuVisible = false
-    
-    @State private var currentlyLocked = false
-    
     @Namespace var namespace
+    @State private var showFullScreenEditor: Bool = false
+  
+    @State private var isMenuVisible = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -26,15 +24,20 @@ struct MemoView: View {
             Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : 2)
-                .blur(radius: currentlyLocked ? 6 : 0)
+                .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
-            //MARK: - 메모 내 태그들
-            if !memo.tagIds.isEmpty {
+            if !memo.tagIds.isEmpty || memo.locked {
                 HFlow {
                     ForEach(viewModel.getTags(from: memo.tagIds), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
+                    }
+                    
+                    if memo.locked {
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(Color.lockIconGray)
+                            .font(.system(size: 14))
                     }
                 }
                 .padding(.top, 6)
@@ -54,7 +57,6 @@ struct MemoView: View {
                     HStack(spacing: 4) {
                         Text("관련 검색")
                             .font(.system(size: 11, weight: .medium))
-                        
                             .foregroundStyle(Color.titleTextBlack)
                         Image(.searchIcon)
                             .resizable()
@@ -88,44 +90,42 @@ struct MemoView: View {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
                         viewModel.editorTagIds = memo.tagIds
+                        if viewModel.appState.navigation.current != .main {
+                            viewModel.appState.navigation.pop()
+                        }
                     }
                     
+                    // 접기 버튼
                     Image(systemName: "chevron.up")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.titleTextBlack.opacity(0.6))
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 8)
-                        .background(Color(hex: "#F5F5F5"))
+                        .foregroundStyle(Color.memoTextBlack.opacity(0.6))
+                        .frame(width: 27, height: 27)
+                        .background(Color.backgroundGray)
                         .clipShape(Circle())
                         .onTapGesture {
-                            isExpanded.toggle()
+                            withAnimation(.spring) {
+                                isExpanded = false
+                            }
                         }
-                    
                 }
                 .padding(.top, 10)
             }
-            //MARK: -
         }
         .padding(.top, 9)
         .padding(.bottom, 12)
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
+        .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
         .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
-        .onAppear {
-            currentlyLocked = memo.locked
-        }
-        .onChange(of: memo.locked) {
-            currentlyLocked = memo.locked
-        }
         //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
-            if currentlyLocked {
+            if memo.locked && !viewModel.appState.user.isBioAuthenticated {
                 Task {
                     let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
                     if authenticated {
                         withAnimation(.spring()) {
-                            currentlyLocked = false
+                            viewModel.appState.user.isBioAuthenticated = true
                         }
                     }
                 }
@@ -137,6 +137,7 @@ struct MemoView: View {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
                 viewModel.editorTagIds = memo.tagIds
+                showFullScreenEditor = true
             }
         }
         //MARK: - context menu
@@ -155,7 +156,17 @@ struct MemoView: View {
                     Label("메모 잠금", systemImage: "lock")
                 }
             }
-
+            // searchView에서만 나타나는 추가 메뉴 항목: 메인 페이지에서 해당 메모 보기
+            if viewModel.appState.navigation.current == .search {
+                Button {
+                    // 메인 페이지로 돌아갑니다.
+                    viewModel.appState.navigation.pop()
+                    // 이 부분을 새로 구현해야 한다.
+                } label: {
+                    Label("이 메모를 메인 화면에서 보기", systemImage: "arrow.left")
+                }
+            }
+            
             Button(role: .destructive) {
                 Task {
                     await viewModel.deleteMemo(memoId: memo.id)
@@ -165,16 +176,19 @@ struct MemoView: View {
                 Label("메모 삭제", systemImage: "trash")
             }
         }
+        .fullScreenCover(isPresented: $showFullScreenEditor) {
+            MemoEditorView(viewModel: viewModel)
+                .navigationTransition(.zoom(sourceID: "editor\(memo.id)", in: namespace))
+                .interactiveDismissDisabled()
+        }
         .padding(.horizontal, 12)
 
     }
     
     func dateFormat(date: Date) -> String {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        dateFormatter.locale = Locale(identifier: "ko_KR")
-
         return dateFormatter.string(from: date)
     }
 }

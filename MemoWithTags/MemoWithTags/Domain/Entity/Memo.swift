@@ -15,8 +15,6 @@ struct Memo: Codable, Identifiable, Equatable  {
     var updatedAt: Date
 }
 
-
-
 struct PaginatedMemos {
     let memos: [Memo]
     let currentPage: Int
