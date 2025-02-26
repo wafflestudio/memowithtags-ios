@@ -18,17 +18,14 @@ struct MainView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // 메모 리스트
+                //MARK: - 메모 리스트
                 MemoListView(viewModel: viewModel)
                     .padding(.vertical, 1)
                 
-                // 메모 생성 or 수정 창
-                if #available(iOS 18.0, *) {
-                    EditingMemoView(viewModel: viewModel)
-                } else {
-                    // 애니메이션이 ios18부터 지원됨..
-                }
+                //MARK: - 메모 에디터
+                EditingMemoView(viewModel: viewModel)
                 
+                //MARK: - 태그 에디터
                 if keyboardManager.currentHeight > 0 {
                     EditingTagListView(viewModel: viewModel)
                 }

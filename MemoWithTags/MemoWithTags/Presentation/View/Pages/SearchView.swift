@@ -20,18 +20,20 @@ struct SearchView: View {
                 .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 0) {
+                //MARK: - 맨 위 바
                 HStack(spacing: 10) {
-                    // 뒤로가기 버튼
+                    //MARK: - 뒤로가기 버튼
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18))
                         .onTapGesture {
                             viewModel.appState.navigation.pop()
                         }
                     
+                    //MARK: - 검색 창
                     HStack {
-                        ForEach(viewModel.searchBarSelectedTags, id: \.id) { tag in
+                        ForEach(viewModel.getTags(from: viewModel.searchBarSelectedTagIds), id: \.id) { tag in
                             TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-                                removeTagFromSelectedTags(tag)
+                                removeTagFromSelectedTags(tag.id)
                             }
                         }
                         
@@ -45,7 +47,7 @@ struct SearchView: View {
                                     // 0.5초 기다리기
                                     try? await Task.sleep(nanoseconds: 500_000_000)
                                     
-                                    await firstSearch()
+                                    await viewModel.search()
                                 }
                             }
                             .onAppear {
@@ -62,6 +64,7 @@ struct SearchView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 14)
                 
+                //MARK: - 로딩 아이콘
                 if viewModel.isLoading {
                     VStack {
                         ProgressView()
@@ -70,8 +73,8 @@ struct SearchView: View {
                     .frame(maxWidth: .infinity)
                 }
                 
-                // 태그 검색 결과
-                if !viewModel.searchedTags.isEmpty {
+                //MARK: - 태그 검색 결과
+                if !viewModel.searchedTagIds.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Tags")
                             .font(.system(size: 12, weight: .medium))
@@ -80,9 +83,9 @@ struct SearchView: View {
 
                         
                         HFlow {
-                            ForEach(viewModel.searchedTags, id: \.id) { tag in
+                            ForEach(viewModel.getTags(from: viewModel.searchedTagIds), id: \.id) { tag in
                                 TagView(viewModel: viewModel, tag: tag) {
-                                    appendTagToSelectedTags(tag)
+                                    appendTagToSelectedTags(tag.id)
                                     viewModel.searchBarText = ""
                                 }
                             }
@@ -93,7 +96,7 @@ struct SearchView: View {
                     .padding(.bottom, 20)
                 }
                 
-                // 메모 검색 결과
+                //MARK: - 메모 검색 결과
                 if !viewModel.searchedMemos.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Memos")
@@ -105,6 +108,17 @@ struct SearchView: View {
                             LazyVStack(alignment: .leading, spacing: 12) {
                                 ForEach(viewModel.searchedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
+                                }
+                                
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                        .opacity(viewModel.isLoading ? 1 : 0)
+                                    Spacer()
+                                }.onAppear {
+                                    Task {
+                                        await viewModel.searchMemos(content: viewModel.searchBarText, tagIds: viewModel.searchBarSelectedTagIds)
+                                    }
                                 }
                             }
                          }
@@ -119,7 +133,7 @@ struct SearchView: View {
         .navigationBarBackButtonHidden()
         .onAppear {
             Task {
-                await firstSearch()
+                await viewModel.search()
             }
         }
         .onDisappear {
@@ -127,48 +141,18 @@ struct SearchView: View {
         }
     }
     
-    private func removeTagFromSelectedTags(_ tag: Tag) {
-        viewModel.searchBarSelectedTags.removeAll { $0.id == tag.id }
+    private func removeTagFromSelectedTags(_ tagId: Int) {
+        viewModel.searchBarSelectedTagIds.removeAll { $0 == tagId }
         Task {
-            await firstSearch()
+            await viewModel.search()
         }
     }
     
-    private func appendTagToSelectedTags(_ tag: Tag) {
-        viewModel.searchBarSelectedTags.append(tag)
+    private func appendTagToSelectedTags(_ tagId: Int) {
+        viewModel.searchBarSelectedTagIds.append(tagId)
         Task {
-            await firstSearch()
+            await viewModel.search()
         }
-    }
-    
-    private func firstSearch() async {
-        // 이전 검색 결과를 모두 리셋
-        viewModel.searchedMemos = []
-        viewModel.searchedTags = []
-        viewModel.searchCurrentPage = 0
-        viewModel.searchTotalPages = 1
-        
-        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // 검색할 text와 tag가 있는지 확인
-        if !trimmedText.isEmpty || !viewModel.searchBarSelectedTags.isEmpty {
-            // 선택한 tag들의 id를 뽑아서 tagId list로 만듦
-            let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
-            
-            // Perform the search with content and selected tag IDs
-            await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
-            
-            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
-            viewModel.searchedTags = viewModel.tags.filter { tag in
-                tag.name.lowercased().contains(trimmedText.lowercased()) && !selectedTagIds.contains(tag.id)
-            }
-        }
-    }
-    
-    private func fetchNextPage() async {
-        let trimmedText = viewModel.searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let selectedTagIds = viewModel.searchBarSelectedTags.map { $0.id }
-        await viewModel.searchMemos(content: trimmedText, tagIds: selectedTagIds)
     }
 }
 

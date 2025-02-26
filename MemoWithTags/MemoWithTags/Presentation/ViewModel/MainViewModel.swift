@@ -21,16 +21,16 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     //MARK: - searchPage 변수들
     @Published var searchBarText: String = ""
-    @Published var searchBarSelectedTags: [Tag] = []
+    @Published var searchBarSelectedTagIds: [Int] = []
     @Published var searchedMemos: [Memo] = []
-    @Published var searchedTags: [Tag] = []
+    @Published var searchedTagIds: [Int] = []
     @Published var searchCurrentPage: Int = 0
     @Published var searchTotalPages: Int = 1
     
     //MARK: - editor의 변수들 (축소, 확대 상태 모두)
     @Published var editorState: EditorState = .create
     @Published var editorContent: String = ""
-    @Published var editorTags: [Tag] = []
+    @Published var editorTagIds: [Int] = []
     enum EditorState {
         case create
         case update(target: Memo)
@@ -44,11 +44,12 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case byUpdate
     }
     
-    //MARK: - 메모 전부 가져오기
+    //MARK: - 메모 페이지 별로 가져오기
     func fetchMemos() async {
         guard !isLoading else { return }
         
         isLoading = true
+        
         mainCurrentPage += 1
         
         guard mainCurrentPage <= mainTotalPages else {
@@ -61,13 +62,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let paginatedMemos):
-            let updatedMemos = paginatedMemos.memos.map { memo -> Memo in
-                var updatedMemo = memo
-                updatedMemo.tags = getTags(from: updatedMemo.tagIds)
-                return updatedMemo
-            }
-            
-            self.memos.append(contentsOf: updatedMemos)
+            self.memos.append(contentsOf: paginatedMemos.memos)
             self.mainTotalPages = paginatedMemos.totalPages
             
         case .failure(let error):
@@ -76,12 +71,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         isLoading = false
     }
-    
-    //MARK: - 메모 검색
+
+    //MARK: - 검색된 메모 페이지별로 가져오기
     func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
         guard !isLoading else { return }
         
         isLoading = true
+        
         searchCurrentPage += 1
         
         guard searchCurrentPage <= searchTotalPages else {
@@ -94,13 +90,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let paginatedMemos):
-            let updatedMemos = paginatedMemos.memos.map { memo -> Memo in
-                var updatedMemo = memo
-                updatedMemo.tags = getTags(from: updatedMemo.tagIds)
-                return updatedMemo
-            }
-            
-            self.searchedMemos.append(contentsOf: updatedMemos)
+            self.searchedMemos.append(contentsOf: paginatedMemos.memos)
             self.searchTotalPages = paginatedMemos.totalPages
 
         case .failure(let error):
@@ -121,9 +111,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
-            var memoWithFilledTags = memo
-            memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
-            self.memos.insert(memoWithFilledTags, at: 0)
+            self.memos.insert(memo, at: 0)
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -136,13 +124,17 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.memoService.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
+
         switch result {
         case .success(let memo):
-            var memoWithFilledTags = memo
-            memoWithFilledTags.tags = getTags(from: memoWithFilledTags.tagIds)
-            if let index = self.memos.firstIndex(where: { $0.id == memoId }) {
-                self.memos[index] = memoWithFilledTags
+            if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
+                self.memos[index] = memo
             }
+            
+            if let index = self.searchedMemos.firstIndex(where: { $0.id == memo.id }) {
+                self.searchedMemos[index] = memo
+            }
+            
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -155,6 +147,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.memoService.deleteMemo(memoId: memoId)
+
         switch result {
         case .success:
             self.memos.removeAll { $0.id == memoId }
@@ -168,12 +161,15 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     //MARK: - 태그 전부 가져오기
     func fetchTags() async {
+        guard !isLoading else { return }
+        
         isLoading = true
         
         let result = await useCases.tagService.fetchTag()
+
         switch result {
-        case .success(let fetchedTags):
-            self.tags = fetchedTags
+        case .success(let tags):
+            self.tags = tags
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -186,6 +182,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.createTag(name: name, color: color)
+
         switch result {
         case .success(let tag):
             self.tags.append(tag)
@@ -201,28 +198,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.updateTag(tagId: tagId, name: name, color: color)
+
         switch result {
         case .success(let tag):
-            // Main과 Search의 tag 변경
             if let index = self.tags.firstIndex(where: { $0.id == tagId }) {
                 self.tags[index] = tag
             }
-            if let index = self.searchedTags.firstIndex(where: { $0.id == tagId }) {
-                self.searchedTags[index] = tag
-            }
             
-            // Main과 Search의 tag 변경
-            for index in memos.indices {
-                if let tagIndex = memos[index].tags.firstIndex(where: { $0.id == tagId }) {
-                    memos[index].tags[tagIndex] = tag
-                }
-            }
-            // Main과 Search의 memo에 있는 tag 변경
-            for index in searchedMemos.indices {
-                if let tagIndex = searchedMemos[index].tags.firstIndex(where: { $0.id == tagId }) {
-                    searchedMemos[index].tags[tagIndex] = tag
-                }
-            }
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -235,19 +217,11 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = true
         
         let result = await useCases.tagService.deleteTag(tagId: tagId)
+
         switch result {
         case .success:
-            // Main과 Search의 tag 삭제
             self.tags.removeAll { $0.id == tagId }
-            self.searchedTags.removeAll { $0.id == tagId }
             
-            // Main과 Search의 memo에 있는 tag 삭제
-            for index in memos.indices {
-                self.memos[index].tags.removeAll { $0.id == tagId }
-            }
-            for index in searchedMemos.indices {
-                self.searchedMemos[index].tags.removeAll { $0.id == tagId }
-            }
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -267,6 +241,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     //MARK: - settings view에서 유저정보 가져오는 함수
     func getUserInfo() async {
+        guard !isLoading else { return }
+        
         isLoading = true
         
         let result = await useCases.userService.getUser()
@@ -285,6 +261,10 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     //MARK: - settings view에서 로그아웃하는 함수
     func logout() async {
+        guard !isLoading else { return }
+        
+        isLoading = true
+        
         let result = await useCases.authService.logout()
         
         switch result {
@@ -302,47 +282,70 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .failure(let error):
             appState.system.alert(error: error)
         }
-    }
-    
-    //MARK: - 태그 추천 해주는 함수: editor에 들어간 것들 뺴고
-    func recommendTags() -> [Tag] {
-        tags.filter { !editorTags.contains($0) }
+        
+        isLoading = false
     }
     
     //MARK: - editor에서 submit 했을 때 작동
     func submit() async {
         let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedContent.isEmpty else { return }
-    
-        let tagIds = editorTags.map { $0.id }
         
         switch editorState {
         case .create:
-            await createMemo(content: trimmedContent, tagIds: tagIds, locked: false)
+            await createMemo(content: trimmedContent, tagIds: editorTagIds, locked: false)
             memos = []
             mainCurrentPage = 0
             await fetchMemos()
 
         case .update(let target):
-            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: tagIds, locked: target.locked)
+            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
         }
         
         // Reset the input fields
         editorState = .create
         editorContent = ""
-        editorTags = []
+        editorTagIds = []
         hideKeyboard()
+    }
+    
+    //MARK: - 새로운 검색어, 태그에 대한 검색 수행
+    func search() async {
+        // 이전 검색 결과를 모두 리셋
+        searchedMemos = []
+        searchedTagIds = []
+        searchCurrentPage = 0
+        searchTotalPages = 1
+        
+        let trimmedText = searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if !trimmedText.isEmpty || !searchBarSelectedTagIds.isEmpty {
+            await searchMemos(content: trimmedText, tagIds: searchBarSelectedTagIds)
+            
+            // 검색창의 text에 맞는 tag를 local에서 찾아서 반환
+            let searchedTags = tags.filter { tag in
+                tag.name.lowercased().contains(trimmedText.lowercased()) && !searchBarSelectedTagIds.contains(tag.id)
+            }
+            
+            searchedTagIds = searchedTags.map { $0.id }
+        }
     }
     
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
+    //MARK: - 태그 추천 해주는 함수(editor에 들어간 것들 뺴고)
+    func recommendTags() -> [Tag] {
+        tags.filter { !editorTagIds.contains($0.id) }
+    }
+    
     //MARK: - tag id --> tag 맵핑하는 함수
-    private func getTags(from tagIDs: [Int]) -> [Tag] {
+    func getTags(from tagIDs: [Int]) -> [Tag] {
         return tags.filter { tagIDs.contains($0.id) }
     }
     
+    //MARK: - clear 함수들
     func clearMain() {
         memos = []
         tags = []
@@ -351,14 +354,14 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         editorState = .create
         editorContent = ""
-        editorTags = []
+        editorTagIds = []
     }
     
     func clearSearch() {
         searchBarText = ""
-        searchBarSelectedTags = []
+        searchBarSelectedTagIds = []
         searchedMemos = []
-        searchedTags = []
+        searchedTagIds = []
         searchCurrentPage = 0
         searchTotalPages = 1
     }
