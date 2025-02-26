@@ -30,7 +30,7 @@ struct MemoView: View {
             
             if !memo.tagIds.isEmpty || memo.locked {
                 HFlow {
-                    ForEach(viewModel.mapTags(from: memo.tagIds), id: \.id) { tag in
+                    ForEach(viewModel.getTags(from: memo.tagIds), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag)
                     }
                     
