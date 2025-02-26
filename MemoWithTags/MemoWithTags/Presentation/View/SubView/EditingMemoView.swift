@@ -9,7 +9,6 @@ import SwiftUI
 import Flow
 import RichTextKit
 
-@available(iOS 18.0, *)
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
@@ -20,21 +19,22 @@ struct EditingMemoView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // 메모글 쓰는 곳
+            //MARK: - 메모글 쓰는 곳
             DynamicHeightTextEditor(
                 text: $viewModel.editorContent,
                 maxHeight: 100
             )
             
-            // 메모에 넣은 태그들
+            //MARK: - 메모에 넣은 태그들
             HFlow {
-                ForEach(viewModel.editorTags, id: \.id) { tag in
+                ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
                     TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-                        removeTagFromSelectedTags(tag)
+                        removeTagFromSelectedTags(tag.id)
                     }
                 }
             }
             
+            //MARK: - 아래 버튼들
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때
@@ -68,7 +68,7 @@ struct EditingMemoView: View {
                         .onTapGesture {
                             viewModel.editorState = .create
                             viewModel.editorContent = ""
-                            viewModel.editorTags = []
+                            viewModel.editorTagIds = []
                         }
                     
                     Image(systemName: "checkmark")
@@ -98,7 +98,7 @@ struct EditingMemoView: View {
     }
     
     
-    private func removeTagFromSelectedTags(_ tag: Tag) {
-        viewModel.editorTags.removeAll { $0.id == tag.id }
+    private func removeTagFromSelectedTags(_ tagId: Int) {
+        viewModel.editorTagIds.removeAll{ $0 == tagId }
     }
 }

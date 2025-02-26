@@ -10,19 +10,20 @@ import Flow
 
 struct MemoView: View {
     let memo: Memo
-    let lineLimit: Int = 2
-    
     @ObservedObject var viewModel: MainViewModel
-    @State private var isExpanded: Bool = false
     
+    @State private var isExpanded: Bool = false
     @Namespace var namespace
     @State private var showFullScreenEditor: Bool = false
+  
+    @State private var isMenuVisible = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
+            //MARK: - 메모 내용
             Text(memo.content)
                 .foregroundColor(Color.memoTextBlack)
-                .lineLimit(isExpanded ? nil : lineLimit)
+                .lineLimit(isExpanded ? nil : 2)
                 .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -43,7 +44,7 @@ struct MemoView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             
-            // 한번 클릭 했을 때 나오는 밑에 버튼들
+            //MARK: - 메모 펼쳤을 때 나오는 밑에 버튼들
             if isExpanded {
                 HStack(alignment: .bottom) {
                     Text(dateFormat(date: memo.createdAt))
@@ -88,7 +89,7 @@ struct MemoView: View {
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
-                        viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
+                        viewModel.editorTagIds = memo.tagIds
                         if viewModel.appState.navigation.current != .main {
                             viewModel.appState.navigation.pop()
                         }
@@ -106,7 +107,6 @@ struct MemoView: View {
                                 isExpanded = false
                             }
                         }
-
                 }
                 .padding(.top, 10)
             }
@@ -117,6 +117,8 @@ struct MemoView: View {
         .background(Color.memoBackgroundWhite)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .matchedTransitionSource(id: "editor\(memo.id)", in: namespace)
+        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+        //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
             if memo.locked && !viewModel.appState.user.isBioAuthenticated {
                 Task {
@@ -134,22 +136,12 @@ struct MemoView: View {
             } else {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
-                viewModel.editorTags = viewModel.mapTags(from: memo.tagIds)
+                viewModel.editorTagIds = memo.tagIds
                 showFullScreenEditor = true
             }
         }
+        //MARK: - context menu
         .contextMenu {
-            Button {
-                viewModel.clearSearch()
-                viewModel.searchBarText = memo.content
-                // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
-                if viewModel.appState.navigation.current != .search {
-                    viewModel.appState.navigation.push(to: .search)
-                }
-            } label: {
-                Label("이 메모 내용으로 검색하기", systemImage: "text.magnifyingglass")
-            }
-            
             Button {
                 Task {
                     let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
@@ -159,12 +151,11 @@ struct MemoView: View {
                 }
             } label: {
                 if memo.locked {
-                    Label("잠금 해제하기", systemImage: "lock.open")
+                    Label("잠금 해제", systemImage: "lock.open")
                 } else {
-                    Label("매모 잠그기", systemImage: "lock")
+                    Label("메모 잠금", systemImage: "lock")
                 }
             }
-            
             // searchView에서만 나타나는 추가 메뉴 항목: 메인 페이지에서 해당 메모 보기
             if viewModel.appState.navigation.current == .search {
                 Button {
@@ -182,7 +173,7 @@ struct MemoView: View {
                 }
 
             } label: {
-                Label("삭제하기", systemImage: "trash")
+                Label("메모 삭제", systemImage: "trash")
             }
         }
         .fullScreenCover(isPresented: $showFullScreenEditor) {
@@ -191,7 +182,7 @@ struct MemoView: View {
                 .interactiveDismissDisabled()
         }
         .padding(.horizontal, 12)
-        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+
     }
     
     func dateFormat(date: Date) -> String {
