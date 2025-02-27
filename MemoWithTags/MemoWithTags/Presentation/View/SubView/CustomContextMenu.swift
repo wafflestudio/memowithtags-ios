@@ -12,23 +12,8 @@ struct CustomContextMenu: ViewModifier {
     let Preview: () -> AnyView
     let Contextmenu: () -> AnyView
     
-    @State private var frame: CGRect = .zero
-    
-    @State private var appearEffect = false
-    
     func body(content: Content) -> some View {
         content
-            .background(
-                GeometryReader { proxy in
-                    Color.clear
-                        .onAppear {
-                            self.frame = proxy.frame(in: .global)
-                        }
-                        .onChange(of: proxy.frame(in: .global)) {
-                            self.frame = proxy.frame(in: .global)
-                        }
-                }
-            )
             .onLongPressGesture {
                 isPresented.toggle()
             }
@@ -56,7 +41,6 @@ struct CustomContextMenu: ViewModifier {
             }
     }
 }
-
 extension View {
     func customContextMenu(isPresented: Binding<Bool>, @ViewBuilder preview: @escaping () -> AnyView, @ViewBuilder contextmenu: @escaping () -> AnyView) -> some View {
         self.modifier(CustomContextMenu(isPresented: isPresented, Preview: preview, Contextmenu: contextmenu))

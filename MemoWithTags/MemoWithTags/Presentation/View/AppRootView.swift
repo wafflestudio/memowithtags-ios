@@ -44,6 +44,8 @@ struct AppRootView: View {
                         MainView(viewModel: mainViewModel)
                     case .search:
                         SearchView(viewModel: mainViewModel)
+                    case .memoEditor:
+                        MemoEditorView(viewModel: mainViewModel)
                         
                     //MARK: - 로그인
                     case .login:

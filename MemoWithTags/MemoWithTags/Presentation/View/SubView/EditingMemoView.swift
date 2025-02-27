@@ -7,15 +7,11 @@
 
 import SwiftUI
 import Flow
-import RichTextKit
 
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
-    @Namespace var namespace
-    
     @State var dynamicHeight: CGFloat = 40
-    @StateObject var context = RichTextContext()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -54,6 +50,7 @@ struct EditingMemoView: View {
                         .font(.system(size: 17, weight: .regular))
                         .foregroundColor(.dateGray)
                         .onTapGesture {
+                            viewModel.appState.navigation.push(to: .memoEditor)
                         }
                     
                     Spacer()

@@ -13,9 +13,6 @@ struct MemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
     @State private var isExpanded: Bool = false
-    @Namespace var namespace
-    @State private var showFullScreenEditor: Bool = false
-  
     @State private var isMenuVisible = false
     
     var body: some View {
@@ -136,7 +133,7 @@ struct MemoView: View {
                 viewModel.editorState = .update(target: memo)
                 viewModel.editorContent = memo.content
                 viewModel.editorTagIds = memo.tagIds
-                showFullScreenEditor = true
+                viewModel.appState.navigation.push(to: .memoEditor)
             }
         }
         //MARK: - context menu
@@ -147,6 +144,7 @@ struct MemoView: View {
                     Text(memo.content)
                         .foregroundColor(Color.memoTextBlack)
                         .lineLimit(3)
+                        .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                     
                     if !memo.tagIds.isEmpty || memo.locked {
