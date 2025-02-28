@@ -161,6 +161,7 @@ struct MemoView: View {
                         }
                     }
                 }
+
             )
         }
         .padding(.horizontal, 12)
