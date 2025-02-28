@@ -26,4 +26,5 @@ extension View {
     func customContextMenu(actions: @escaping () -> AnyView) -> some View {
         self.modifier(CustomContextMenu(actions: actions))
     }
+    
 }
