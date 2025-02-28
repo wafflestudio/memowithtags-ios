@@ -18,7 +18,7 @@ struct SignupSuccessView: View {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("회원가입이 완료되었습니다!")
-                        .font(.system(size: 21, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 21))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
@@ -31,17 +31,17 @@ struct SignupSuccessView: View {
                         HStack(spacing: 2) {
                             HStack(spacing: 3) {
                                 Text("Memo with")
-                                    .font(.system(size: 17, weight: .semibold))
+                                    .font(.pretendard(.semibold, size: 17))
                                     .foregroundStyle(Color.titleTextBlack)
                                 
-                                DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
+                                DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                             }
                             Text("를 통해")
-                                .font(.system(size: 15, weight: .regular))
+                                .font(.pretendard(.regular, size: 15))
                                 .foregroundStyle(Color.titleTextBlack)
                         }
                         Text("복잡한 메모들을 간단하고 효율적으로 정리해보세요!")
-                            .font(.system(size: 15, weight: .regular))
+                            .font(.pretendard(.regular, size: 15))
                             .foregroundStyle(Color.titleTextBlack)
                     }
                     .padding(.top, 8)
@@ -54,7 +54,7 @@ struct SignupSuccessView: View {
                     } label: {
                         Text("시작하기")
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.pretendard(.semibold, size: 16))
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
                     }

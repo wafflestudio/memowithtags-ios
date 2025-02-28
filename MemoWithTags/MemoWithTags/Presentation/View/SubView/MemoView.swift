@@ -19,6 +19,7 @@ struct MemoView: View {
         VStack(alignment: .center, spacing: 0) {
             //MARK: - 메모 내용
             Text(memo.content)
+                .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.memoTextBlack)
                 .lineLimit(isExpanded ? nil : 2)
                 .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
@@ -45,7 +46,7 @@ struct MemoView: View {
             if isExpanded {
                 HStack(alignment: .bottom) {
                     Text(dateFormat(date: memo.createdAt))
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.pretendard(.medium, size: 11))
                         .foregroundStyle(Color.dateGray)
                         .padding(.vertical, 3)
                     
@@ -53,7 +54,7 @@ struct MemoView: View {
                     
                     HStack(spacing: 4) {
                         Text("관련 검색")
-                            .font(.system(size: 11, weight: .medium))
+                            .font(.pretendard(.medium, size: 11))
                             .foregroundStyle(Color.titleTextBlack)
                         Image(.searchIcon)
                             .resizable()
@@ -73,7 +74,7 @@ struct MemoView: View {
                     
                     HStack(spacing: 4) {
                         Text("간편 수정")
-                            .font(.system(size: 11, weight: .medium))
+                            .font(.pretendard(.medium, size: 11))
                             .foregroundStyle(Color.titleTextBlack)
                         
                         Image(.aiPenIcon)

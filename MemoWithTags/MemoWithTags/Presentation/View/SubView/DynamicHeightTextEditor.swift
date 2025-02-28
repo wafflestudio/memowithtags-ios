@@ -29,19 +29,19 @@ struct DynamicHeightTextEditor: View {
                             // Calculate new height based on content
                             let newHeight = text.heightWithConstrainedWidth(
                                 width: geometry.size.width,
-                                font: UIFont(name: "Pretendard", size: 16) ?? UIFont.systemFont(ofSize: 16)
+                                font: UIFont(name: "Pretendard-Regular", size: 14) ?? UIFont.systemFont(ofSize: 14)
                             )
                             DispatchQueue.main.async {
                                 dynamicHeight = min(max(newHeight + singleLineHeight, minHeight), maxHeight)
                             }
                         }
                 })
-                .font(.body)
+                .font(.pretendard(.regular, size: 14))
                 .disableAutocorrection(true)
             
             if text.isEmpty {
                 Text(placeholder)
-                    .font(Font.custom("Pretendard", size: 16))
+                    .font(.pretendard(.regular, size: 14))
                     .foregroundColor(Color.gray.opacity(0.6))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 10)
@@ -54,7 +54,7 @@ struct DynamicHeightTextEditor: View {
     private func updateHeight(from size: CGSize) {
         let calculatedHeight = text.heightWithConstrainedWidth(
             width: size.width,
-            font: UIFont(name: "Pretendard", size: 16) ?? UIFont.systemFont(ofSize: 16)
+            font: UIFont(name: "Pretendard-Regular", size: 14) ?? UIFont.systemFont(ofSize: 14)
         )
         dynamicHeight = min(max(calculatedHeight + singleLineHeight, minHeight), maxHeight)
     }

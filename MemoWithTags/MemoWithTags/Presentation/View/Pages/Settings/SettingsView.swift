@@ -18,12 +18,12 @@ struct SettingsView: View {
             VStack(spacing: 12) {
                 HStack {
                     Text("내 계정")
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.pretendard(.medium, size: 14))
                         .foregroundStyle(Color.titleTextBlack)
                     Spacer()
                     
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .foregroundStyle(Color.dateGray)
                 }
                 .padding(.vertical, 13)
@@ -37,13 +37,13 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("메모 필터 기준")
-                            .font(.system(size: 12, weight: .regular))
+                            .font(.pretendard(.regular, size: 12))
                             .foregroundStyle(Color.dateGray)
                             .padding(.leading, 6)
                         
                         HStack {
                             Text("만든 날짜")
-                                .font(.system(size: 14, weight: .regular))
+                                .font(.pretendard(.regular, size: 14))
                                 .foregroundStyle(Color.titleTextBlack)
                             
                             Spacer()
@@ -60,7 +60,7 @@ struct SettingsView: View {
                         
                         HStack {
                             Text("수정한 날짜")
-                                .font(.system(size: 14, weight: .regular))
+                                .font(.pretendard(.regular, size: 14))
                                 .foregroundStyle(Color.titleTextBlack)
                             
                             Spacer()
@@ -77,7 +77,7 @@ struct SettingsView: View {
                     }
                     
                     Text("검색 필터 기준은 관련성 순입니다.")
-                        .font(.system(size: 12, weight: .regular))
+                        .font(.pretendard(.regular, size: 12))
                         .foregroundStyle(Color.dateGray)
                         .padding(.leading, 6)
                     
@@ -104,7 +104,7 @@ struct SettingsView: View {
             
             ToolbarItem(placement: .navigation) {
                 Text("설정")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.pretendard(.semibold, size: 18))
                     .foregroundStyle(Color.titleTextBlack)
             }
         }
@@ -118,7 +118,7 @@ struct SettingsView: View {
                 .foregroundStyle(.black.opacity(0.5))
             
             Text(text)
-                .font(.system(size: 14, weight: .regular))
+                .font(.pretendard(.regular, size: 14))
                 .foregroundColor(color)
             
             Spacer()

@@ -20,7 +20,7 @@ struct NicknameSettingView: View {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("닉네임 설정")
-                        .font(.system(size: 21, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 16))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
@@ -35,12 +35,12 @@ struct NicknameSettingView: View {
                             text: $nickname,
                             prompt:
                                 Text("닉네임")
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.pretendard(.regular, size: 16))
                                 .foregroundStyle(Color(hex: "#94979F"))
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .background(.white)
                         .overlay (
                             RoundedRectangle(cornerRadius: 14)
@@ -52,7 +52,7 @@ struct NicknameSettingView: View {
                         HStack {
                             Spacer()
                             Text("\(nickname.count)/8")
-                                .font(.system(size: 12, weight: .regular))
+                                .font(.pretendard(.regular, size: 12))
                                 .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
                                 .padding(.horizontal, 6)
                         }
@@ -68,7 +68,7 @@ struct NicknameSettingView: View {
                     } label: {
                         Text("다음")
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.pretendard(.semibold, size: 16))
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
 

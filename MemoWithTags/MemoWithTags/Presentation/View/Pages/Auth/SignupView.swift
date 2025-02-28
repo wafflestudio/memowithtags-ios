@@ -24,7 +24,7 @@ struct SignupView: View {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("이메일로 회원가입")
-                        .font(.system(size: 21, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 21))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
@@ -39,12 +39,12 @@ struct SignupView: View {
                                 "",
                                 text: $nickname,
                                 prompt: Text("닉네임")
-                                    .font(.system(size: 16, weight: .regular))
+                                    .font(.pretendard(.regular, size: 16))
                                     .foregroundStyle(Color(hex: "#94979F"))
                             )
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
-                            .font(.system(size: 16, weight: .regular))
+                            .font(.pretendard(.regular, size: 16))
                             .background(Color.white)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 14)
@@ -57,7 +57,7 @@ struct SignupView: View {
                             HStack {
                                 Spacer()
                                 Text("\(nickname.count)/8")
-                                    .font(.system(size: 12, weight: .regular))
+                                    .font(.pretendard(.regular, size: 12))
                                     .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
                                     .padding(.horizontal, 6)
                             }
@@ -69,12 +69,12 @@ struct SignupView: View {
                                 "",
                                 text: $password,
                                 prompt: Text("비밀번호")
-                                    .font(.system(size: 16, weight: .regular))
+                                    .font(.pretendard(.regular, size: 16))
                                     .foregroundStyle(Color(hex: "#94979F"))
                             )
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
-                            .font(.system(size: 16, weight: .regular))
+                            .font(.pretendard(.regular, size: 16))
                             .background(Color.white)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 14)
@@ -90,19 +90,19 @@ struct SignupView: View {
                             VStack(alignment: .leading, spacing: 6) {
                                 HStack {
                                     Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
                                     Text("최소 8자 ~ 최대 16자")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
                                 }
                                 
                                 HStack {
                                     Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                                     Text("알파벳 대소문자, 숫자, 특수문자 포함")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                                 }
                             }
@@ -114,12 +114,12 @@ struct SignupView: View {
                             "",
                             text: $passwordRepeat,
                             prompt: Text("비밀번호 확인")
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.pretendard(.regular, size: 16))
                                 .foregroundStyle(Color(hex: "#94979F"))
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
@@ -138,7 +138,7 @@ struct SignupView: View {
                     } label: {
                         Text("다음")
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.pretendard(.semibold, size: 16))
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
 
@@ -150,22 +150,22 @@ struct SignupView: View {
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "로그인", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#F1F1F3", cornerRadius: 4) {
+                        DesignTagView(text: "로그인", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#F1F1F3", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()
                         }
                         
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#FFBDBD"))
+                            .fill(Color.highlightRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#F1F1F3"))
+                            .fill(Color.highlightRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#F1F1F3"))
+                            .fill(Color.highlightRed)
                             .frame(width: 12, height: 24)
                         
                     }

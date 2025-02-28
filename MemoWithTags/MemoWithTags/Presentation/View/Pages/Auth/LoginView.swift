@@ -22,7 +22,7 @@ struct LoginView: View {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("Memo with")
-                        .font(.system(size: 22, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 22))
                         .foregroundStyle(Color.titleTextBlack)
                     
                     DesignTagView(text: "Tags", fontSize: 19, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
@@ -39,12 +39,12 @@ struct LoginView: View {
                             text: $email,
                             prompt:
                                 Text("이메일")
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.pretendard(.regular, size: 16))
                                 .foregroundStyle(Color(hex: "#94979F"))
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .background(.white)
                         .overlay (
                             RoundedRectangle(cornerRadius: 14)
@@ -58,12 +58,12 @@ struct LoginView: View {
                             "",
                             text: $password,
                             prompt: Text("비밀번호")
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.pretendard(.regular, size: 16))
                                 .foregroundStyle(Color(hex: "#94979F"))
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
@@ -82,7 +82,7 @@ struct LoginView: View {
                         } label: {
                             Text("로그인")
                                 .frame(maxWidth: .infinity)
-                                .font(.system(size: 16, weight: .semibold))
+                                .font(.pretendard(.semibold, size: 16))
                                 .foregroundStyle(.white)
                                 .padding(.vertical, 12)
 
@@ -95,13 +95,13 @@ struct LoginView: View {
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "회원가입", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#FFBDBD", cornerRadius: 4) {
+                        DesignTagView(text: "회원가입", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#FFBDBD", cornerRadius: 4) {
                             viewModel.appState.navigation.push(to: .emailEnter)
                         }
                         
                         Spacer()
                         
-                        DesignTagView(text: "비밀번호 찾기", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#F1F1F3", cornerRadius: 4) {
+                        DesignTagView(text: "비밀번호 찾기", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#F1F1F3", cornerRadius: 4) {
                             viewModel.appState.navigation.push(to: .resetPasswordEmailEnter)
                         }
                     }
@@ -109,7 +109,7 @@ struct LoginView: View {
                     Divider()
                         .overlay {
                             Text("다른 계정으로 로그인")
-                                .font(.system(size: 12, weight: .medium))
+                                .font(.pretendard(.medium, size: 12))
                                 .padding(.horizontal, 8)
                                 .foregroundStyle(Color.tabBarNotSelectecdIconGray)
                                 .background(Color.white)

@@ -41,10 +41,10 @@ struct MainView: View {
             ToolbarItem(placement: .topBarLeading) {
                 HStack(spacing: 3) {
                     Text("Memo with")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 17))
                         .foregroundStyle(Color.titleTextBlack)
                     
-                    DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
+                    DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                 }
             }
             

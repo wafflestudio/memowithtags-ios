@@ -19,13 +19,13 @@ struct EditingTagListView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             // 태그 검색하는 필드
-            TextField("태그 검색", text: $searchText)
-                .font(.custom("Pretendard", size: 16))
+            TextField("태그 찾기", text: $searchText)
+                .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.searchBarPlaceholderGray)
-                .frame(maxWidth: 80)
-                .padding(.horizontal, 8)
+                .padding(.horizontal, 10)
                 .padding(.vertical, 4)
                 .background(Color.searchBarBackgroundGray)
+                .frame(maxWidth: 80)
                 .cornerRadius(20)
             
             // Divider Line

@@ -21,7 +21,7 @@ struct EmailEnterView: View {
                 //MARK: - 타이틀
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
-                        .font(.system(size: 21, weight: .semibold))
+                        .font(.pretendard(.medium, size: 22))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
@@ -35,12 +35,12 @@ struct EmailEnterView: View {
                         text: $email,
                         prompt:
                             Text("이메일")
-                            .font(.system(size: 16, weight: .regular))
+                            .font(.pretendard(.regular, size: 16))
                             .foregroundStyle(Color(hex: "#94979F"))
                     )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.pretendard(.regular, size: 16))
                     .background(.white)
                     .overlay (
                         RoundedRectangle(cornerRadius: 14)
@@ -58,7 +58,7 @@ struct EmailEnterView: View {
                     } label: {
                         Text("다음")
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.pretendard(.regular, size: 16))
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
 
@@ -70,7 +70,7 @@ struct EmailEnterView: View {
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "이전", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {
+                        DesignTagView(text: "이전", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#E3E3E7", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()
                         }
                         

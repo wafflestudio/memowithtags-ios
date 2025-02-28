@@ -23,7 +23,7 @@ struct EmailVerificationView: View {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
-                        .font(.system(size: 21, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 21))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
@@ -32,7 +32,7 @@ struct EmailVerificationView: View {
                 VStack(spacing: 0) {
                     Text("이메일로 발송된 인증번호를 입력해주세요.")
                         .padding(.vertical, 8)
-                        .font(.system(size: 15, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .foregroundStyle(Color.titleTextBlack)
                     
                     //MARK: - 인증 코드 입력란
@@ -49,7 +49,7 @@ struct EmailVerificationView: View {
                     } label: {
                         Text("다음")
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.pretendard(.semibold, size: 16))
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
 
@@ -61,7 +61,7 @@ struct EmailVerificationView: View {
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "이전", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {
+                        DesignTagView(text: "이전", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#E3E3E7", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()
                         }
                         
@@ -146,6 +146,7 @@ struct SeparatedTextField: View {
                 CharacterField(character: $characters[index]) { newValue in
                     handleInputChange(for: index, with: newValue)
                 }
+                .font(.pretendard(.semibold, size: 22))
                 .focused($focusedIndex, equals: index)
             }
         }

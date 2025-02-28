@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Font {
-    static func pretendard(size: CGFloat,  _ weight: Font.Weight) -> Font {
+    static func pretendard(_ weight: Font.Weight, size: CGFloat) -> Font {
         let weightString: String
         switch weight {
         case .ultraLight: weightString = "Pretendard-UltraLight"

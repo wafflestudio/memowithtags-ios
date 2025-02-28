@@ -18,10 +18,10 @@ struct TagView: View {
     
     var body: some View {
         Text(tag.name)
-            .font(.system(size: 15, weight: .regular))
+            .font(.pretendard(.regular, size: 13))
             .foregroundColor(Color.tagTextColor)
-            .padding(.horizontal, 7)
-            .padding(.vertical, 1)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
             .background(tag.color.color)
             .cornerRadius(4)
             .lineLimit(1)

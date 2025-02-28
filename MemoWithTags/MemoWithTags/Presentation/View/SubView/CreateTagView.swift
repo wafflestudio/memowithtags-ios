@@ -14,17 +14,17 @@ struct CreateTagView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 2) {
             Text(searchText)
-                .font(.system(size: 15, weight: .regular))
+                .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.tagTextColor)
-                .padding(.horizontal, 7)
-                .padding(.vertical, 1)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
                 .background(randomColor.color)
                 .cornerRadius(4)
                 .lineLimit(1)
                 .truncationMode(.tail)
             
             Text("만들기")
-                .font(.custom("Pretendard", size: 16))
+                .font(.pretendard(.regular, size: 14))
         }
     }
 }
