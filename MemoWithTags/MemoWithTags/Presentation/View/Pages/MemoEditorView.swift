@@ -5,24 +5,23 @@
 //  Created by 최진모 on 1/24/25.
 //
 import SwiftUI
-import RichTextKit
 import Flow
 
 struct MemoEditorView: View {
-    @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: MainViewModel
 
     @StateObject var keyboardManager = KeyboardManager()
     
     var body: some View {
         VStack(spacing: 0) {
+            //MARK: - 상단 바
             HStack {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 19, weight: .regular))
                     .foregroundStyle(Color.black)
                     .onTapGesture {
                         Task {
-                            dismiss()
+                            viewModel.appState.navigation.pop()
                             await viewModel.submit()
                         }
                     }
@@ -34,7 +33,7 @@ struct MemoEditorView: View {
                         viewModel.editorState = .create
                         viewModel.editorContent = ""
                         viewModel.editorTagIds = []
-                        dismiss()
+                        viewModel.appState.navigation.pop()
                     } label: {
                         Label("변경사항 삭제하기", systemImage: "trash")
                     }
@@ -54,6 +53,7 @@ struct MemoEditorView: View {
             
             Divider()
             
+            //MARK: - 메모 에디터
             TextEditor(text: $viewModel.editorContent)
                 .overlay(Group { // placeholder
                     if viewModel.editorContent.isEmpty {
@@ -67,6 +67,7 @@ struct MemoEditorView: View {
             
             Spacer()
             
+            //MARK: - 날짜, 잠금 상태 표시
             HStack {
                 switch viewModel.editorState {
                 case .create:
@@ -91,9 +92,8 @@ struct MemoEditorView: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
-
-
             
+            //MARK: - 메모 내 태그들
             HFlow {
                 ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
                     TagView(viewModel: viewModel, tag: tag, addXmark: true) {
@@ -108,6 +108,7 @@ struct MemoEditorView: View {
                 EditingTagListView(viewModel: viewModel)
             }
         }
+        .navigationBarBackButtonHidden()
     }
     
     private func removeTagFromSelectedTags(_ tagId: Int) {

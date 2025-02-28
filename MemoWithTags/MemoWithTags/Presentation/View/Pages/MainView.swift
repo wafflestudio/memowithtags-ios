@@ -30,7 +30,6 @@ struct MainView: View {
                     EditingTagListView(viewModel: viewModel)
                 }
             }
-
         }
         .onAppear {
             Task {
@@ -38,7 +37,7 @@ struct MainView: View {
             }
         }
         .toolbar {
-            // 로고
+            //MARK: - 로고
             ToolbarItem(placement: .topBarLeading) {
                 HStack(spacing: 3) {
                     Text("Memo with")
@@ -49,7 +48,7 @@ struct MainView: View {
                 }
             }
             
-            // 서치, 설정 창 버튼
+            //MARK: - 서치, 설정 창 버튼
             ToolbarItem(placement: .topBarTrailing) {
                 HStack(spacing: 14) {
                     Image(systemName: "magnifyingglass")

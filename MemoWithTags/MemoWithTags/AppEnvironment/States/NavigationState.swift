@@ -11,6 +11,7 @@ enum Route: Hashable {
     case root
     case main
     case search
+    case memoEditor
     
     //MARK: - 로그인
     case login
