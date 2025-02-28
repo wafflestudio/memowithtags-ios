@@ -137,49 +137,10 @@ struct MemoView: View {
             }
         }
         //MARK: - context menu
-        .customContextMenu(isPresented: $isMenuVisible) {
-            //MARK: - 꾹 눌렀을 때 나오는 프리뷰
-            AnyView(
-                VStack(alignment: .center, spacing: 0) {
-                    Text(memo.content)
-                        .foregroundColor(Color.memoTextBlack)
-                        .lineLimit(3)
-                        .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                    
-                    if !memo.tagIds.isEmpty || memo.locked {
-                        HFlow {
-                            ForEach(viewModel.getTags(from: memo.tagIds), id: \.id) { tag in
-                                TagView(viewModel: viewModel, tag: tag)
-                            }
-                            
-                            if memo.locked {
-                                Image(systemName: "lock.fill")
-                                    .foregroundColor(Color.lockIconGray)
-                                    .font(.system(size: 14))
-                            }
-                        }
-                        .padding(.top, 6)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                }
-                .padding(.top, 9)
-                .padding(.bottom, 12)
-                .padding(.horizontal, 17)
-                .background(Color.memoBackgroundWhite)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .padding(.horizontal, 12)
-            )
-        } contextmenu: {
-            //MARK: - 메뉴
+        .customContextMenu {
             AnyView(
                 VStack(alignment: .leading, spacing: 10) {
-                    HStack {
-                        Text(memo.locked ? "잠금 해제" : "메모 잠금")
-                        Spacer()
-                        Image(systemName: memo.locked ? "lock.open" : "lock")
-                    }
-                    .onTapGesture {
+                    Button(memo.locked ? "잠금 해제" : "메모 잠금", role: .none) {
                         Task {
                             let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
                             if authenticated {
@@ -188,39 +149,18 @@ struct MemoView: View {
                         }
                     }
                     
-                    Divider()
-                    
                     if viewModel.appState.navigation.current == .search {
-                        HStack {
-                            Text("이 메모를 메인 화면에서 보기")
-                            Spacer()
-                            Image(systemName: "arrow.left")
-                        }
-                        .onTapGesture {
-                            // 메인 페이지로 돌아갑니다.
+                        Button("이 메모를 메인 화면에서 보기", role: .none) {
                             viewModel.appState.navigation.pop()
-                            // 이 부분을 새로 구현해야 한다.
                         }
-                        
-                        Divider()
                     }
                     
-                    HStack {
-                        Text("메모 삭제")
-                        Spacer()
-                        Image(systemName: "trash")
-                    }
-                    .onTapGesture {
+                    Button("메모 삭제", role: .destructive) {
                         Task {
                             await viewModel.deleteMemo(memoId: memo.id)
                         }
                     }
                 }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 12)
-                .background(Color.memoBackgroundWhite)
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .frame(width: 250)
             )
         }
         .padding(.horizontal, 12)

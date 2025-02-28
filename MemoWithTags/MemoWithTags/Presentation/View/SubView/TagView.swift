@@ -39,28 +39,10 @@ struct TagView: View {
             .onTapGesture {
                 onTap?()
             }
-            .customContextMenu(isPresented: $isMenuVisible) {
-                AnyView(
-                    Text(tag.name)
-                        .font(.system(size: 15, weight: .regular))
-                        .foregroundColor(Color.tagTextColor)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 1)
-                        .background(tag.color.color)
-                        .cornerRadius(4)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .scaleEffect(1.4)
-                )
-            } contextmenu: {
+            .customContextMenu {
                 AnyView(
                     VStack(alignment: .leading, spacing: 10) {
-                        HStack {
-                            Text("이 태그로 검색하기")
-                            Spacer()
-                            Image(systemName: "magnifyingglass")
-                        }
-                        .onTapGesture {
+                        Button("이 태그로 검색하기", role: .none) {
                             viewModel.clearSearch()
                             viewModel.searchBarSelectedTagIds.append(tag.id)
                             // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
@@ -69,35 +51,16 @@ struct TagView: View {
                             }
                         }
                         
-                        Divider()
-                        
-                        HStack {
-                            Text("태그 수정")
-                            Spacer()
-                            Image(systemName: "pencil")
-                        }
-                        .onTapGesture {
+                        Button("태그 수정", role: .none) {
                             isUpdating = true
                         }
                         
-                        Divider()
-                        
-                        HStack {
-                            Text("태그 삭제")
-                            Spacer()
-                            Image(systemName: "trash")
-                        }
-                        .onTapGesture {
+                        Button("태그 삭제", role: .none) {
                             Task {
                                 await viewModel.deleteTag(tagId: tag.id)
                             }
                         }
                     }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 12)
-                    .background(Color.memoBackgroundWhite)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .frame(width: 250)
                 )
             }
             .sheet(isPresented: $isUpdating, onDismiss: {
