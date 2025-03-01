@@ -8,10 +8,19 @@
 import Foundation
 
 //MARK: - 유저 정보 가져오기 에러
-enum GetUserError: Error {
+enum GetUserError: CustomError {
     case userNotFound
     case networkError
     case unknown
+    
+    var type: ErrorType {
+        switch self {
+        case .userNotFound:
+            return .relogin
+        default:
+            return .normal
+        }
+    }
     
     static func from(baseError: BaseError) -> GetUserError {
         switch baseError {
@@ -34,10 +43,19 @@ extension GetUserError: LocalizedError {
  
 
 //MARK: - 닉네임 변경 에러
-enum ChangeNicknameError: Error {
+enum ChangeNicknameError: CustomError {
     case userNotFound
     case networkError
     case unknown
+    
+    var type: ErrorType {
+        switch self {
+        case .userNotFound:
+            return .relogin
+        default:
+            return .normal
+        }
+    }
     
     static func from(baseError: BaseError) -> ChangeNicknameError {
         switch baseError {
@@ -59,13 +77,22 @@ extension ChangeNicknameError: LocalizedError {
 }
 
 //MARK: - 비밀번호 변경 에러
-enum ChangePasswordError: Error {
+enum ChangePasswordError: CustomError {
     case userNotFound
     case notMatchCurrentPassword
     case networkError
     case unknown
     case invalidPassword
     case passwordNotMatch
+    
+    var type: ErrorType {
+        switch self {
+        case .userNotFound:
+            return .relogin
+        default:
+            return .normal
+        }
+    }
     
     static func from(baseError: BaseError) -> ChangePasswordError {
         switch baseError {
@@ -92,11 +119,20 @@ extension ChangePasswordError: LocalizedError {
 }
 
 //MARK: - 회원 탈퇴 에러
-enum WithdrawalError: Error {
+enum WithdrawalError: CustomError {
     case userNotFound
     case emailNotMatch
     case networkError
     case unknown
+    
+    var type: ErrorType {
+        switch self {
+        case .userNotFound:
+            return .relogin
+        default:
+            return .normal
+        }
+    }
     
     static func from(baseError: BaseError) -> WithdrawalError {
         switch baseError {

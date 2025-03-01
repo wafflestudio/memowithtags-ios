@@ -7,13 +7,20 @@
 
 import Foundation
 
-enum SocialLoginError: Error {
+enum SocialLoginError: CustomError {
     case invalidCode
     case emailAlreadyExists
     case networkError
     case unknown
     case tokenSaveError
     case invalidAccess
+    
+    var type: ErrorType {
+        switch self {
+        default:
+            return .normal
+        }
+    }
     
     static func from(baseError: BaseError) -> SocialLoginError {
         switch baseError {

@@ -111,16 +111,21 @@ struct ChangePasswordView: View {
                     await viewModel.changePassword(currentPassword: currentPassword, newPassword: newPassword, newPasswordRepeat: newPasswordRepeat)
                 }
             } label: {
-                Text("완료")
-                    .frame(maxWidth: .infinity)
-                    .font(.pretendard(.semibold, size: 16))
-                    .foregroundStyle(.white)
-                    .padding(.vertical, 12)
-                
+                Group {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else {
+                        Text("완료")
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .font(.pretendard(.semibold, size: 16))
+                .foregroundStyle(.white)
+                .padding(.vertical, 12)
             }
-            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
             .cornerRadius(22)
-            .disabled(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty)
+            .disabled(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading)
 
         }
         .padding(.horizontal, 12)

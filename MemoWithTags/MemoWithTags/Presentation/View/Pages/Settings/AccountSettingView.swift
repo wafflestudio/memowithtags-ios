@@ -191,20 +191,26 @@ struct AccountSettingView: View {
                     //action
                     Task {
                         showWithdrawalSheet = false
-//                        await viewModel.withdrawal(email: email)
+                        await viewModel.withdrawal(email: email)
                     }
                 } label: {
-                    Text("확인")
-                        .frame(maxWidth: .infinity)
-                        .font(.pretendard(.semibold, size: 16))
-                        .foregroundStyle(.white)
-                        .padding(.vertical, 12)
+                    Group {
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Text("확인")
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .font(.pretendard(.semibold, size: 16))
+                    .foregroundStyle(.white)
+                    .padding(.vertical, 12)
 
                 }
-                .background(email.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                 .cornerRadius(22)
                 .padding(.top, 16)
-                .disabled(email.isEmpty)
+                .disabled(email.isEmpty || viewModel.isLoading)
                 
                 Spacer()
             }

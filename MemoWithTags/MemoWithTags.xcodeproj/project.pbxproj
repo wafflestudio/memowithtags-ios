@@ -91,6 +91,7 @@
 		DABFE2842D284E7200B314E2 /* TagRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE2832D284E6800B314E2 /* TagRouter.swift */; };
 		DABFE2882D28634600B314E2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE2872D28634400B314E2 /* User.swift */; };
 		DABFE28A2D286BDF00B314E2 /* EmailVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE2892D286BD200B314E2 /* EmailVerificationViewModel.swift */; };
+		DAC527132D73609C001C9241 /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC527122D736096001C9241 /* CustomError.swift */; };
 		DAD470B82D467EB500A3DFC3 /* AccountSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */; };
 		DADDA9BC2D6D947600A8BE97 /* CustomContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADDA9BB2D6D946800A8BE97 /* CustomContextMenu.swift */; };
 		DAE504052D465E0C0089B7D0 /* NicknameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */; };
@@ -185,6 +186,7 @@
 		DABFE2832D284E6800B314E2 /* TagRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRouter.swift; sourceTree = "<group>"; };
 		DABFE2872D28634400B314E2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DABFE2892D286BD200B314E2 /* EmailVerificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationViewModel.swift; sourceTree = "<group>"; };
+		DAC527122D736096001C9241 /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingView.swift; sourceTree = "<group>"; };
 		DADDA9BB2D6D946800A8BE97 /* CustomContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomContextMenu.swift; sourceTree = "<group>"; };
 		DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingView.swift; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				DA4018592D32C7D3008500E2 /* BaseError.swift */,
+				DAC527122D736096001C9241 /* CustomError.swift */,
 				DA8886C82D6A25E100ED6C1A /* AuthError.swift */,
 				DA8886CA2D6A2EE000ED6C1A /* UserError.swift */,
 				DA8886CC2D6A310400ED6C1A /* SocialLoginError.swift */,
@@ -660,6 +663,7 @@
 				DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */,
 				DA19C4E92D3FF9AF00ACDC00 /* DeepLinkHandler.swift in Sources */,
 				DA40186B2D32DC2E008500E2 /* DefaultAuthRepository.swift in Sources */,
+				DAC527132D73609C001C9241 /* CustomError.swift in Sources */,
 				DA4018682D32D543008500E2 /* TagError.swift in Sources */,
 				DA0DE63C2D43BD290006668A /* KeyboardManager.swift in Sources */,
 				DA3C9E542D29072F00F28D07 /* MainView.swift in Sources */,

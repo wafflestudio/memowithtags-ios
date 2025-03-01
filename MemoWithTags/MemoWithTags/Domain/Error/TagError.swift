@@ -7,13 +7,22 @@
 
 import Foundation
 
-enum TagError: Error {
+enum TagError: CustomError {
     case wrongFormat
     case unsureUser
     case wrongUser
     case nonExistingTag
     case serverError
     case unknown
+    
+    var type: ErrorType {
+        switch self {
+        case .unsureUser:
+            return .relogin
+        default:
+            return .normal
+        }
+    }
     
     static func from(baseError: BaseError) -> TagError {
         switch baseError {

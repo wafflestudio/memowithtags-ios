@@ -288,6 +288,33 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         isLoading = false
     }
+
+    //MARK: - settings view에서 회원탈퇴하는 함수
+    func withdrawal(email: String) async {
+        guard !isLoading else { return }
+        
+        isLoading = true
+        
+        let result = await useCases.userService.withdrawal(email: email)
+        
+        switch result {
+        case .success:
+            clearMain()
+            clearSearch()
+            
+            appState.user.isLoggedIn = false
+            appState.user.userId = nil
+            appState.user.userName = nil
+            appState.user.userEmail = nil
+            
+            appState.navigation.reset()
+            appState.navigation.push(to: .root)
+        case .failure(let error):
+            appState.system.alert(error: error)
+        }
+        
+        isLoading = false
+    }
     
     //MARK: - editor에서 submit 했을 때 작동
     func submit() async {

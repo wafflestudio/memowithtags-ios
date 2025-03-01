@@ -7,12 +7,16 @@
 import Foundation
 
 //MARK: - 로그인 에러
-enum LoginError: Error {
+enum LoginError: CustomError {
     case invalidCredentials
     case networkError
     case unknown
     case tokenSaveError
     case invalidEmail
+    
+    var type: ErrorType {
+        return .normal
+    }
     
     static func from(baseError: BaseError) -> LoginError {
         switch baseError {
@@ -36,8 +40,12 @@ extension LoginError: LocalizedError {
 }
 
 //MARK: - 로그아웃 에러
-enum LogoutError: Error {
+enum LogoutError: CustomError {
     case tokenDeleteError
+    
+    var type: ErrorType {
+        return .normal
+    }
 }
 
 extension LogoutError: LocalizedError {
@@ -49,11 +57,15 @@ extension LogoutError: LocalizedError {
 }
 
 //MARK: - 인증코드 전송 에러
-enum SendCodeError: Error {
+enum SendCodeError: CustomError {
     case alreadySentCode
     case invalidEmail
     case networkError
     case unknown
+    
+    var type: ErrorType {
+        return .normal
+    }
     
     static func from(baseError: BaseError) -> SendCodeError {
         switch baseError {
@@ -76,10 +88,14 @@ extension SendCodeError: LocalizedError {
 }
 
 //MARK: - 인증코드 검증 에러
-enum VerifyCodeError: Error {
+enum VerifyCodeError: CustomError {
     case notMatchCode
     case networkError
     case unknown
+    
+    var type: ErrorType {
+        return .normal
+    }
     
     static func from(baseError: BaseError) -> VerifyCodeError {
         switch baseError {
@@ -101,7 +117,7 @@ extension VerifyCodeError: LocalizedError {
 }
 
 //MARK: - 회원가입 에러
-enum RegisterError: Error {
+enum RegisterError: CustomError {
     case emailAlreadyExists
     case invalidEmail
     case networkError
@@ -109,6 +125,10 @@ enum RegisterError: Error {
     case tokenSaveError
     case invalidPassword
     case passwordNotMatch
+    
+    var type: ErrorType {
+        return .normal
+    }
     
     static func from(baseError: BaseError) -> RegisterError {
         switch baseError {
@@ -136,12 +156,16 @@ extension RegisterError: LocalizedError {
 
 
 //MARK: - 비밀번호 재설정 에러
-enum ResetPasswordError: Error {
+enum ResetPasswordError: CustomError {
     case invalidEmail
     case networkError
     case unknown
     case invalidPassword
     case passwordNotMatch
+    
+    var type: ErrorType {
+        return .normal
+    }
     
     static func from(baseError: BaseError) -> ResetPasswordError {
         switch baseError {

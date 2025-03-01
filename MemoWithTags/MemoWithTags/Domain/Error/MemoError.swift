@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum MemoError: Error {
+enum MemoError: CustomError {
     case wrongFormat
     case unsureUser
     case wrongUser
@@ -14,6 +14,15 @@ enum MemoError: Error {
     case serverError
     case invalidOrder
     case unknown
+    
+    var type: ErrorType {
+        switch self {
+        case .unsureUser:
+            return .relogin
+        default:
+            return .normal
+        }
+    }
 
     static func from(baseError: BaseError) -> MemoError {
         switch baseError {
