@@ -105,17 +105,23 @@ struct ResetPasswordView: View {
                             await viewModel.resetPassword(email: email, password: password, passwordRepeat: passwordRepeat)
                         }
                     } label: {
-                        Text("확인")
-                            .frame(maxWidth: .infinity)
-                            .font(.pretendard(.semibold, size: 16))
-                            .foregroundStyle(.white)
-                            .padding(.vertical, 12)
+                        Group {
+                            if viewModel.isLoading {
+                                ProgressView()
+                            } else {
+                                Text("다음")
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .font(.pretendard(.semibold, size: 16))
+                        .foregroundStyle(.white)
+                        .padding(.vertical, 12)
 
                     }
-                    .background(password.isEmpty || passwordRepeat.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                     .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(password.isEmpty || passwordRepeat.isEmpty)
+                    .disabled(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading)
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {

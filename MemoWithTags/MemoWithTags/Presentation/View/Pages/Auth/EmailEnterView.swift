@@ -56,17 +56,22 @@ struct EmailEnterView: View {
                             await viewModel.sendCode(email: email)
                         }
                     } label: {
-                        Text("다음")
-                            .frame(maxWidth: .infinity)
-                            .font(.pretendard(.regular, size: 16))
-                            .foregroundStyle(.white)
-                            .padding(.vertical, 12)
-
+                        Group {
+                            if viewModel.isLoading {
+                                ProgressView()
+                            } else {
+                                Text("다음")
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .font(.pretendard(.regular, size: 16))
+                        .foregroundStyle(.white)
+                        .padding(.vertical, 12)
                     }
-                    .background(email.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                     .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(email.isEmpty)
+                    .disabled(email.isEmpty || viewModel.isLoading)
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
