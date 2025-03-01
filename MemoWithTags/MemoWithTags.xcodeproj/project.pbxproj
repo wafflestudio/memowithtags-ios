@@ -63,6 +63,15 @@
 		DA888AF72D2FA73300525291 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA888AF62D2FA72F00525291 /* SplashView.swift */; };
 		DA8F562A2D34152000B8C23F /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8F56292D34151B00B8C23F /* BaseViewModel.swift */; };
 		DAA6789F2D45512F00EFB929 /* TextFormatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA6789E2D45512600EFB929 /* TextFormatManager.swift */; };
+		DAB782692D7220A400E6AE14 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB782682D72209A00E6AE14 /* Font.swift */; };
+		DAB782722D72244100E6AE14 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB782702D72244100E6AE14 /* Pretendard-SemiBold.otf */; };
+		DAB782732D72244100E6AE14 /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826D2D72244100E6AE14 /* Pretendard-Light.otf */; };
+		DAB782742D72244100E6AE14 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826F2D72244100E6AE14 /* Pretendard-Regular.otf */; };
+		DAB782752D72244100E6AE14 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826E2D72244100E6AE14 /* Pretendard-Medium.otf */; };
+		DAB782762D72244100E6AE14 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826A2D72244100E6AE14 /* Pretendard-Bold.otf */; };
+		DAB782772D72244100E6AE14 /* Pretendard-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826C2D72244100E6AE14 /* Pretendard-ExtraLight.otf */; };
+		DAB782782D72244100E6AE14 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB782712D72244100E6AE14 /* Pretendard-Thin.otf */; };
+		DAB782792D72244100E6AE14 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826B2D72244100E6AE14 /* Pretendard-ExtraBold.otf */; };
 		DABFE2542D28416000B314E2 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE21A2D28416000B314E2 /* Auth.swift */; };
 		DABFE2582D28416000B314E2 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE2212D28416000B314E2 /* NetworkConfiguration.swift */; };
 		DABFE2592D28416000B314E2 /* TokenInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE2222D28416000B314E2 /* TokenInterceptor.swift */; };
@@ -148,6 +157,15 @@
 		DA8F56292D34151B00B8C23F /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemoWithTags.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAA6789E2D45512600EFB929 /* TextFormatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFormatManager.swift; sourceTree = "<group>"; };
+		DAB782682D72209A00E6AE14 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
+		DAB7826A2D72244100E6AE14 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		DAB7826B2D72244100E6AE14 /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
+		DAB7826C2D72244100E6AE14 /* Pretendard-ExtraLight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraLight.otf"; sourceTree = "<group>"; };
+		DAB7826D2D72244100E6AE14 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.otf"; sourceTree = "<group>"; };
+		DAB7826E2D72244100E6AE14 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		DAB7826F2D72244100E6AE14 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		DAB782702D72244100E6AE14 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		DAB782712D72244100E6AE14 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Thin.otf"; sourceTree = "<group>"; };
 		DABFE21A2D28416000B314E2 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		DABFE21F2D28416000B314E2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		DABFE2212D28416000B314E2 /* NetworkConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConfiguration.swift; sourceTree = "<group>"; };
@@ -433,6 +451,7 @@
 		DABFE2522D28416000B314E2 /* MemoWithTags */ = {
 			isa = PBXGroup;
 			children = (
+				DAF485482D721B4100421D2F /* Font */,
 				DA4018522D32AA07008500E2 /* Data */,
 				DA4018532D32AA11008500E2 /* Domain */,
 				DA4018542D32AA19008500E2 /* Presentation */,
@@ -444,6 +463,22 @@
 				DABFE2202D28416000B314E2 /* Preview Content */,
 			);
 			path = MemoWithTags;
+			sourceTree = "<group>";
+		};
+		DAF485482D721B4100421D2F /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				DAB782682D72209A00E6AE14 /* Font.swift */,
+				DAB7826A2D72244100E6AE14 /* Pretendard-Bold.otf */,
+				DAB7826B2D72244100E6AE14 /* Pretendard-ExtraBold.otf */,
+				DAB7826C2D72244100E6AE14 /* Pretendard-ExtraLight.otf */,
+				DAB7826D2D72244100E6AE14 /* Pretendard-Light.otf */,
+				DAB7826E2D72244100E6AE14 /* Pretendard-Medium.otf */,
+				DAB7826F2D72244100E6AE14 /* Pretendard-Regular.otf */,
+				DAB782702D72244100E6AE14 /* Pretendard-SemiBold.otf */,
+				DAB782712D72244100E6AE14 /* Pretendard-Thin.otf */,
+			);
+			path = Font;
 			sourceTree = "<group>";
 		};
 		DAFFD2012D68D93F00C44EF1 /* Auth */ = {
@@ -541,6 +576,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				DABFE27E2D28416000B314E2 /* Preview Assets.xcassets in Resources */,
+				DAB782722D72244100E6AE14 /* Pretendard-SemiBold.otf in Resources */,
+				DAB782732D72244100E6AE14 /* Pretendard-Light.otf in Resources */,
+				DAB782742D72244100E6AE14 /* Pretendard-Regular.otf in Resources */,
+				DAB782752D72244100E6AE14 /* Pretendard-Medium.otf in Resources */,
+				DAB782762D72244100E6AE14 /* Pretendard-Bold.otf in Resources */,
+				DAB782772D72244100E6AE14 /* Pretendard-ExtraLight.otf in Resources */,
+				DAB782782D72244100E6AE14 /* Pretendard-Thin.otf in Resources */,
+				DAB782792D72244100E6AE14 /* Pretendard-ExtraBold.otf in Resources */,
 				DABFE27F2D28416000B314E2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -612,6 +655,7 @@
 				556EF4582D68ACC1001BE9B3 /* Tag.swift in Sources */,
 				DA212CD52D42A13C005D1E15 /* MemoEditorView.swift in Sources */,
 				DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */,
+				DAB782692D7220A400E6AE14 /* Font.swift in Sources */,
 				DAE504052D465E0C0089B7D0 /* NicknameSettingView.swift in Sources */,
 				DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */,
 				DA19C4E92D3FF9AF00ACDC00 /* DeepLinkHandler.swift in Sources */,
@@ -773,6 +817,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -806,6 +851,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

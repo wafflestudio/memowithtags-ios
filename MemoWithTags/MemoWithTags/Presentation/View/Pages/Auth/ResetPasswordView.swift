@@ -23,7 +23,7 @@ struct ResetPasswordView: View {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("비밀번호 재설정")
-                        .font(.system(size: 21, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 21))
                         .foregroundStyle(Color.titleTextBlack)
                 }
                 .padding(.vertical, 8)
@@ -38,12 +38,12 @@ struct ResetPasswordView: View {
                                 "",
                                 text: $password,
                                 prompt: Text("비밀번호")
-                                    .font(.system(size: 16, weight: .regular))
+                                    .font(.pretendard(.regular, size: 16))
                                     .foregroundStyle(Color(hex: "#94979F"))
                             )
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
-                            .font(.system(size: 16, weight: .regular))
+                            .font(.pretendard(.regular, size: 16))
                             .background(Color.white)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 14)
@@ -59,19 +59,19 @@ struct ResetPasswordView: View {
                             VStack(alignment: .leading, spacing: 6) {
                                 HStack {
                                     Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
                                     Text("최소 8자 ~ 최대 16자")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
                                 }
                                 
                                 HStack {
                                     Image(systemName: "checkmark")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                                     Text("알파벳 대소문자, 숫자, 특수문자 포함")
-                                        .font(.system(size: 12, weight: .regular))
+                                        .font(.pretendard(.regular, size: 12))
                                         .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                                 }
                             }
@@ -83,12 +83,12 @@ struct ResetPasswordView: View {
                             "",
                             text: $passwordRepeat,
                             prompt: Text("비밀번호 확인")
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.pretendard(.regular, size: 16))
                                 .foregroundStyle(Color(hex: "#94979F"))
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
@@ -107,7 +107,7 @@ struct ResetPasswordView: View {
                     } label: {
                         Text("확인")
                             .frame(maxWidth: .infinity)
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.pretendard(.semibold, size: 16))
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
 
@@ -119,7 +119,7 @@ struct ResetPasswordView: View {
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "이전", fontSize: 14, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {
+                        DesignTagView(text: "이전", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#E3E3E7", cornerRadius: 4) {
                             viewModel.appState.navigation.pop()
                         }
                         

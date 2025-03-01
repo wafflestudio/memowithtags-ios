@@ -55,9 +55,11 @@ struct MemoEditorView: View {
             
             //MARK: - 메모 에디터
             TextEditor(text: $viewModel.editorContent)
+                .font(.pretendard(.regular, size: 16))
                 .overlay(Group { // placeholder
                     if viewModel.editorContent.isEmpty {
                         Text("메모를 작성해보세요.")
+                            .font(.pretendard(.regular, size: 16))
                             .foregroundStyle(Color.dividerGray)
                             .offset(x: 5, y: 10)
                     }
@@ -72,13 +74,13 @@ struct MemoEditorView: View {
                 switch viewModel.editorState {
                 case .create:
                     Text(dateFormat(date: Date()))
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.pretendard(.medium, size: 13))
                         .foregroundStyle(Color.dateGray)
                         .padding(.vertical, 3)
                     
                 case let .update(target):
                     Text(dateFormat(date: target.createdAt))
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.pretendard(.medium, size: 13))
                         .foregroundStyle(Color.dateGray)
                         .padding(.vertical, 3)
                     

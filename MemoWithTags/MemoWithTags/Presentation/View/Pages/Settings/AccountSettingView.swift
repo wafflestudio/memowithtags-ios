@@ -26,11 +26,11 @@ struct AccountSettingView: View {
                     } else {
                         HStack(spacing: 6) {
                             Text(viewModel.appState.user.userName ?? "")
-                                .font(.system(size: 16, weight: .bold))
+                                .font(.pretendard(.semibold, size: 16))
                                 .foregroundStyle(Color.titleTextBlack)
                             
                             Text("#\(viewModel.appState.user.userNumber ?? 0)")
-                                .font(.system(size: 12, weight: .regular))
+                                .font(.pretendard(.regular, size: 12))
                                 .foregroundStyle(Color.dateGray)
                             
                             Spacer()
@@ -38,13 +38,13 @@ struct AccountSettingView: View {
                         
                         HStack {
                             Text("닉네임 변경")
-                                .font(.system(size: 14, weight: .regular))
+                                .font(.pretendard(.regular, size: 14))
                                 .foregroundStyle(Color.titleTextBlack)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.pretendard(.regular, size: 14))
                                 .foregroundStyle(Color.dateGray)
                         }
                         .background(Color.memoBackgroundWhite)
@@ -62,20 +62,20 @@ struct AccountSettingView: View {
                 VStack(spacing: 12) {
                     HStack(spacing: 10) {
                         Text("이메일")
-                            .font(.system(size: 14, weight: .regular))
+                            .font(.pretendard(.regular, size: 14))
                             .foregroundStyle(Color.titleTextBlack)
                         
                         Spacer()
                         
                         Text(viewModel.appState.user.userEmail ?? "")
-                            .font(.system(size: 13, weight: .regular))
+                            .font(.pretendard(.regular, size: 12))
                             .foregroundStyle(Color.dateGray)
                     }
                     
                     if !viewModel.appState.user.isSocial {
                         HStack {
                             Text("비밀번호 변경")
-                                .font(.system(size: 14, weight: .regular))
+                                .font(.pretendard(.regular, size: 14))
                                 .foregroundStyle(Color.titleTextBlack)
                             
                             Spacer()
@@ -97,7 +97,7 @@ struct AccountSettingView: View {
                 
                 HStack {
                     Text("로그아웃")
-                        .font(.system(size: 14, weight: .regular))
+                        .font(.pretendard(.regular, size: 14))
                         .foregroundStyle(Color(hex: "#FF5151"))
                     Spacer()
                 }
@@ -119,7 +119,7 @@ struct AccountSettingView: View {
                         .foregroundStyle(Color(hex: "#FF5151"))
                     
                     Text("회원 탈퇴")
-                        .font(.system(size: 14, weight: .regular))
+                        .font(.pretendard(.regular, size: 14))
                         .foregroundStyle(Color(hex: "#FF5151"))
                     
                     Spacer()
@@ -154,18 +154,18 @@ struct AccountSettingView: View {
             
             ToolbarItem(placement: .navigation) {
                 Text("내 계정")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.pretendard(.semibold, size: 18))
                     .foregroundStyle(Color.titleTextBlack)
             }
         }
         .sheet(isPresented: $showWithdrawalSheet) {
             VStack(spacing: 20) {
                 Text("회원을 탈퇴하시겠습니까?")
-                    .font(.system(size: 20, weight: .medium))
+                    .font(.pretendard(.semibold, size: 20))
                     .padding(.top, 20)
                 
                 Text("이메일을 입력해주세요.")
-                    .font(.system(size: 14, weight: .regular))
+                    .font(.pretendard(.regular, size: 14))
                     .foregroundStyle(Color.gray)
                 
                 TextField (
@@ -173,12 +173,12 @@ struct AccountSettingView: View {
                     text: $email,
                     prompt:
                         Text("이메일")
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .foregroundStyle(Color(hex: "#94979F"))
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
-                .font(.system(size: 16, weight: .regular))
+                .font(.pretendard(.regular, size: 16))
                 .background(.white)
                 .overlay (
                     RoundedRectangle(cornerRadius: 14)
@@ -196,7 +196,7 @@ struct AccountSettingView: View {
                 } label: {
                     Text("확인")
                         .frame(maxWidth: .infinity)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.pretendard(.semibold, size: 16))
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
 

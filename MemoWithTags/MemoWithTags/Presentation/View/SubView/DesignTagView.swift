@@ -20,7 +20,7 @@ struct DesignTagView: View {
     
     var body: some View {
         Text(text)
-            .font(.system(size: fontSize, weight: fontWeight))
+            .font(.pretendard(fontWeight, size: fontSize))
             .foregroundStyle(Color.tagTextColor)
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, verticalPadding)

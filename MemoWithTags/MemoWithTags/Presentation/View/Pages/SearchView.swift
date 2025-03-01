@@ -38,6 +38,7 @@ struct SearchView: View {
                         }
                         
                         TextField("텍스트와 태그로 메모 검색", text: $viewModel.searchBarText)
+                            .font(.pretendard(.regular, size: 15))
                             .onChange(of: viewModel.searchBarText) {
                                 // 실행하고 있는 searchTask를 종료
                                 searchTask?.cancel()
@@ -56,7 +57,6 @@ struct SearchView: View {
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .font(.system(size: 15, weight: .regular))
                     .frame(maxWidth: .infinity)
                     .background(Color.searchBarBackgroundGray)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -77,7 +77,7 @@ struct SearchView: View {
                 if !viewModel.searchedTagIds.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Tags")
-                            .font(.system(size: 12, weight: .medium))
+                            .font(.pretendard(.medium, size: 12))
                             .foregroundStyle(Color.dateGray)
                             .padding(.horizontal, 14)
 
@@ -100,7 +100,7 @@ struct SearchView: View {
                 if !viewModel.searchedMemos.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Memos")
-                            .font(.system(size: 12, weight: .medium))
+                            .font(.pretendard(.medium, size: 12))
                             .foregroundStyle(Color.dateGray)
                             .padding(.horizontal, 26)
                         

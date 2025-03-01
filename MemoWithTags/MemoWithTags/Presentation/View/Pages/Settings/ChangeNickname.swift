@@ -19,12 +19,12 @@ struct ChangeNicknameView: View {
                     "",
                     text: $nickname,
                     prompt: Text("닉네임 입력")
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .foregroundStyle(Color(hex: "#94979F"))
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
-                .font(.system(size: 16, weight: .regular))
+                .font(.pretendard(.regular, size: 16))
                 .background(Color.white)
                 .overlay(
                     RoundedRectangle(cornerRadius: 14)
@@ -37,7 +37,7 @@ struct ChangeNicknameView: View {
                 HStack {
                     Spacer()
                     Text("\(nickname.count)/8")
-                        .font(.system(size: 12, weight: .regular))
+                        .font(.pretendard(.regular, size: 12))
                         .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
                         .padding(.horizontal, 6)
                 }
@@ -52,7 +52,7 @@ struct ChangeNicknameView: View {
             } label: {
                 Text("완료")
                     .frame(maxWidth: .infinity)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.pretendard(.semibold, size: 16))
                     .foregroundStyle(.white)
                     .padding(.vertical, 12)
                 
@@ -74,7 +74,7 @@ struct ChangeNicknameView: View {
             
             ToolbarItem(placement: .navigation) {
                 Text("닉네임 변경")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.pretendard(.semibold, size: 18))
                     .foregroundStyle(Color.titleTextBlack)
             }
         }

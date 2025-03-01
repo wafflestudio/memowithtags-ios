@@ -23,12 +23,12 @@ struct ChangePasswordView: View {
                     text: $currentPassword,
                     prompt:
                         Text("기존 비밀번호")
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .foregroundStyle(Color(hex: "#94979F"))
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
-                .font(.system(size: 16, weight: .regular))
+                .font(.pretendard(.regular, size: 16))
                 .background(.white)
                 .overlay (
                     RoundedRectangle(cornerRadius: 14)
@@ -43,12 +43,12 @@ struct ChangePasswordView: View {
                         "",
                         text: $newPassword,
                         prompt: Text("새 비밀번호")
-                            .font(.system(size: 16, weight: .regular))
+                            .font(.pretendard(.regular, size: 16))
                             .foregroundStyle(Color(hex: "#94979F"))
                     )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.pretendard(.regular, size: 16))
                     .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 14)
@@ -67,7 +67,7 @@ struct ChangePasswordView: View {
                                 .font(.system(size: 12, weight: .regular))
                                 .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
                             Text("최소 8자 ~ 최대 16자")
-                                .font(.system(size: 12, weight: .regular))
+                                .font(.pretendard(.regular, size: 12))
                                 .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
                         }
                         
@@ -76,7 +76,7 @@ struct ChangePasswordView: View {
                                 .font(.system(size: 12, weight: .regular))
                                 .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                             Text("알파벳 대소문자, 숫자, 특수문자 포함")
-                                .font(.system(size: 12, weight: .regular))
+                                .font(.pretendard(.regular, size: 12))
                                 .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
                         }
                     }
@@ -88,12 +88,12 @@ struct ChangePasswordView: View {
                     "",
                     text: $newPasswordRepeat,
                     prompt: Text("비밀번호 확인")
-                        .font(.system(size: 16, weight: .regular))
+                        .font(.pretendard(.regular, size: 16))
                         .foregroundStyle(Color(hex: "#94979F"))
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
-                .font(.system(size: 16, weight: .regular))
+                .font(.pretendard(.regular, size: 16))
                 .background(Color.white)
                 .overlay(
                     RoundedRectangle(cornerRadius: 14)
@@ -113,7 +113,7 @@ struct ChangePasswordView: View {
             } label: {
                 Text("완료")
                     .frame(maxWidth: .infinity)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.pretendard(.semibold, size: 16))
                     .foregroundStyle(.white)
                     .padding(.vertical, 12)
                 
@@ -136,7 +136,7 @@ struct ChangePasswordView: View {
             
             ToolbarItem(placement: .navigation) {
                 Text("비밀번호 변경")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.pretendard(.semibold, size: 18))
                     .foregroundStyle(Color.titleTextBlack)
             }
         }
