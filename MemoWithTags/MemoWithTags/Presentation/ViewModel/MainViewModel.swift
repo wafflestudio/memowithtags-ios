@@ -58,7 +58,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             return
         }
         
-        let result = await useCases.memoService.fetchMemo(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage)
+        let result = await useCases.memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage)
         
         switch result {
         case .success(let paginatedMemos):
@@ -86,7 +86,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             return
         }
         
-        let result = await useCases.memoService.fetchMemo(content: content, tagIds: tagIds, dateRange: dateRange, page: searchCurrentPage)
+        let result = await useCases.memoService.searchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: searchCurrentPage)
         
         switch result {
         case .success(let paginatedMemos):

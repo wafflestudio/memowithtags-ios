@@ -13,10 +13,10 @@ final class DefaultMemoRepository: MemoRepository {
     let tokenInterceptor = TokenInterceptor()
     
     //MARK: - 메모 가져오기
-    func fetchMemos(content: String?, tagIds: [Int]?, dateRange: ClosedRange<Date>?, page: Int) async throws -> MemoResponseDto {
-        print("🙏 fetch memos")
+    func searchMemos(content: String?, tagIds: [Int]?, dateRange: ClosedRange<Date>?, page: Int) async throws -> MemoResponseDto {
+        print("🙏 search memos")
         let response = await AF.request(
-            MemoRouter.fetchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: page),
+            MemoRouter.searchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: page),
             interceptor: tokenInterceptor
         ).serializingDecodable(MemoResponseDto.self).response
         
