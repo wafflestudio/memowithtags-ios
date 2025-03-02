@@ -19,9 +19,15 @@ struct MemoListView: View {
                     
                     //MARK: - 메모 리스트
                     ForEach(viewModel.memos) { memo in
+                        let isHighlighted = viewModel.recommendingMemoIds.indices.contains(viewModel.highlightingMemoIndex) &&
+                                            viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
+                        
                         MemoView(memo: memo, viewModel: viewModel)
                             .rotationEffect(.degrees(180))
                             .id(memo.id)
+                            .scaleEffect(isHighlighted ? 1.04 : 1.0)
+                            .shadow(color: isHighlighted ? Color.black.opacity(0.2) : Color.black.opacity(0.05), radius: 6)
+                            .animation(.easeInOut(duration: 0.3), value: isHighlighted)
                     }
                     
                     // ProgressView: 스크롤 맨 위(화면 상단, 코드 상에서는 아래쪽)에 도달하면 다음 페이지(fetchMemos(direction: .next))를 불러옴
