@@ -80,17 +80,23 @@ struct LoginView: View {
                             }
 
                         } label: {
-                            Text("로그인")
-                                .frame(maxWidth: .infinity)
-                                .font(.pretendard(.semibold, size: 16))
-                                .foregroundStyle(.white)
-                                .padding(.vertical, 12)
+                            Group {
+                                if viewModel.isLoading {
+                                    ProgressView()
+                                } else {
+                                    Text("로그인")
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .font(.pretendard(.semibold, size: 16))
+                            .foregroundStyle(.white)
+                            .padding(.vertical, 12)
 
                         }
-                        .background(email.isEmpty || password.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                        .background(email.isEmpty || password.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                         .cornerRadius(22)
                         .padding(.top, 6)
-                        .disabled(email.isEmpty || password.isEmpty)
+                        .disabled(email.isEmpty || password.isEmpty || viewModel.isLoading)
                     }
                     
                     //MARK: - 아래 버튼들

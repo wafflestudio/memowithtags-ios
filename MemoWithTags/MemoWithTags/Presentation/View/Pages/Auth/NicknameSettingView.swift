@@ -66,17 +66,22 @@ struct NicknameSettingView: View {
                         }
 
                     } label: {
-                        Text("다음")
-                            .frame(maxWidth: .infinity)
-                            .font(.pretendard(.semibold, size: 16))
-                            .foregroundStyle(.white)
-                            .padding(.vertical, 12)
-
+                        Group {
+                            if viewModel.isLoading {
+                                ProgressView()
+                            } else {
+                                Text("다음")
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .font(.pretendard(.semibold, size: 16))
+                        .foregroundStyle(.white)
+                        .padding(.vertical, 12)
                     }
-                    .background(nickname.isEmpty ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(nickname.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
                     .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(nickname.isEmpty)
+                    .disabled(nickname.isEmpty || viewModel.isLoading)
                 }
                 .padding(.top, 18)
                 .padding(.bottom, 24)

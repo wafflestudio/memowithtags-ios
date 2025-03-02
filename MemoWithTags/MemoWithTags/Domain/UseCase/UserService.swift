@@ -59,6 +59,9 @@ final class DefaultUserService: UserService {
     //MARK: - 회원 탙퇴
     func withdrawal(email: String) async -> Result<Void, WithdrawalError> {
         do {
+            _ = KeyChainManager.shared.deleteAccessToken()
+            _ = KeyChainManager.shared.deleteRefreshToken()
+            
             try await authRepository.withdrawal(email: email)
             return .success(())
         } catch {

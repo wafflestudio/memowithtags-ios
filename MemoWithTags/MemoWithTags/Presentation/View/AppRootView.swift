@@ -83,11 +83,46 @@ struct AppRootView: View {
             }
         }
         .alert(isPresented: container.appState.$system.showAlert) {
-            return Alert(
-                title: Text("에러"),
-                message: Text(container.appState.system.error?.localizedDescription ?? "Unable to define error"),
-                dismissButton: .default(Text("확인"))
-            )
+            let error = container.appState.system.error
+            
+            if let customError = error as? CustomError {
+                switch customError.type {
+                case .relogin:
+                    return Alert(
+                        title: Text("인증 오류"),
+                        message: Text(customError.localizedDescription),
+                        dismissButton: .default(Text("재로그인"), action: {
+                            _ = KeyChainManager.shared.deleteAccessToken()
+                            _ = KeyChainManager.shared.deleteRefreshToken()
+                            
+                            container.appState.navigation.reset()
+                            container.appState.navigation.push(to: .root)
+                        })
+                    )
+                    
+                case .normal:
+                    return Alert(
+                        title: Text("오류"),
+                        message: Text(customError.localizedDescription),
+                        dismissButton: .default(Text("확인"))
+                    )
+                    
+                case .fatal:
+                    return Alert(
+                        title: Text("치명적인 오류"),
+                        message: Text(customError.localizedDescription),
+                        dismissButton: .destructive(Text("앱 종료"), action: {
+                            // 앱 종료 또는 강제 리셋 처리
+                        })
+                    )
+                }
+            } else {
+                return Alert(
+                    title: Text("알 수 없는 오류"),
+                    message: Text(error?.localizedDescription ?? "정의되지 않은 오류입니다."),
+                    dismissButton: .default(Text("확인"))
+                )
+            }
         }
     }
 }
