@@ -40,3 +40,15 @@ struct MemoResponseDto: Decodable {
         return .init(memos: results.map{$0.toMemo()}, currentPage: page, totalPages: totalPages)
     }
 }
+
+struct RecommendedMemoIds {
+    let memoIds: [Int]
+}
+
+struct RecommendMemoResponseDto: Decodable {
+    let memoIds: [Int]
+    
+    func toRecommendedMemoIds() -> RecommendedMemoIds {
+        return RecommendedMemoIds(memoIds: memoIds)
+    }
+}

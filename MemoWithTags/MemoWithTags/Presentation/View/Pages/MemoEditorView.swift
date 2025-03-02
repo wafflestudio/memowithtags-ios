@@ -15,38 +15,38 @@ struct MemoEditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             //MARK: - 상단 바
-            HStack {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 19, weight: .regular))
-                    .foregroundStyle(Color.black)
-                    .onTapGesture {
-                        Task {
-                            viewModel.appState.navigation.pop()
-                            await viewModel.submit()
-                        }
+            HStack(spacing: 12) {
+                // 왼쪽: 뒤로가기 chevron와 "확인" 버튼
+                HStack(spacing: 4) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 19, weight: .regular))
+                        .foregroundStyle(Color.black)
+                    Text("확인")
+                        .font(.pretendard(.medium, size: 17))
+                        .foregroundColor(.black)
+                }
+                .onTapGesture {
+                    Task {
+                        // "확인" 동작: 제출 후 이전 화면으로 이동
+                        await viewModel.submit()
+                        viewModel.appState.navigation.pop()
                     }
+                }
                 
                 Spacer()
                 
-                Menu {
-                    Button(role: .destructive) {
-                        viewModel.editorState = .create
-                        viewModel.editorContent = ""
-                        viewModel.editorTagIds = []
-                        viewModel.appState.navigation.pop()
-                    } label: {
-                        Label("변경사항 삭제하기", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 19, weight: .regular))
-                        .foregroundStyle(Color.black)
-                        .padding(.vertical, 10)
-                        .background(Color.white)
-                        .rotationEffect(.degrees(90))
-
+                // 오른쪽: "취소" 버튼
+                HStack(spacing: 4) {
+                    Text("취소")
+                        .font(.pretendard(.medium, size: 17))
+                        .foregroundColor(.red)
                 }
-        
+                .onTapGesture {
+                    viewModel.editorState = .create
+                    viewModel.editorContent = ""
+                    viewModel.editorTagIds = []
+                    viewModel.appState.navigation.pop()
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
