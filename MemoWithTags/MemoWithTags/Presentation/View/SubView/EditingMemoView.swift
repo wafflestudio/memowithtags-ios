@@ -11,7 +11,7 @@ import Flow
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     
-    @State var dynamicHeight: CGFloat = 40
+    @State private var memoEditingTask: Task<Void, Never>? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -30,11 +30,27 @@ struct EditingMemoView: View {
                 }
             }
             
-            //MARK: - 아래 버튼들
+            //MARK: - editor 아래 버튼들
             HStack {
                 switch viewModel.editorState {
                 case .create: // create 모드일 때
+                    Image(systemName: "arrow.down.left.and.arrow.up.right")
+                        .font(.system(size: 17, weight: .regular))
+                        .foregroundColor(.dateGray)
+                        .onTapGesture {
+                            viewModel.appState.navigation.push(to: .memoEditor)
+                        }
+                    
                     Spacer()
+                    
+                    Image(systemName: "xmark")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(hex: "#FF9C9C"))
+                        .onTapGesture {
+                            viewModel.editorState = .create
+                            viewModel.editorContent = ""
+                            viewModel.editorTagIds = []
+                        }
                     
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 20))
@@ -91,11 +107,75 @@ struct EditingMemoView: View {
         .cornerRadius(14)
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
-        .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 2)
+        .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
+        .overlay(recommendingOverlay, alignment: .topTrailing)
+        .onChange(of: viewModel.editorTagIds) {
+            // 실행하고 있는 recommendingTask를 종료
+            memoEditingTask?.cancel()
+            
+            // 새로운 recommendingTask 생성
+            memoEditingTask = Task {
+                do {
+                    try await Task.sleep(nanoseconds: 500_000_000)
+                    await viewModel.recommendMemos()
+                } catch {
+                    // 취소된 경우 아무 작업도 하지 않아도 된다.
+                }
+            }
+        }
     }
-    
     
     private func removeTagFromSelectedTags(_ tagId: Int) {
         viewModel.editorTagIds.removeAll{ $0 == tagId }
+    }
+    
+    // overlay view를 추출하는 computed property
+    private var recommendingOverlay: some View {
+        Group {
+            if !viewModel.recommendingMemoIds.isEmpty {
+                HStack(spacing: 18) {
+                    Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Color.black)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(
+                            Rectangle()
+                                .fill(Color.memoBackgroundWhite)
+                                .cornerRadius(20)
+                        )
+                        .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                    
+                    Image(systemName: "chevron.up")
+                        .font(.system(size: 14, weight: .regular))
+                        .background(
+                            Circle()
+                                .fill(Color.memoBackgroundWhite)
+                                .frame(width: 27, height: 27)
+                        )
+                        .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                        .onTapGesture {
+                            if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
+                                viewModel.highlightingMemoIndex += 1
+                            }
+                        }
+                    
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 14, weight: .regular))
+                        .background(
+                            Circle()
+                                .fill(Color.memoBackgroundWhite)
+                                .frame(width: 27, height: 27)
+                        )
+                        .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                        .onTapGesture {
+                            if viewModel.highlightingMemoIndex > -1 {
+                                viewModel.highlightingMemoIndex -= 1
+                            }
+                        }
+                }
+            }
+        }
+        .offset(x: -20, y: -36)
     }
 }

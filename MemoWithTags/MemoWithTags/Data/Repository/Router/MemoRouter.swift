@@ -72,7 +72,7 @@ enum MemoRouter: Router {
             return nil
         case let .recommendMemos(content, tagIds):
             return ["content": content, "tagIds": tagIds]
-        case let .fetchMemosByMemoId(memoId):
+        case .fetchMemosByMemoId:
             return nil
         }
     }
