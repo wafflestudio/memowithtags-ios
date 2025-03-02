@@ -35,48 +35,17 @@ struct SettingsView: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("메모 필터 기준")
+                    
+                    HStack{
+                        Text("메모 정렬 기준은 만든 날짜 순입니다.")
                             .font(.pretendard(.regular, size: 12))
                             .foregroundStyle(Color.dateGray)
                             .padding(.leading, 6)
                         
-                        HStack {
-                            Text("만든 날짜")
-                                .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.titleTextBlack)
-                            
-                            Spacer()
-                            
-                            if viewModel.sortMemo == .byCreate {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 16, weight: .regular))
-                                    .foregroundStyle(Color(hex: "#FF9C9C"))
-                            }
-                        }
-                        .onTapGesture {
-                            viewModel.sortMemo = .byCreate
-                        }
-                        
-                        HStack {
-                            Text("수정한 날짜")
-                                .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.titleTextBlack)
-                            
-                            Spacer()
-                            
-                            if viewModel.sortMemo == .byUpdate {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 16, weight: .regular))
-                                    .foregroundStyle(Color(hex: "#FF9C9C"))
-                            }
-                        }
-                        .onTapGesture {
-                            viewModel.sortMemo = .byUpdate
-                        }
+                        Spacer()
                     }
                     
-                    Text("검색 필터 기준은 관련성 순입니다.")
+                    Text("검색 정렬 기준은 만든 날짜 순입니다.")
                         .font(.pretendard(.regular, size: 12))
                         .foregroundStyle(Color.dateGray)
                         .padding(.leading, 6)
