@@ -19,7 +19,7 @@ struct MemoListView: View {
                     
                     //MARK: - 메모 리스트
                     ForEach(viewModel.memos) { memo in
-                        let isHighlighted = viewModel.recommendingMemoIds.indices.contains(viewModel.highlightingMemoIndex) &&
+                        let isHighlighted = viewModel.highlightingMemoIndex != -1  &&
                                             viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
                         
                         MemoView(memo: memo, viewModel: viewModel)
