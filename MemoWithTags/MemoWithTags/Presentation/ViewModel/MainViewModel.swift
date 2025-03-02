@@ -266,6 +266,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         switch result {
         case .success(let tag):
             self.tags.append(tag)
+            self.editorTagIds.append(tag.id)
         case .failure(let error):
             appState.system.alert(error: error)
         }

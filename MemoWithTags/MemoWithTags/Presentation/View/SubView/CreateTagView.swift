@@ -12,7 +12,7 @@ struct CreateTagView: View {
     @Binding var randomColor: Color.TagColor
     
     var body: some View {
-        HStack(alignment: .center, spacing: 2) {
+        HStack(alignment: .center, spacing: 4) {
             Text(searchText)
                 .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.tagTextColor)
