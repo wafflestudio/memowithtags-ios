@@ -109,18 +109,29 @@ struct EditingMemoView: View {
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
         .overlay(recommendingOverlay, alignment: .topTrailing)
-        .onChange(of: viewModel.editorTagIds) {
+        /*
+        .onChange(of: viewModel.editorContent) {
             // 실행하고 있는 recommendingTask를 종료
             memoEditingTask?.cancel()
             
             // 새로운 recommendingTask 생성
             memoEditingTask = Task {
                 do {
-                    try await Task.sleep(nanoseconds: 500_000_000)
+                    try await Task.sleep(nanoseconds: 500_000_000) // 0.5초 debounce
                     await viewModel.recommendMemos()
                 } catch {
                     // 취소된 경우 아무 작업도 하지 않아도 된다.
                 }
+            }
+        }
+        */
+        .onChange(of: viewModel.editorTagIds) {
+            // 실행하고 있는 recommendingTask를 종료
+            memoEditingTask?.cancel()
+            
+            // 새로운 recommendingTask 생성
+            memoEditingTask = Task {
+                await viewModel.recommendMemos()
             }
         }
     }
@@ -129,7 +140,7 @@ struct EditingMemoView: View {
         viewModel.editorTagIds.removeAll{ $0 == tagId }
     }
     
-    // overlay view를 추출하는 computed property
+    // overlay view를 computed property로 따로 분리
     private var recommendingOverlay: some View {
         Group {
             if !viewModel.recommendingMemoIds.isEmpty {
