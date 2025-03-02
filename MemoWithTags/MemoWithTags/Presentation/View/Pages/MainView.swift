@@ -20,7 +20,6 @@ struct MainView: View {
             VStack(spacing: 0) {
                 //MARK: - 메모 리스트
                 MemoListView(viewModel: viewModel)
-                    .padding(.vertical, 1)
                 
                 //MARK: - 메모 에디터
                 EditingMemoView(viewModel: viewModel)

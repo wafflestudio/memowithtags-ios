@@ -39,7 +39,6 @@ struct MemoListView: View {
                             }
                         }
                 }
-                .padding(.top, 20)
             }
             .rotationEffect(.degrees(180))
             .scrollIndicators(.hidden)
