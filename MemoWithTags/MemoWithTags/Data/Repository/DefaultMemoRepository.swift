@@ -56,6 +56,28 @@ final class DefaultMemoRepository: MemoRepository {
         
         return dto
     }
+    
+    // MARK: - 메모 추천
+    func recommendMemos(content: String?, tagIds: [Int]?) async throws -> RecommendMemoResponseDto {
+        print("🙏 recommend memos")
+        let response = await AF.request(
+            MemoRouter.recommendMemos(content: content, tagIds: tagIds),
+            interceptor: tokenInterceptor
+        ).serializingDecodable(RecommendMemoResponseDto.self).response
+
+        let dto = try handleErrorDecodable(response: response)
+        return dto
+    }
+
+    // MARK: - memoId로 주변 메모 fetch
+    func fetchMemosByMemoId(memoId: Int) async throws -> MemoResponseDto {
+        print("🙏 fetch memos by memoId")
+        let response = await AF.request(
+            MemoRouter.fetchMemosByMemoId(memoId: memoId),
+            interceptor: tokenInterceptor
+        ).serializingDecodable(MemoResponseDto.self).response
+
+        let dto = try handleErrorDecodable(response: response)
+        return dto
+    }
 }
-
-

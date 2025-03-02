@@ -14,15 +14,18 @@ enum MemoRouter: Router {
     case deleteMemo(memoId: Int)
     case updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool)
     
+    case recommendMemos(content: String?, tagIds: [Int]?)
+    case fetchMemosByMemoId(memoId: Int)
+    
     var baseURL: URL {
         return URL(string: NetworkConfiguration.baseURL)!
     }
     
     var method: HTTPMethod {
         switch self {
-        case .searchMemos:
+        case .searchMemos, .fetchMemosByMemoId:
             return .get
-        case .createMemo:
+        case .createMemo, .recommendMemos:
             return .post
         case .deleteMemo:
             return .delete
@@ -37,8 +40,10 @@ enum MemoRouter: Router {
             return "/search-memo"
         case .createMemo:
             return "/memo"
-        case let .deleteMemo(memoId), let .updateMemo(memoId, _, _, _):
+        case let .deleteMemo(memoId), let .updateMemo(memoId, _, _, _), let .fetchMemosByMemoId(memoId):
             return "/memo/\(memoId)"
+        case .recommendMemos:
+            return "/recommend-memo"
         }
     }
     
@@ -64,6 +69,10 @@ enum MemoRouter: Router {
         case let .updateMemo(_, content, tagIds, locked):
             return ["content": content, "tagIds": tagIds, "locked": locked]
         case .deleteMemo:
+            return nil
+        case let .recommendMemos(content, tagIds):
+            return ["content": content, "tagIds": tagIds]
+        case let .fetchMemosByMemoId(memoId):
             return nil
         }
     }

@@ -157,6 +157,46 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = false
     }
     
+    // MARK: - 추천 메모 ID 가져오기
+    func recommendMemos(content: String?, tagIds: [Int]?) async {
+        guard !isLoading else { return }
+        
+        isLoading = true
+        
+        let result = await useCases.memoService.recommendMemos(content: content, tagIds: tagIds)
+        switch result {
+        case .success(let recommendedMemoIds):
+            // 추천 받은 memoId들을 출력하거나,
+            // UI에서 사용자가 선택할 수 있도록 별도 처리를 할 수 있습니다.
+            print("Recommended memo IDs: \(recommendedMemoIds.memoIds)")
+            // 예를 들어, 추천된 메모 ID 중 하나를 선택하여 fetchMemosByMemoId를 호출할 수도 있습니다.
+        case .failure(let error):
+            appState.system.alert(error: error)
+        }
+        
+        isLoading = false
+    }
+
+    // MARK: - 선택된 memoId 기반 주변 메모 가져오기
+    func fetchMemosByMemoId(memoId: Int) async {
+        guard !isLoading else { return }
+        
+        isLoading = true
+        
+        let result = await useCases.memoService.fetchMemosByMemoId(memoId: memoId)
+        switch result {
+        case .success(let paginatedMemos):
+            // 기존 메모 리스트를 교체하거나 원하는 방식으로 UI 업데이트를 진행합니다.
+            self.memos = paginatedMemos.memos
+            self.mainCurrentPage = paginatedMemos.currentPage
+            self.mainTotalPages = paginatedMemos.totalPages
+        case .failure(let error):
+            appState.system.alert(error: error)
+        }
+        
+        isLoading = false
+    }
+    
     //MARK: - 태그 전부 가져오기
     func fetchTags() async {
         guard !isLoading else { return }
