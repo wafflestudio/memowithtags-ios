@@ -19,8 +19,13 @@ struct MemoListView: View {
                     
                     //MARK: - 메모 리스트
                     ForEach(viewModel.memos) { memo in
-                        let isHighlighted = viewModel.highlightingMemoIndex != -1  &&
-                        viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
+                        let isHighlighted: Bool = {
+                            if viewModel.highlightingMemoIndex >= 0 &&
+                               viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count {
+                                return viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
+                            }
+                            return false
+                        }()
                         
                         MemoView(memo: memo, viewModel: viewModel)
                             .rotationEffect(.degrees(180))
