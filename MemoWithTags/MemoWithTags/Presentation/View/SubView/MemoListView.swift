@@ -50,7 +50,13 @@ struct MemoListView: View {
             // highlightingMemoIndex 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
             .onChange(of: viewModel.highlightingMemoIndex) {
                 Task {
-                    if viewModel.highlightingMemoIndex != -1 {
+                    if viewModel.highlightingMemoIndex == -1 {
+                        if let firstMemo = viewModel.memos.first {
+                            withAnimation {
+                                proxy.scrollTo(firstMemo.id, anchor: .center)
+                            }
+                        }
+                    } else {
                         let targetMemoId = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
                         // 만약 targetMemoId가 이미 memos에 있다면 fetch 없이 바로 스크롤
                         if viewModel.memos.contains(where: { $0.id == targetMemoId }) {
