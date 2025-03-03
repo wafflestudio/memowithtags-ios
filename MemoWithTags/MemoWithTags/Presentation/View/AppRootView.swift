@@ -77,6 +77,22 @@ struct AppRootView: View {
                     }
                 }
         }
+        .overlay {
+            if container.appState.system.showContextMenu {
+                ZStack {
+                    BackdropBlurView(radius: 6)
+                    
+                    Circle()
+                        .frame(width: 20, height: 20)
+                        .position(container.appState.system.contextMenuAnchor!)
+
+                }
+                .ignoresSafeArea()
+                .onTapGesture {
+                    container.appState.system.showContextMenu = false
+                }
+            }
+        }
         .onOpenURL { url in
             Task {
                 await deepLinkHandler.handle(url: url)

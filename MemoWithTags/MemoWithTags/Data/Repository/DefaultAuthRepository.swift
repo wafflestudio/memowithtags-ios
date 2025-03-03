@@ -55,6 +55,7 @@ final class DefaultAuthRepository: AuthRepository {
         let response = await AF
             .request(AuthRouter.getUserInfo, interceptor: tokenInterceptor).serializingDecodable(UserDto.self).response
         let dto = try handleErrorDecodable(response: response)
+        print(dto)
         
         return dto
     }
