@@ -20,7 +20,7 @@ struct MemoListView: View {
                     //MARK: - 메모 리스트
                     ForEach(viewModel.memos) { memo in
                         let isHighlighted = viewModel.highlightingMemoIndex != -1  &&
-                                            viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
+                        viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
                         
                         MemoView(memo: memo, viewModel: viewModel)
                             .rotationEffect(.degrees(180))
@@ -42,13 +42,23 @@ struct MemoListView: View {
             }
             .rotationEffect(.degrees(180))
             .scrollIndicators(.hidden)
-            // highlightingMemoIndex 값이 바뀔 때, 해당 memoId를 기준으로 fetch 후 스크롤
+            // highlightingMemoIndex 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
             .onChange(of: viewModel.highlightingMemoIndex) {
                 Task {
                     if viewModel.highlightingMemoIndex != -1 {
-                        await viewModel.fetchMemosByMemoId()
                         let targetMemoId = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
-                        proxy.scrollTo(targetMemoId, anchor: .center)
+                        // 만약 targetMemoId가 이미 memos에 있다면 fetch 없이 바로 스크롤
+                        if viewModel.memos.contains(where: { $0.id == targetMemoId }) {
+                            withAnimation {
+                                proxy.scrollTo(targetMemoId, anchor: .center)
+                            }
+                        } else {
+                            // memos에 없는 경우에만 fetch 후 스크롤
+                            await viewModel.fetchMemosByMemoId()
+                            withAnimation {
+                                proxy.scrollTo(targetMemoId, anchor: .center)
+                            }
+                        }
                     }
                 }
             }
