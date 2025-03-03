@@ -357,6 +357,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .success:
             clearMain()
             clearSearch()
+            clearEditor()
             
             appState.user.isLoggedIn = false
             appState.user.userId = nil
@@ -483,5 +484,13 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         searchedTagIds = []
         searchCurrentPage = 0
         searchTotalPages = 1
+    }
+    
+    func clearEditor() {
+        editorState = .create
+        editorContent = ""
+        editorTagIds = []
+        recommendingMemoIds = []
+        highlightingMemoIndex = -1
     }
 }
