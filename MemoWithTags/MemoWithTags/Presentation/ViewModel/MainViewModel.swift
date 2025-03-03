@@ -221,11 +221,16 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             return
         }
         
+        if self.highlightingMemoIndex >= self.recommendingMemoIds.count {
+            print("highlightingMemoIndex out of bound")
+            return
+        }
+        
         guard !isLoading else { return }
         
         isLoading = true
         
-        let result = await useCases.memoService.fetchMemosByMemoId(memoId: self.highlightingMemoIndex)
+        let result = await useCases.memoService.fetchMemosByMemoId(memoId: self.recommendingMemoIds[self.highlightingMemoIndex])
         switch result {
         case .success(let paginatedMemos):
             self.memos = paginatedMemos.memos
