@@ -9,7 +9,6 @@ import SwiftUI
 
 struct AppRootView: View {
     var container: DIContainer
-    
     let deepLinkHandler: DeepLinkHandler
     
     // stateobject로 관리해야하는 viewmodel들 = 큼직큼직한 뷰들
@@ -77,15 +76,39 @@ struct AppRootView: View {
                     }
                 }
         }
+        //MARK: - context menu
         .overlay {
             if container.appState.system.showContextMenu {
                 ZStack {
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                        
                     BackdropBlurView(radius: 6)
                     
-                    Circle()
-                        .frame(width: 20, height: 20)
-                        .position(container.appState.system.contextMenuAnchor!)
-
+                    let anchorX = container.appState.system.previewAnchor!.x
+                    let anchorY = container.appState.system.previewAnchor!.y
+                    let isTopHalf = anchorY <= UIScreen.main.bounds.height / 2
+        
+                    GeometryReader { proxy in
+                        VStack(spacing: 15) {
+                            ContextMenu(menuItems: container.appState.system.menuItems) {
+                                container.appState.system.showContextMenu = false
+                            }
+                            .opacity(isTopHalf ? 0 : 1)
+                            
+                            Preview(type: container.appState.system.previewType!)
+                            
+                            ContextMenu(menuItems: container.appState.system.menuItems) {
+                                container.appState.system.showContextMenu = false
+                            }
+                            .opacity(isTopHalf ? 1 : 0)
+                        }
+                        .position(x: anchorX, y: anchorY)
+                    }
+                    
+                }
+                .onAppear {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 }
                 .ignoresSafeArea()
                 .onTapGesture {
@@ -93,11 +116,13 @@ struct AppRootView: View {
                 }
             }
         }
+        //MARK: - 외부 링크에서 접근 (소셜 로그인)
         .onOpenURL { url in
             Task {
                 await deepLinkHandler.handle(url: url)
             }
         }
+        //MARK: - alert
         .alert(isPresented: container.appState.$system.showAlert) {
             let error = container.appState.system.error
             

@@ -6,32 +6,45 @@
 //
 
 import SwiftUI
+import Flow
 
+//MARK: - view modifier 설정
 extension View {
-    func customContextMenu<MenuView: View>(
+    func customContextMenu(
         appState: AppState,
-        menu: @escaping () -> MenuView
-        
+        type: PreviewType,
+        menuItems: [MenuStruct]
     ) -> some View {
         self.modifier(
             CustomContextMenu(
                 appState: appState,
-                Menu: menu
+                type: type,
+                menuItems: menuItems
             )
         )
     }
 }
 
-struct CustomContextMenu<MenuView: View>: ViewModifier {
+struct CustomContextMenu: ViewModifier {
     @State private var position: CGPoint?
+    @State private var isPressing: Bool = false
     
     let appState: AppState
-    let Menu: () -> MenuView
+    let type: PreviewType
+    let menuItems: [MenuStruct]
     
     func body(content: Content) -> some View {
         content
+            .scaleEffect(isPressing ? 1.03 : 1)
+            .shadow(color: Color.black.opacity(isPressing ? 0.3 : 0.05), radius: 6, x: 0, y: 2)
             .onLongPressGesture {
-                appState.system.presentContextMenu(at: position!)
+                appState.system.presentContextMenu(at: position!, type: type, menuItmes: menuItems)
+            } onPressingChanged: { isPressing in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    withAnimation(.easeIn(duration: 0.3)) {
+                        self.isPressing = isPressing
+                    }
+                }
             }
             .readPosition { newPosition in
                 position = newPosition
@@ -89,16 +102,153 @@ struct BackdropBlurView: View {
 }
 
 //MARK: - 프리뷰
-typealias Preview = View
+enum PreviewType {
+    case memo(memo: Memo, tags: [Tag])
+    case tag(tag: Tag)
+}
 
-struct MemoPreview: Preview {
+struct Preview: View {
+    let type: PreviewType
+    
     var body: some View {
-        Text("hi")
+        switch type {
+        case .memo(let memo, let tags):
+            MemoPreview(memo: memo, tags: tags)
+        case .tag(let tag):
+            TagPreview(tag: tag)
+        }
+        
     }
 }
 
-struct TagPreview: Preview {
+struct MemoPreview: View {
+    let memo: Memo
+    let tags: [Tag]
+    
     var body: some View {
-        Text("hi")
+        VStack(alignment: .center, spacing: 0) {
+            Text(memo.content)
+                .font(.pretendard(.regular, size: 14))
+                .foregroundColor(Color.memoTextBlack)
+                .lineLimit(4)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+            
+            if !tags.isEmpty {
+                HFlow {
+                    ForEach(tags, id: \.id) { tag in
+                        Text(tag.name)
+                            .font(.pretendard(.regular, size: 13))
+                            .foregroundColor(Color.tagTextColor)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(tag.color.color)
+                            .cornerRadius(4)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+                }
+                .padding(.top, 6)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(.top, 9)
+        .padding(.bottom, 12)
+        .padding(.horizontal, 17)
+        .background(Color.memoBackgroundWhite)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
+        .padding(.horizontal, 12)
     }
 }
+
+struct TagPreview: View {
+    let tag: Tag
+    
+    var body: some View {
+        Text(tag.name)
+            .font(.pretendard(.regular, size: 15))
+            .foregroundColor(Color.tagTextColor)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(tag.color.color)
+            .cornerRadius(10)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
+    }
+}
+
+//MARK: - 메뉴
+
+struct MenuStruct {
+    let title: String
+    let icon: String
+    let type: MenuType
+    let action: () -> Void
+    
+    init(title: String, icon: String, type: MenuType = .normal, action: @escaping () -> Void) {
+        self.title = title
+        self.icon = icon
+        self.type = type
+        self.action = action
+    }
+    
+    enum MenuType {
+        case normal
+        case delete
+    }
+}
+
+struct ContextMenu: View {
+    let menuItems: [MenuStruct]
+    let closeAction: () -> Void
+    
+    @State private var outOfScreenX: CGFloat = 0
+    
+    var body: some View {
+        VStack(spacing: 15) {
+            ForEach(menuItems, id: \.title) { item in
+                HStack {
+                    Text(item.title)
+                        .font(.pretendard(.regular, size: 15))
+                        .foregroundStyle(item.type == .delete ? .red : .black)
+                    
+                    Spacer()
+                    
+                    Image(systemName: item.icon)
+                        .font(.system(size: 15))
+                        .foregroundStyle(item.type == .delete ? .red : .black)
+                }
+                .background(Color(white: 230/255, opacity: 0.9))
+                .onTapGesture {
+                    closeAction()
+                    item.action()
+                }
+            }
+        }
+        .padding(.vertical, 9)
+        .padding(.horizontal, 12)
+        .background(Color(white: 230/255, opacity: 0.9))
+        .frame(maxWidth: 200)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear {
+                        if proxy.frame(in: .global).minX < 0 {
+                            outOfScreenX = -proxy.frame(in: .global).minX + 10
+                        } else if proxy.frame(in: .global).maxX > UIScreen.main.bounds.width {
+                            outOfScreenX = UIScreen.main.bounds.width - proxy.frame(in: .global).maxX - 10
+                        } else {
+                            outOfScreenX = 0
+                        }
+                    }
+            }
+        )
+        .offset(x: outOfScreenX)
+    }
+}
+
+
+

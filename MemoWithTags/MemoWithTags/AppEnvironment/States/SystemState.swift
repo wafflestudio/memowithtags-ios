@@ -21,10 +21,13 @@ final class SystemState: ObservableObject {
     
     //MARK: - context menu 관련
     @Published var showContextMenu: Bool = false
-    @Published var contextMenuAnchor: CGPoint? = nil
-    
-    func presentContextMenu(at anchor: CGPoint) {
+    @Published var previewAnchor: CGPoint? = nil
+    @Published var previewType: PreviewType? = nil
+    @Published var menuItems: [MenuStruct] = []
+    func presentContextMenu(at anchor: CGPoint, type: PreviewType, menuItmes: [MenuStruct]) {
         self.showContextMenu = true
-        self.contextMenuAnchor = anchor
+        self.previewAnchor = anchor
+        self.previewType = type
+        self.menuItems = menuItmes
     }
 }
