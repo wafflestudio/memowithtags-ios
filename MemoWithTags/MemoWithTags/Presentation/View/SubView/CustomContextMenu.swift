@@ -26,7 +26,8 @@ extension View {
 }
 
 struct CustomContextMenu: ViewModifier {
-    @State private var position: CGPoint?
+    @State private var position: CGRect?
+    @State private var pressLocation: CGPoint? // 터치 위치 저장
     @State private var isPressing: Bool = false
     
     let appState: AppState
@@ -38,14 +39,46 @@ struct CustomContextMenu: ViewModifier {
             .scaleEffect(isPressing ? 1.03 : 1)
             .shadow(color: Color.black.opacity(isPressing ? 0.3 : 0.05), radius: 6, x: 0, y: 2)
             .onLongPressGesture {
-                appState.system.presentContextMenu(at: position!, type: type, menuItmes: menuItems)
+                guard let position = position, let pressLocation = pressLocation else { return }
+                if position.minY < 50 || position.maxY > UIScreen.main.bounds.height - 50 {
+                    let newPosition = CGPoint(
+                        x: position.midX,
+                        y: position.minY + pressLocation.y
+                    )
+                    appState.system.presentContextMenu(at: newPosition, type: type, menuItmes: menuItems)
+                } else {
+                    appState.system.presentContextMenu(at: CGPoint(x: position.midX, y: position.midY), type: type, menuItmes: menuItems)
+                }
+
             } onPressingChanged: { isPressing in
+                if isPressing {
+                    switch type {
+                    case .memo(let memo, _):
+                        if memo.locked && !appState.user.isBioAuthenticated {
+                            Task {
+                                let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
+                                if authenticated {
+                                    appState.user.isBioAuthenticated = true
+                                }
+                            }
+                            return
+                        }
+                    default: break
+                    }
+                }
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     withAnimation(.easeIn(duration: 0.3)) {
                         self.isPressing = isPressing
                     }
                 }
             }
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        pressLocation = value.location // 터치 시작 위치 저장
+                    }
+            )
             .readPosition { newPosition in
                 position = newPosition
             }
@@ -54,16 +87,13 @@ struct CustomContextMenu: ViewModifier {
 
 //MARK: - 위치 추적
 extension View {
-    func readPosition(onChange: @escaping (CGPoint) -> Void) -> some View {
+    func readPosition(onChange: @escaping (CGRect) -> Void) -> some View {
         background(
             GeometryReader { proxy in
                 Color.clear
                     .preference(
                         key: PositionPreferenceKey.self,
-                        value: CGPoint(
-                            x: proxy.frame(in: .global).midX,
-                            y: proxy.frame(in: .global).midY
-                        )
+                        value: proxy.frame(in: .global)
                     )
             }
         )
@@ -72,8 +102,8 @@ extension View {
 }
 
 struct PositionPreferenceKey: PreferenceKey {
-    static var defaultValue: CGPoint = .zero
-    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {}
+    static var defaultValue: CGRect = .zero
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {}
 }
 
 //MARK: - 배경 블러
@@ -150,14 +180,24 @@ struct MemoPreview: View {
                 .padding(.top, 6)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            
+            if memo.locked {
+                HStack {
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(Color.lockIconGray)
+                        .font(.system(size: 14))
+                    Spacer()
+                }
+                .padding(.vertical, 7)
+            }
+            
         }
-        .padding(.top, 9)
-        .padding(.bottom, 12)
-        .padding(.horizontal, 17)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 18)
         .background(Color.memoBackgroundWhite)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
         .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 8)
     }
 }
 
@@ -205,6 +245,8 @@ struct ContextMenu: View {
     
     @State private var outOfScreenX: CGFloat = 0
     
+    @State private var isAppeared: Bool = false
+    
     var body: some View {
         VStack(spacing: 15) {
             ForEach(menuItems, id: \.title) { item in
@@ -219,7 +261,7 @@ struct ContextMenu: View {
                         .font(.system(size: 15))
                         .foregroundStyle(item.type == .delete ? .red : .black)
                 }
-                .background(Color(white: 230/255, opacity: 0.9))
+                .background(Color(white: 230/255))
                 .onTapGesture {
                     closeAction()
                     item.action()
@@ -228,7 +270,7 @@ struct ContextMenu: View {
         }
         .padding(.vertical, 9)
         .padding(.horizontal, 12)
-        .background(Color(white: 230/255, opacity: 0.9))
+        .background(Color(white: 230/255))
         .frame(maxWidth: 200)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
@@ -247,6 +289,12 @@ struct ContextMenu: View {
             }
         )
         .offset(x: outOfScreenX)
+        .scaleEffect(y: isAppeared ? 1 : 0) // 세로로만 펼쳐짐
+        .onAppear {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7, blendDuration: 0)) {
+                isAppeared = true
+            }
+        }
     }
 }
 

@@ -77,7 +77,7 @@ struct AppRootView: View {
                 }
         }
         //MARK: - context menu
-        .overlay {
+        .overlay {            
             if container.appState.system.showContextMenu {
                 ZStack {
                     Color.black.opacity(0.2)
