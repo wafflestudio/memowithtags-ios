@@ -10,7 +10,6 @@ import Flow
 
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
-    
     @State private var memoEditingTask: Task<Void, Never>? = nil
     
     var body: some View {
@@ -20,88 +19,105 @@ struct EditingMemoView: View {
                 text: $viewModel.editorContent,
                 maxHeight: 100
             )
+            .overlay (
+                Group {
+                    if viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty {
+                        Image(systemName: "square.and.pencil")
+                            .font(.system(size: 20))
+                            .foregroundColor(.black)
+                            .onTapGesture {
+                                Task {
+                                    await viewModel.submit()
+                                }
+                            }
+                    }
+                }
+                , alignment: .trailing
+            )
             
             //MARK: - 메모에 넣은 태그들
-            HFlow {
-                ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
-                    TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-                        removeTagFromSelectedTags(tag.id)
+            if !viewModel.editorTagIds.isEmpty {
+                HFlow {
+                    ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
+                        TagView(viewModel: viewModel, tag: tag, addXmark: true) {
+                            removeTagFromSelectedTags(tag.id)
+                        }
                     }
                 }
             }
             
             //MARK: - editor 아래 버튼들
-            HStack {
-                switch viewModel.editorState {
-                case .create: // create 모드일 때
-                    Image(systemName: "arrow.down.left.and.arrow.up.right")
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.dateGray)
-                        .onTapGesture {
-                            viewModel.appState.navigation.push(to: .memoEditor)
-                        }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "xmark")
-                        .font(.system(size: 16))
-                        .foregroundColor(Color(hex: "#FF9C9C"))
-                        .onTapGesture {
-                            viewModel.editorState = .create
-                            viewModel.editorContent = ""
-                            viewModel.editorTagIds = []
-                        }
-                    
-                    Image(systemName: "square.and.pencil")
-                        .font(.system(size: 20))
-                        .foregroundColor(.black)
-                        .onTapGesture {
-                            Task {
-                                await viewModel.submit()
+            if !(viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty) {
+                HStack {
+                    switch viewModel.editorState {
+                    case .create: // create 모드일 때
+                        Image(systemName: "arrow.down.left.and.arrow.up.right")
+                            .font(.system(size: 17, weight: .regular))
+                            .foregroundColor(.dateGray)
+                            .onTapGesture {
+                                viewModel.appState.navigation.push(to: .memoEditor)
                             }
-                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16))
+                            .foregroundColor(Color(hex: "#FF9C9C"))
+                            .onTapGesture {
+                                viewModel.editorState = .create
+                                viewModel.editorContent = ""
+                                viewModel.editorTagIds = []
+                            }
+                        
+                        Image(systemName: "square.and.pencil")
+                            .font(.system(size: 20))
+                            .foregroundColor(.black)
+                            .onTapGesture {
+                                Task {
+                                    await viewModel.submit()
+                                }
+                            }
 
-                case .update: // 업데이트 모드일 때
-                    Image(systemName: "arrow.down.left.and.arrow.up.right")
-                        .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.dateGray)
-                        .onTapGesture {
-                            viewModel.appState.navigation.push(to: .memoEditor)
-                        }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .regular))
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 5)
-                        .foregroundColor(.memoBackgroundWhite)
-                        .background(Color.highlightRed)
-                        .clipShape(Circle())
-                        .onTapGesture {
-                            viewModel.editorState = .create
-                            viewModel.editorContent = ""
-                            viewModel.editorTagIds = []
-                        }
-                    
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .regular))
-                        .padding(.vertical, 3.5)
-                        .padding(.horizontal, 4)
-                        .foregroundColor(.black)
-                        .background(Color.backgroundGray)
-                        .clipShape(Circle())
-                        .onTapGesture {
-                            Task {
-                                await viewModel.submit()
+                    case .update: // 업데이트 모드일 때
+                        Image(systemName: "arrow.down.left.and.arrow.up.right")
+                            .font(.system(size: 17, weight: .regular))
+                            .foregroundColor(.dateGray)
+                            .onTapGesture {
+                                viewModel.appState.navigation.push(to: .memoEditor)
                             }
-                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .regular))
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 5)
+                            .foregroundColor(.memoBackgroundWhite)
+                            .background(Color.highlightRed)
+                            .clipShape(Circle())
+                            .onTapGesture {
+                                viewModel.editorState = .create
+                                viewModel.editorContent = ""
+                                viewModel.editorTagIds = []
+                            }
+                        
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 14, weight: .regular))
+                            .padding(.vertical, 3.5)
+                            .padding(.horizontal, 4)
+                            .foregroundColor(.black)
+                            .background(Color.backgroundGray)
+                            .clipShape(Circle())
+                            .onTapGesture {
+                                Task {
+                                    await viewModel.submit()
+                                }
+                            }
+                    }
                 }
-                
             }
         }
-        .padding(.top, 9)
-        .padding(.bottom, 12)
+        .padding(.vertical, 10)
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .cornerRadius(14)
