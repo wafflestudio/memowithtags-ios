@@ -156,7 +156,8 @@ struct SignupView: View {
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "로그인", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#F1F1F3", cornerRadius: 4) {
-                            viewModel.appState.navigation.pop()
+                            viewModel.appState.navigation.reset()
+                            viewModel.appState.navigation.push(to: .root)
                         }
                         
                         Spacer()

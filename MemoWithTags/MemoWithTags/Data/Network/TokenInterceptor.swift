@@ -38,7 +38,7 @@ final class TokenInterceptor: RequestInterceptor {
                     return
                 }
                 
-                print("refresh token")
+                print("🙏refresh token")
 
                 let authDto = try await AF
                     .request(AuthRouter.refreshToken(token: refreshToken)).serializingDecodable(AuthDto.self).value

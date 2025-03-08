@@ -10,6 +10,25 @@ import SwiftUI
 @MainActor
 final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
     @Published var isLoading = false
+    @Published var time = 300
+    
+    func sendCode(email: String) async {
+        guard !isLoading else { return }
+        
+        isLoading = true
+    
+        let result = await useCases.authService.sendCode(email: email)
+
+        switch result {
+        case .success:
+            time = 300
+
+        case .failure(let error):
+            appState.system.alert(error: error)
+        }
+        
+        isLoading = false
+    }
     
     func verify(email: String, code: String) async {
         guard !isLoading else { return }

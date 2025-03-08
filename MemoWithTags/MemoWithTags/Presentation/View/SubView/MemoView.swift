@@ -138,32 +138,25 @@ struct MemoView: View {
             }
         }
         //MARK: - context menu
-        .customContextMenu {
-            AnyView(
-                VStack(alignment: .leading, spacing: 10) {
-                    Button(memo.locked ? "잠금 해제" : "메모 잠금", role: .none) {
-                        Task {
-                            let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-                            if authenticated {
-                                await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-                            }
+        .customContextMenu(
+            appState: viewModel.appState,
+            type: .memo(memo: memo, tags: viewModel.getTags(from: memo.tagIds)),
+            menuItems: [
+                .init(title: memo.locked ? "잠금 해제" : "메모 잠금", icon: memo.locked ? "lock.open.fill" : "lock.fill") {
+                    Task {
+                        let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+                        if authenticated {
+                            await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
                         }
                     }
-                    
-                    if viewModel.appState.navigation.current == .search {
-                        Button("이 메모를 메인 화면에서 보기", role: .none) {
-                            viewModel.appState.navigation.pop()
-                        }
-                    }
-                    
-                    Button("메모 삭제", role: .destructive) {
-                        Task {
-                            await viewModel.deleteMemo(memoId: memo.id)
-                        }
+                },
+                .init(title: "메모 삭제", icon: "trash", type: .delete) {
+                    Task {
+                        await viewModel.deleteMemo(memoId: memo.id)
                     }
                 }
-            )
-        }
+            ]
+        )
         .padding(.horizontal, 12)
     }
     
