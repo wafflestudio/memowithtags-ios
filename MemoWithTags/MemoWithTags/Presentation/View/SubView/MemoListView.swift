@@ -51,6 +51,12 @@ struct MemoListView: View {
             .onChange(of: viewModel.highlightingMemoIndex) {
                 Task {
                     if viewModel.highlightingMemoIndex == -1 {
+                        if viewModel.lowestLoadedPage != -1 {
+                            viewModel.memos = []
+                            viewModel.lowestLoadedPage = 0
+                            viewModel.highestLoadedPage = 0
+                            await viewModel.fetchMemos(direction: .next)
+                        }
                         if let firstMemo = viewModel.memos.first {
                             withAnimation {
                                 proxy.scrollTo(firstMemo.id, anchor: .center)
