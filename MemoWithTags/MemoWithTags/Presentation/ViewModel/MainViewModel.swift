@@ -16,13 +16,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     //MARK: - mainPage 변수들
     @Published var memos: [Memo] = []
     @Published var tags: [Tag] = []
-    @Published var lowestLoadedPage: Int = 0   // 로드된 페이지 중 가장 낮은 번호 (최초 값: 0)
-    @Published var highestLoadedPage: Int = 0    // 로드된 페이지 중 가장 높은 번호 (최초 값: 0)
+    @Published var mainCurrentPage: Int = 0 // 로드된 페이지 중 가장 높은 페이지 (최초 값: 0)
     @Published var mainTotalPages: Int = 1
-    enum FetchDirection {
-        case previous
-        case next // next가 기본이다.
-    }
     
     //MARK: - searchPage 변수들
     @Published var searchBarText: String = ""
@@ -52,52 +47,28 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     }
     
     //MARK: - 메모 페이지 별로 가져오기 (다음/이전 방향 모두 처리)
-    func fetchMemos(direction: FetchDirection) async {
+    func fetchMemos() async {
         guard !isLoading else { return }
         isLoading = true
         
-        switch direction {
-        case .next:
-            // 다음 페이지: 이미 로드된 최고 페이지보다 1 증가한 페이지
-            let nextPage = highestLoadedPage + 1
-            // 총 페이지보다 초과하면 종료
-            guard nextPage <= mainTotalPages else {
-                isLoading = false
-                return
-            }
-            let result = await useCases.memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: nextPage)
-            switch result {
-            case .success(let paginatedMemos):
-                // 다음 페이지의 메모는 기존 배열 뒤에 추가
-                self.memos.append(contentsOf: paginatedMemos.memos)
-                self.mainTotalPages = paginatedMemos.totalPages
-                highestLoadedPage = nextPage
-                // 최초 로드 시 lowestLoadedPage가 0이면 nextPage로 초기화
-                if lowestLoadedPage == 0 {
-                    lowestLoadedPage = nextPage
-                }
-            case .failure(let error):
-                appState.system.alert(error: error)
-            }
+        // 다음 페이지: 이미 로드된 최고 페이지보다 1 증가한 페이지
+        let nextPage = mainCurrentPage + 1
+        
+        guard nextPage <= mainTotalPages else {
+            isLoading = false
+            return
+        }
+        
+        let result = await useCases.memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: nextPage)
+        switch result {
+        case .success(let paginatedMemos):
+            // 다음 페이지의 메모는 기존 배열 뒤에 추가
+            self.memos.append(contentsOf: paginatedMemos.memos)
+            self.mainTotalPages = paginatedMemos.totalPages
+            self.mainCurrentPage = nextPage
             
-        case .previous:
-            // 이전 페이지: 이미 로드된 최소 페이지보다 1 감소한 페이지
-            let previousPage = lowestLoadedPage - 1
-            // 1페이지 미만이면 종료
-            guard previousPage >= 1 else {
-                isLoading = false
-                return
-            }
-            let result = await useCases.memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: previousPage)
-            switch result {
-            case .success(let paginatedMemos):
-                // 이전 페이지의 메모는 배열 앞부분에 삽입
-                self.memos.insert(contentsOf: paginatedMemos.memos, at: 0)
-                self.mainTotalPages = paginatedMemos.totalPages
-                lowestLoadedPage = previousPage
-            case .failure(let error):
-                appState.system.alert(error: error)
-            }
+        case .failure(let error):
+            appState.system.alert(error: error)
         }
         
         isLoading = false
@@ -212,6 +183,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     }
     
     // MARK: - 선택된 memoId 기반 주변 메모 가져오기
+    /*
     func fetchMemosByMemoId() async {
         if self.highlightingMemoIndex == -1 {
             self.memos = []
@@ -243,6 +215,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         isLoading = false
     }
+     */
     
     //MARK: - 태그 전부 가져오기
     func fetchTags() async {
@@ -326,7 +299,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
             await fetchTags()
         }
         if memos.isEmpty {
-            await fetchMemos(direction: .next)
+            await fetchMemos()
         }
     }
     
@@ -390,6 +363,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .success:
             clearMain()
             clearSearch()
+            clearEditor()
             
             appState.user.isLoggedIn = false
             appState.user.userId = nil
@@ -414,9 +388,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .create:
             await createMemo(content: trimmedContent, tagIds: editorTagIds, locked: false)
             self.memos = []
-            self.lowestLoadedPage = 0
-            self.highestLoadedPage = 0
-            await fetchMemos(direction: .next)
+            self.mainCurrentPage = 0
+            self.mainTotalPages = 1
+            await fetchMemos()
             
         case .update(let target):
             await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
@@ -473,13 +447,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     func clearMain() {
         memos = []
         tags = []
-        lowestLoadedPage = 0
-        highestLoadedPage = 0
+        mainCurrentPage = 0
         mainTotalPages = 1
-        
-        editorState = .create
-        editorContent = ""
-        editorTagIds = []
     }
     
     func clearSearch() {

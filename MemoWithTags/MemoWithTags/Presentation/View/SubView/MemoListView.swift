@@ -8,20 +8,10 @@ struct MemoListView: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
                     
-                    // ProgressView: 스크롤 바닥(화면 아래, 코드 상에서는 위쪽)에 도달하면 이전 페이지(fetchMemos(direction: .previous))를 불러옴
-                    ProgressView()
-                        .opacity(viewModel.isLoading ? 1 : 0)
-                        .onAppear {
-                            Task {
-                                await viewModel.fetchMemos(direction: .previous)
-                            }
-                        }
-                    
-                    //MARK: - 메모 리스트
                     ForEach(viewModel.memos) { memo in
                         let isHighlighted: Bool = {
                             if viewModel.highlightingMemoIndex >= 0 &&
-                               viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count {
+                                viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count {
                                 return viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
                             }
                             return false
@@ -35,28 +25,23 @@ struct MemoListView: View {
                             .animation(.easeInOut(duration: 0.3), value: isHighlighted)
                     }
                     
-                    // ProgressView: 스크롤 맨 위(화면 상단, 코드 상에서는 아래쪽)에 도달하면 다음 페이지(fetchMemos(direction: .next))를 불러옴
+                    // ProgressView: 스크롤 맨 위(화면 상단, 코드 상에서는 아래쪽)에 도달하면 다음 페이지를 불러옴 (fetchMemos())
                     ProgressView()
                         .opacity(viewModel.isLoading ? 1 : 0)
                         .onAppear {
                             Task {
-                                await viewModel.fetchMemos(direction: .next)
+                                await viewModel.fetchMemos()
                             }
                         }
                 }
             }
             .rotationEffect(.degrees(180))
             .scrollIndicators(.hidden)
+            .padding(.bottom, 20)
             // highlightingMemoIndex 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
             .onChange(of: viewModel.highlightingMemoIndex) {
                 Task {
                     if viewModel.highlightingMemoIndex == -1 {
-                        if viewModel.lowestLoadedPage != -1 {
-                            viewModel.memos = []
-                            viewModel.lowestLoadedPage = 0
-                            viewModel.highestLoadedPage = 0
-                            await viewModel.fetchMemos(direction: .next)
-                        }
                         if let firstMemo = viewModel.memos.first {
                             withAnimation {
                                 proxy.scrollTo(firstMemo.id, anchor: .center)
@@ -64,14 +49,19 @@ struct MemoListView: View {
                         }
                     } else {
                         let targetMemoId = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
-                        // 만약 targetMemoId가 이미 memos에 있다면 fetch 없이 바로 스크롤
+                        // targetMemoId가 이미 memos에 있다면 바로 스크롤
                         if viewModel.memos.contains(where: { $0.id == targetMemoId }) {
                             withAnimation {
                                 proxy.scrollTo(targetMemoId, anchor: .center)
                             }
                         } else {
-                            // memos에 없는 경우에만 fetch 후 스크롤
-                            await viewModel.fetchMemosByMemoId()
+                            // targetMemoId가 memos에 없다면
+                            // 해당하는 memo가 나올 때까지 fetchMemos()를 반복 실행하고, 찾으면 그 메모로 scroll
+                            while !viewModel.memos.contains(where: { $0.id == targetMemoId }) {
+                                await viewModel.fetchMemos()
+                            }
+                            // fetchMemo가 된 것이 View에 반영될 때까지 0.1초 기다리기
+                            try? await Task.sleep(nanoseconds: 100_000_000)
                             withAnimation {
                                 proxy.scrollTo(targetMemoId, anchor: .center)
                             }

@@ -109,6 +109,7 @@ struct EditingMemoView: View {
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
         .overlay(recommendingOverlay, alignment: .topTrailing)
+        // 나중에 content로도 recommend를 할 때 사용한다.
         /*
         .onChange(of: viewModel.editorContent) {
             // 실행하고 있는 recommendingTask를 종료
