@@ -38,7 +38,7 @@ struct ChangeNicknameView: View {
                     Spacer()
                     Text("\(nickname.count)/8")
                         .font(.pretendard(.regular, size: 12))
-                        .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
+                        .foregroundStyle(nickname.count > 8 ? Color.red : Color.W4)
                         .padding(.horizontal, 6)
                 }
             }
@@ -62,7 +62,7 @@ struct ChangeNicknameView: View {
                 .foregroundStyle(.white)
                 .padding(.vertical, 12)
             }
-            .background(nickname.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+            .background(nickname.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
             .cornerRadius(22)
             .disabled(nickname.isEmpty || viewModel.isLoading)
         }
@@ -80,7 +80,7 @@ struct ChangeNicknameView: View {
             ToolbarItem(placement: .navigation) {
                 Text("닉네임 변경")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.titleTextBlack)
+                    .foregroundStyle(Color.B2)
             }
         }
         .navigationBarBackButtonHidden()

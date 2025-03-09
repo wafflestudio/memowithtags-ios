@@ -12,14 +12,14 @@ struct SignupSuccessView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.W2_1.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("회원가입이 완료되었습니다!")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -32,17 +32,17 @@ struct SignupSuccessView: View {
                             HStack(spacing: 3) {
                                 Text("Memo with")
                                     .font(.pretendard(.semibold, size: 17))
-                                    .foregroundStyle(Color.titleTextBlack)
+                                    .foregroundStyle(Color.B2)
                                 
                                 DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                             }
                             Text("를 통해")
                                 .font(.pretendard(.regular, size: 15))
-                                .foregroundStyle(Color.titleTextBlack)
+                                .foregroundStyle(Color.B2)
                         }
                         Text("복잡한 메모들을 간단하고 효율적으로 정리해보세요!")
                             .font(.pretendard(.regular, size: 15))
-                            .foregroundStyle(Color.titleTextBlack)
+                            .foregroundStyle(Color.B2)
                     }
                     .padding(.top, 8)
                     .padding(.bottom, 4)

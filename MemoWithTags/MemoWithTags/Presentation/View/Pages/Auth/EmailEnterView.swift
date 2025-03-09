@@ -14,7 +14,7 @@ struct EmailEnterView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.W2_1.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 
@@ -22,7 +22,7 @@ struct EmailEnterView: View {
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
                         .font(.pretendard(.medium, size: 22))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -68,7 +68,7 @@ struct EmailEnterView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
                     }
-                    .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(email.isEmpty || viewModel.isLoading)
@@ -82,7 +82,7 @@ struct EmailEnterView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.TextRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)

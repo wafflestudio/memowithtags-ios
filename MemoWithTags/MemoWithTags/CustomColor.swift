@@ -8,33 +8,23 @@
 import SwiftUICore
 
 extension Color {
-    static let backgroundGray: Color = .init(red: 241 / 255, green: 241 / 255, blue: 243 / 255)
     
-    static let dividerGray: Color = .init(red: 176 / 255, green: 176 / 255, blue: 177 / 255)
-    static let tabBarSelectecdIconBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
-    static let tabBarNotSelectecdIconGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
+    static let B1: Color = .init(hex: "#000000") // 사용 안 됨
+    static let B2: Color = .init(hex: "#202021") // 기본 텍스트 색
+    static let B2_70: Color = .init(hex: "#202021").opacity(0.70) // 태그 텍스트 색
+    static let B2_15: Color = .init(hex: "#202021").opacity(0.15) // 사용 안 됨
     
-    static let titleTextBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
+    static let W1: Color = .init(hex: "#FFFFFF") // 기본 흰색
+    static let W2: Color = .init(hex: "#F5F5F5") // 사용 안 됨
+    static let W2_1: Color = .init(hex: "#F1F1F3") // 기본 배경색
+    static let W3: Color = .init(hex: "#E3E3E7") // 사용 안 됨
+    static let W4: Color = .init(hex: "#A0A0A1") // 회색이 필요한 모든 곳에
     
-    static let memoBackgroundWhite: Color = .init(red: 255 / 255, green: 255 / 255, blue: 255 / 255)
-    static let memoTextBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
-    static let lockIconGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
-    static let dateGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
-    
-    static let searchBarBackgroundGray: Color = .init(red: 229 / 255, green: 229 / 255, blue: 230 / 255)
-    static let searchBarPlaceholderGray: Color = .init(red: 176 / 255, green: 176 / 255, blue: 177 / 255)
-    static let searchBarIconGray: Color = .init(red: 176 / 255, green: 176 / 255, blue: 177 / 255)
-    
-    static let tagTextColor: Color = .init(red: 26 / 255, green: 26 / 255, blue: 27 / 255).opacity(0.8)
-    
-    static let highlightRed: Color = .init(hex: "#FFBDBD")
+    static let TextRed: Color = .init(hex: "#FF5151")
     
     // HEX 값을 받아서 swiftUI Color로 바꾸는 로직
     init(hex: String) {
-        // HEX 문자열에서 # 제거
         let cleanedHex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        
-        // 기본 값 (0, 0, 0) (블랙)
         var int: UInt64 = 0
         Scanner(string: cleanedHex).scanHexInt64(&int)
         
@@ -68,22 +58,22 @@ extension Color {
     
     // TagColor enum
     enum TagColor: String, CaseIterable, Encodable, Decodable {
-        case color1 = "#FF9C9C"
-        case color2 = "#FFBDBD"
-        case color3 = "#FFE3DA"
-        case color4 = "#FFF0B8"
-        case color5 = "#FFF56F"
-        case color6 = "#DCF794"
-        case color7 = "#D4FDCB"
-        case color8 = "#92EDA1"
-        case color9 = "#CCFFF7"
-        case color10 = "#A6F7EA"
-        case color11 = "#D2E8FE"
-        case color12 = "#B3D9FF"
-        case color13 = "#EEDEFE"
-        case color14 = "#DEBDFF"
-        case color15 = "#FFBDDE"
-        case color16 = "#FFD9EC"
+        case Red = "#FF9C9C"
+        case Red2 = "#FFBDBD"
+        case Red3 = "#FFE3DA"
+        case Yellow = "#FFF0B8"
+        case Yellow2 = "#FFF56F"
+        case Green = "#D4FDCB"
+        case Green2 = "#DCF794"
+        case Green3 = "#92EDA1"
+        case Mint = "#CCFFF7"
+        case Mint2 = "#A6F7EA"
+        case Blue = "#D2E8FE"
+        case Blue2 = "#B3D9FF"
+        case Purple = "#EEDEFE"
+        case Purple2 = "#DEBDFF"
+        case Pink = "#FFBDDE"
+        case Pink2 = "#FFD9EC"
         
         var color: Color {
             return Color(hex: self.rawValue)

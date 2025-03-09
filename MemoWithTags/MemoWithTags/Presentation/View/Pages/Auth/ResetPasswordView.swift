@@ -17,14 +17,14 @@ struct ResetPasswordView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.W2_1.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("비밀번호 재설정")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -60,19 +60,19 @@ struct ResetPasswordView: View {
                                 HStack {
                                     Image(systemName: "checkmark")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidLength ? Color.B2 : Color.W4)
                                     Text("최소 8자 ~ 최대 16자")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidLength ? Color.B2 : Color.W4)
                                 }
                                 
                                 HStack {
                                     Image(systemName: "checkmark")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.B2 : Color.W4)
                                     Text("알파벳 대소문자, 숫자, 특수문자 포함")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.B2 : Color.W4)
                                 }
                             }
                             .padding(.horizontal, 6)
@@ -118,7 +118,7 @@ struct ResetPasswordView: View {
                         .padding(.vertical, 12)
 
                     }
-                    .background(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading)
@@ -132,15 +132,15 @@ struct ResetPasswordView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.TextRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.TextRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.TextRed)
                             .frame(width: 12, height: 24)
                     }
                     .padding(.top, 36)

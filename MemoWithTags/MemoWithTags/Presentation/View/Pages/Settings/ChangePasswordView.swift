@@ -65,19 +65,19 @@ struct ChangePasswordView: View {
                         HStack {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                .foregroundStyle(viewModel.isValidLength ? Color.B2 : Color.W4)
                             Text("최소 8자 ~ 최대 16자")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                .foregroundStyle(viewModel.isValidLength ? Color.B2 : Color.W4)
                         }
                         
                         HStack {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.B2 : Color.W4)
                             Text("알파벳 대소문자, 숫자, 특수문자 포함")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.B2 : Color.W4)
                         }
                     }
                     .padding(.horizontal, 6)
@@ -123,7 +123,7 @@ struct ChangePasswordView: View {
                 .foregroundStyle(.white)
                 .padding(.vertical, 12)
             }
-            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
             .cornerRadius(22)
             .disabled(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading)
 
@@ -142,7 +142,7 @@ struct ChangePasswordView: View {
             ToolbarItem(placement: .navigation) {
                 Text("비밀번호 변경")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.titleTextBlack)
+                    .foregroundStyle(Color.B2)
             }
         }
         .navigationBarBackButtonHidden()

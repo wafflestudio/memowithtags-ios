@@ -14,7 +14,7 @@ struct MainView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundGray
+            Color.W2_1
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -41,7 +41,7 @@ struct MainView: View {
                 HStack(spacing: 3) {
                     Text("Memo with")
                         .font(.pretendard(.semibold, size: 17))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                     
                     DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                 }

@@ -21,7 +21,7 @@ struct DesignTagView: View {
     var body: some View {
         Text(text)
             .font(.pretendard(fontWeight, size: fontSize))
-            .foregroundStyle(Color.tagTextColor)
+            .foregroundStyle(Color.B2_70)
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, verticalPadding)
             .background(Color.init(hex: backGroundColor))

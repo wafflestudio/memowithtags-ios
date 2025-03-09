@@ -16,14 +16,14 @@ struct LoginView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.W2_1.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("Memo with")
                         .font(.pretendard(.semibold, size: 22))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                     
                     DesignTagView(text: "Tags", fontSize: 19, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                 }
@@ -93,7 +93,7 @@ struct LoginView: View {
                             .padding(.vertical, 12)
 
                         }
-                        .background(email.isEmpty || password.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                        .background(email.isEmpty || password.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
                         .cornerRadius(22)
                         .padding(.top, 6)
                         .disabled(email.isEmpty || password.isEmpty || viewModel.isLoading)
@@ -117,7 +117,7 @@ struct LoginView: View {
                             Text("다른 계정으로 로그인")
                                 .font(.pretendard(.medium, size: 12))
                                 .padding(.horizontal, 8)
-                                .foregroundStyle(Color.tabBarNotSelectecdIconGray)
+                                .foregroundStyle(Color.W4)
                                 .background(Color.white)
                         }
                     

@@ -36,7 +36,7 @@ struct EditingMemoView: View {
                 case .create: // create 모드일 때
                     Image(systemName: "arrow.down.left.and.arrow.up.right")
                         .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.dateGray)
+                        .foregroundColor(.W4)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .memoEditor)
                         }
@@ -64,7 +64,7 @@ struct EditingMemoView: View {
                 case .update: // 업데이트 모드일 때
                     Image(systemName: "arrow.down.left.and.arrow.up.right")
                         .font(.system(size: 17, weight: .regular))
-                        .foregroundColor(.dateGray)
+                        .foregroundColor(.W4)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .memoEditor)
                         }
@@ -75,8 +75,8 @@ struct EditingMemoView: View {
                         .font(.system(size: 13, weight: .regular))
                         .padding(.vertical, 4)
                         .padding(.horizontal, 5)
-                        .foregroundColor(.memoBackgroundWhite)
-                        .background(Color.highlightRed)
+                        .foregroundColor(.W1)
+                        .background(Color.TextRed)
                         .clipShape(Circle())
                         .onTapGesture {
                             viewModel.editorState = .create
@@ -89,7 +89,7 @@ struct EditingMemoView: View {
                         .padding(.vertical, 3.5)
                         .padding(.horizontal, 4)
                         .foregroundColor(.black)
-                        .background(Color.backgroundGray)
+                        .background(Color.W2_1)
                         .clipShape(Circle())
                         .onTapGesture {
                             Task {
@@ -103,7 +103,7 @@ struct EditingMemoView: View {
         .padding(.top, 9)
         .padding(.bottom, 12)
         .padding(.horizontal, 17)
-        .background(Color.memoBackgroundWhite)
+        .background(Color.W1)
         .cornerRadius(14)
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
@@ -153,7 +153,7 @@ struct EditingMemoView: View {
                         .padding(.vertical, 6)
                         .background(
                             Rectangle()
-                                .fill(Color.memoBackgroundWhite)
+                                .fill(Color.W1)
                                 .cornerRadius(20)
                         )
                         .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
@@ -162,7 +162,7 @@ struct EditingMemoView: View {
                         .font(.system(size: 14, weight: .regular))
                         .background(
                             Circle()
-                                .fill(Color.memoBackgroundWhite)
+                                .fill(Color.W1)
                                 .frame(width: 27, height: 27)
                         )
                         .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
@@ -176,7 +176,7 @@ struct EditingMemoView: View {
                         .font(.system(size: 14, weight: .regular))
                         .background(
                             Circle()
-                                .fill(Color.memoBackgroundWhite)
+                                .fill(Color.W1)
                                 .frame(width: 27, height: 27)
                         )
                         .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)

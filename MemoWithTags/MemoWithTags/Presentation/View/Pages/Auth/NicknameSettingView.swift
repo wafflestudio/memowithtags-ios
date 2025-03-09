@@ -14,14 +14,14 @@ struct NicknameSettingView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.W2_1.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("닉네임 설정")
                         .font(.pretendard(.semibold, size: 16))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -53,7 +53,7 @@ struct NicknameSettingView: View {
                             Spacer()
                             Text("\(nickname.count)/8")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
+                                .foregroundStyle(nickname.count > 8 ? Color.red : Color.W4)
                                 .padding(.horizontal, 6)
                         }
                     }
@@ -78,7 +78,7 @@ struct NicknameSettingView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
                     }
-                    .background(nickname.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(nickname.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(nickname.isEmpty || viewModel.isLoading)

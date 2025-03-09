@@ -17,14 +17,14 @@ struct EmailVerificationView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.W2_1.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -33,7 +33,7 @@ struct EmailVerificationView: View {
                     Text("이메일로 발송된 인증번호를 입력해주세요.")
                         .padding(.vertical, 8)
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.B2)
                     
                     //MARK: - 인증 코드 입력란
                     SeparatedTextField(length: 6, value: $code)
@@ -59,7 +59,7 @@ struct EmailVerificationView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
                     }
-                    .background(code.count < 6 || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(code.count < 6 || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(code.count < 6 || viewModel.isLoading)
@@ -73,11 +73,11 @@ struct EmailVerificationView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.TextRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.TextRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)

@@ -15,7 +15,7 @@ struct AccountSettingView: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.backgroundGray
+            Color.W2_1
                 .ignoresSafeArea()
             
             VStack(spacing: 12) {
@@ -27,11 +27,11 @@ struct AccountSettingView: View {
                         HStack(spacing: 6) {
                             Text(viewModel.appState.user.userName ?? "")
                                 .font(.pretendard(.semibold, size: 16))
-                                .foregroundStyle(Color.titleTextBlack)
+                                .foregroundStyle(Color.B2)
                             
                             Text("#\(viewModel.appState.user.userNumber ?? 0)")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(Color.dateGray)
+                                .foregroundStyle(Color.W4)
                             
                             Spacer()
                         }
@@ -39,15 +39,15 @@ struct AccountSettingView: View {
                         HStack {
                             Text("닉네임 변경")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.titleTextBlack)
+                                .foregroundStyle(Color.B2)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.dateGray)
+                                .foregroundStyle(Color.W4)
                         }
-                        .background(Color.memoBackgroundWhite)
+                        .background(Color.W1)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .changeNickname)
                         }
@@ -63,26 +63,26 @@ struct AccountSettingView: View {
                     HStack(spacing: 10) {
                         Text("이메일")
                             .font(.pretendard(.regular, size: 14))
-                            .foregroundStyle(Color.titleTextBlack)
+                            .foregroundStyle(Color.B2)
                         
                         Spacer()
                         
                         Text(viewModel.appState.user.userEmail ?? "")
                             .font(.pretendard(.regular, size: 12))
-                            .foregroundStyle(Color.dateGray)
+                            .foregroundStyle(Color.W4)
                     }
                     
                     if !viewModel.appState.user.isSocial {
                         HStack {
                             Text("비밀번호 변경")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.titleTextBlack)
+                                .foregroundStyle(Color.B2)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 16, weight: .regular))
-                                .foregroundStyle(Color.dateGray)
+                                .foregroundStyle(Color.W4)
                         }
                         .background(Color.white)
                         .onTapGesture {
@@ -155,7 +155,7 @@ struct AccountSettingView: View {
             ToolbarItem(placement: .navigation) {
                 Text("내 계정")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.titleTextBlack)
+                    .foregroundStyle(Color.B2)
             }
         }
         .sheet(isPresented: $showWithdrawalSheet) {
@@ -207,7 +207,7 @@ struct AccountSettingView: View {
                     .padding(.vertical, 12)
 
                 }
-                .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
                 .cornerRadius(22)
                 .padding(.top, 16)
                 .disabled(email.isEmpty || viewModel.isLoading)
