@@ -60,7 +60,7 @@ struct MemoEditorView: View {
                     if viewModel.editorContent.isEmpty {
                         Text("메모를 작성해보세요.")
                             .font(.pretendard(.regular, size: 16))
-                            .foregroundStyle(Color.W4)
+                            .foregroundStyle(Color.basicGray)
                             .offset(x: 5, y: 10)
                     }
                 }, alignment: .topLeading)
@@ -75,17 +75,17 @@ struct MemoEditorView: View {
                 case .create:
                     Text(dateFormat(date: Date()))
                         .font(.pretendard(.medium, size: 13))
-                        .foregroundStyle(Color.W4)
+                        .foregroundStyle(Color.basicGray)
                         .padding(.vertical, 3)
                     
                 case let .update(target):
                     Text(dateFormat(date: target.createdAt))
                         .font(.pretendard(.medium, size: 13))
-                        .foregroundStyle(Color.W4)
+                        .foregroundStyle(Color.basicGray)
                         .padding(.vertical, 3)
                     
                     Image(systemName: "lock.fill")
-                        .foregroundColor(Color.W4)
+                        .foregroundColor(Color.basicGray)
                         .font(.system(size: 13))
                         .opacity(target.locked ? 1 : 0)
                 }

@@ -17,14 +17,14 @@ struct EmailVerificationView: View {
     var body: some View {
         
         ZStack {
-            Color.W2_1.edgesIgnoringSafeArea(.all)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.B2)
+                        .foregroundStyle(Color.basicTextColor)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -33,7 +33,7 @@ struct EmailVerificationView: View {
                     Text("이메일로 발송된 인증번호를 입력해주세요.")
                         .padding(.vertical, 8)
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.B2)
+                        .foregroundStyle(Color.basicTextColor)
                     
                     //MARK: - 인증 코드 입력란
                     SeparatedTextField(length: 6, value: $code)
@@ -59,7 +59,7 @@ struct EmailVerificationView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
                     }
-                    .background(code.count < 6 || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
+                    .background(code.count < 6 || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(code.count < 6 || viewModel.isLoading)
@@ -73,15 +73,15 @@ struct EmailVerificationView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.TextRed)
+                            .fill(Color.textRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.TextRed)
+                            .fill(Color.textRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#F1F1F3"))
+                            .fill(Color.backgroundColor)
                             .frame(width: 12, height: 24)
                         
                     }
@@ -119,7 +119,7 @@ struct CharacterField: View {
             .font(.system(size: 22, weight: .semibold))
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                    .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
             )
             .onChange(of: character) { oldValue, newValue in
                 if newValue.count > 1 {

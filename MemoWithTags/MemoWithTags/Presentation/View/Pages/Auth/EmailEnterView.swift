@@ -14,7 +14,7 @@ struct EmailEnterView: View {
     
     var body: some View {
         ZStack {
-            Color.W2_1.edgesIgnoringSafeArea(.all)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 
@@ -22,7 +22,7 @@ struct EmailEnterView: View {
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
                         .font(.pretendard(.medium, size: 22))
-                        .foregroundStyle(Color.B2)
+                        .foregroundStyle(Color.basicTextColor)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -36,7 +36,7 @@ struct EmailEnterView: View {
                         prompt:
                             Text("이메일")
                             .font(.pretendard(.regular, size: 16))
-                            .foregroundStyle(Color(hex: "#94979F"))
+                            .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                     )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
@@ -44,7 +44,7 @@ struct EmailEnterView: View {
                     .background(.white)
                     .overlay (
                         RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                            .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                     )
                     .autocorrectionDisabled(true)
                     .textInputAutocapitalization(.never)
@@ -68,7 +68,7 @@ struct EmailEnterView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
                     }
-                    .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
+                    .background(email.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(email.isEmpty || viewModel.isLoading)
@@ -82,15 +82,15 @@ struct EmailEnterView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.TextRed)
+                            .fill(Color.textRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#F1F1F3"))
+                            .fill(Color.backgroundColor)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color(hex: "#F1F1F3"))
+                            .fill(Color.backgroundColor)
                             .frame(width: 12, height: 24)
                         
                     }

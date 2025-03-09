@@ -12,14 +12,14 @@ struct SignupSuccessView: View {
     
     var body: some View {
         ZStack {
-            Color.W2_1.edgesIgnoringSafeArea(.all)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("회원가입이 완료되었습니다!")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.B2)
+                        .foregroundStyle(Color.basicTextColor)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -32,17 +32,17 @@ struct SignupSuccessView: View {
                             HStack(spacing: 3) {
                                 Text("Memo with")
                                     .font(.pretendard(.semibold, size: 17))
-                                    .foregroundStyle(Color.B2)
+                                    .foregroundStyle(Color.basicTextColor)
                                 
                                 DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                             }
                             Text("를 통해")
                                 .font(.pretendard(.regular, size: 15))
-                                .foregroundStyle(Color.B2)
+                                .foregroundStyle(Color.basicTextColor)
                         }
                         Text("복잡한 메모들을 간단하고 효율적으로 정리해보세요!")
                             .font(.pretendard(.regular, size: 15))
-                            .foregroundStyle(Color.B2)
+                            .foregroundStyle(Color.basicTextColor)
                     }
                     .padding(.top, 8)
                     .padding(.bottom, 4)
@@ -58,7 +58,7 @@ struct SignupSuccessView: View {
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
                     }
-                    .background(Color(hex: "#FF9C9C"))
+                    .background(Color.buttonRed)
                     .cornerRadius(22)
                     .padding(.top, 16)
                 }

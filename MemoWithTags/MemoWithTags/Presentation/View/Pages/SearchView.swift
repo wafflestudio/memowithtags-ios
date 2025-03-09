@@ -16,7 +16,7 @@ struct SearchView: View {
     
     var body: some View {
         ZStack {
-            Color.W2_1
+            Color.backgroundColor
                 .ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 0) {
@@ -58,7 +58,7 @@ struct SearchView: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
-                    .background(Color.W3)
+                    .background(Color.searchBarBackgroundColor)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
                 .padding(.horizontal, 16)
@@ -78,7 +78,7 @@ struct SearchView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Tags")
                             .font(.pretendard(.medium, size: 12))
-                            .foregroundStyle(Color.W4)
+                            .foregroundStyle(Color.basicGray)
                             .padding(.horizontal, 14)
 
                         
@@ -101,7 +101,7 @@ struct SearchView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Memos")
                             .font(.pretendard(.medium, size: 12))
-                            .foregroundStyle(Color.W4)
+                            .foregroundStyle(Color.basicGray)
                             .padding(.horizontal, 26)
                         
                         ScrollView {

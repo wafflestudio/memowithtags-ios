@@ -20,7 +20,7 @@ struct MemoView: View {
             //MARK: - 메모 내용
             Text(memo.content)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.B2)
+                .foregroundColor(Color.basicTextColor)
                 .lineLimit(isExpanded ? nil : 2)
                 .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)
@@ -34,7 +34,7 @@ struct MemoView: View {
                     
                     if memo.locked {
                         Image(systemName: "lock.fill")
-                            .foregroundColor(Color.W4)
+                            .foregroundColor(Color.basicGray)
                             .font(.system(size: 14))
                     }
                 }
@@ -47,7 +47,7 @@ struct MemoView: View {
                 HStack(alignment: .bottom) {
                     Text(dateFormat(date: memo.createdAt))
                         .font(.pretendard(.medium, size: 11))
-                        .foregroundStyle(Color.W4)
+                        .foregroundStyle(Color.basicGray)
                         .padding(.vertical, 3)
                     
                     Spacer()
@@ -55,7 +55,7 @@ struct MemoView: View {
                     HStack(spacing: 4) {
                         Text("관련 검색")
                             .font(.pretendard(.medium, size: 11))
-                            .foregroundStyle(Color.B2)
+                            .foregroundStyle(Color.basicTextColor)
                         Image(.searchIcon)
                             .resizable()
                             .frame(width: 11.5, height: 11.5)
@@ -75,7 +75,7 @@ struct MemoView: View {
                     HStack(spacing: 4) {
                         Text("간편 수정")
                             .font(.pretendard(.medium, size: 11))
-                            .foregroundStyle(Color.B2)
+                            .foregroundStyle(Color.basicTextColor)
                         
                         Image(.aiPenIcon)
                             .resizable()
@@ -96,9 +96,9 @@ struct MemoView: View {
                     // 접기 버튼
                     Image(systemName: "chevron.up")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.B2.opacity(0.6))
+                        .foregroundStyle(Color.basicTextColor.opacity(0.6))
                         .frame(width: 27, height: 27)
-                        .background(Color.W2_1)
+                        .background(Color.backgroundColor)
                         .clipShape(Circle())
                         .onTapGesture {
                             withAnimation(.spring) {
@@ -112,7 +112,7 @@ struct MemoView: View {
         .padding(.top, 9)
         .padding(.bottom, 12)
         .padding(.horizontal, 17)
-        .background(Color.W1)
+        .background(Color.memoBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)

@@ -21,7 +21,7 @@ struct DynamicHeightTextEditor: View {
             TextEditor(text: $text)
                 .frame(minHeight: minHeight, maxHeight: maxHeight)
                 .background(GeometryReader { geometry in
-                    Color.clear
+                    Color.editorBackgroundColor
                         .onAppear {
                             updateHeight(from: geometry.size)
                         }
@@ -42,7 +42,7 @@ struct DynamicHeightTextEditor: View {
             if text.isEmpty {
                 Text(placeholder)
                     .font(.pretendard(.regular, size: 14))
-                    .foregroundColor(Color.gray.opacity(0.6))
+                    .foregroundColor(Color.editorPlaceholder)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 10)
                     .allowsHitTesting(false) // 플레이스홀더가 터치 이벤트를 차단하지 않도록 설정

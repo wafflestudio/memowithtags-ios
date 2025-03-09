@@ -12,7 +12,7 @@ struct SplashView: View {
     
     var body: some View {
         ZStack {
-            Color.W2_1.edgesIgnoringSafeArea(.all)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
             ProgressView().progressViewStyle(CircularProgressViewStyle())
         }
         .navigationBarBackButtonHidden()

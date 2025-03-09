@@ -24,7 +24,7 @@ struct ChangePasswordView: View {
                     prompt:
                         Text("기존 비밀번호")
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color(hex: "#94979F"))
+                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
@@ -32,7 +32,7 @@ struct ChangePasswordView: View {
                 .background(.white)
                 .overlay (
                     RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -44,7 +44,7 @@ struct ChangePasswordView: View {
                         text: $newPassword,
                         prompt: Text("새 비밀번호")
                             .font(.pretendard(.regular, size: 16))
-                            .foregroundStyle(Color(hex: "#94979F"))
+                            .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                     )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
@@ -52,7 +52,7 @@ struct ChangePasswordView: View {
                     .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                            .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                     )
                     .autocorrectionDisabled(true)
                     .textInputAutocapitalization(.never)
@@ -65,19 +65,19 @@ struct ChangePasswordView: View {
                         HStack {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(viewModel.isValidLength ? Color.B2 : Color.W4)
+                                .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
                             Text("최소 8자 ~ 최대 16자")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(viewModel.isValidLength ? Color.B2 : Color.W4)
+                                .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
                         }
                         
                         HStack {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.B2 : Color.W4)
+                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
                             Text("알파벳 대소문자, 숫자, 특수문자 포함")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.B2 : Color.W4)
+                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
                         }
                     }
                     .padding(.horizontal, 6)
@@ -89,7 +89,7 @@ struct ChangePasswordView: View {
                     text: $newPasswordRepeat,
                     prompt: Text("비밀번호 확인")
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color(hex: "#94979F"))
+                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
@@ -97,7 +97,7 @@ struct ChangePasswordView: View {
                 .background(Color.white)
                 .overlay(
                     RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -123,7 +123,7 @@ struct ChangePasswordView: View {
                 .foregroundStyle(.white)
                 .padding(.vertical, 12)
             }
-            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
+            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
             .cornerRadius(22)
             .disabled(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading)
 
@@ -142,7 +142,7 @@ struct ChangePasswordView: View {
             ToolbarItem(placement: .navigation) {
                 Text("비밀번호 변경")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.B2)
+                    .foregroundStyle(Color.basicTextColor)
             }
         }
         .navigationBarBackButtonHidden()

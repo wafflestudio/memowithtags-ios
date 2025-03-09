@@ -21,16 +21,16 @@ struct EditingTagListView: View {
             // 태그 검색하는 필드
             TextField("태그 찾기", text: $searchText)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.W4)
+                .foregroundColor(Color.basicGray)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .background(Color.W3)
+                .background(Color.searchBarBackgroundColor)
                 .frame(maxWidth: 80)
                 .cornerRadius(20)
             
             // Divider Line
             Rectangle()
-                .foregroundColor(Color.W4)
+                .foregroundColor(Color.basicGray)
                 .frame(width: 0.3, height: 32)
             
             // 태그 추천해주는 스크롤 라인

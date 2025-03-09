@@ -21,10 +21,10 @@ struct DesignTagView: View {
     var body: some View {
         Text(text)
             .font(.pretendard(fontWeight, size: fontSize))
-            .foregroundStyle(Color.B2_70)
+            .foregroundStyle(Color.tagTextColor)
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, verticalPadding)
-            .background(Color.init(hex: backGroundColor))
+            .background(Color.backgroundColor)
             .cornerRadius(cornerRadius)
             .onTapGesture {
                 onTap?()

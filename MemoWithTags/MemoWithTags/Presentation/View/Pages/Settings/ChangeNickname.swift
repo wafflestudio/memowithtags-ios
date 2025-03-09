@@ -20,7 +20,7 @@ struct ChangeNicknameView: View {
                     text: $nickname,
                     prompt: Text("닉네임 입력")
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color(hex: "#94979F"))
+                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
@@ -28,7 +28,7 @@ struct ChangeNicknameView: View {
                 .background(Color.white)
                 .overlay(
                     RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -38,7 +38,7 @@ struct ChangeNicknameView: View {
                     Spacer()
                     Text("\(nickname.count)/8")
                         .font(.pretendard(.regular, size: 12))
-                        .foregroundStyle(nickname.count > 8 ? Color.red : Color.W4)
+                        .foregroundStyle(nickname.count > 8 ? Color.red : Color.basicGray)
                         .padding(.horizontal, 6)
                 }
             }
@@ -62,7 +62,7 @@ struct ChangeNicknameView: View {
                 .foregroundStyle(.white)
                 .padding(.vertical, 12)
             }
-            .background(nickname.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
+            .background(nickname.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
             .cornerRadius(22)
             .disabled(nickname.isEmpty || viewModel.isLoading)
         }
@@ -80,7 +80,7 @@ struct ChangeNicknameView: View {
             ToolbarItem(placement: .navigation) {
                 Text("닉네임 변경")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.B2)
+                    .foregroundStyle(Color.basicTextColor)
             }
         }
         .navigationBarBackButtonHidden()

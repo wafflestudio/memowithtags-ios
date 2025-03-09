@@ -15,7 +15,7 @@ struct AccountSettingView: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.W2_1
+            Color.backgroundColor
                 .ignoresSafeArea()
             
             VStack(spacing: 12) {
@@ -27,11 +27,11 @@ struct AccountSettingView: View {
                         HStack(spacing: 6) {
                             Text(viewModel.appState.user.userName ?? "")
                                 .font(.pretendard(.semibold, size: 16))
-                                .foregroundStyle(Color.B2)
+                                .foregroundStyle(Color.basicTextColor)
                             
                             Text("#\(viewModel.appState.user.userNumber ?? 0)")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(Color.W4)
+                                .foregroundStyle(Color.basicGray)
                             
                             Spacer()
                         }
@@ -39,15 +39,15 @@ struct AccountSettingView: View {
                         HStack {
                             Text("닉네임 변경")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.B2)
+                                .foregroundStyle(Color.basicTextColor)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.W4)
+                                .foregroundStyle(Color.basicGray)
                         }
-                        .background(Color.W1)
+                        .background(Color.memoBackgroundColor)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .changeNickname)
                         }
@@ -63,26 +63,26 @@ struct AccountSettingView: View {
                     HStack(spacing: 10) {
                         Text("이메일")
                             .font(.pretendard(.regular, size: 14))
-                            .foregroundStyle(Color.B2)
+                            .foregroundStyle(Color.basicTextColor)
                         
                         Spacer()
                         
                         Text(viewModel.appState.user.userEmail ?? "")
                             .font(.pretendard(.regular, size: 12))
-                            .foregroundStyle(Color.W4)
+                            .foregroundStyle(Color.basicGray)
                     }
                     
                     if !viewModel.appState.user.isSocial {
                         HStack {
                             Text("비밀번호 변경")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.B2)
+                                .foregroundStyle(Color.basicTextColor)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 16, weight: .regular))
-                                .foregroundStyle(Color.W4)
+                                .foregroundStyle(Color.basicGray)
                         }
                         .background(Color.white)
                         .onTapGesture {
@@ -98,7 +98,7 @@ struct AccountSettingView: View {
                 HStack {
                     Text("로그아웃")
                         .font(.pretendard(.regular, size: 14))
-                        .foregroundStyle(Color(hex: "#FF5151"))
+                        .foregroundStyle(Color.textRed)
                     Spacer()
                 }
                 .padding(.vertical, 13)
@@ -116,11 +116,11 @@ struct AccountSettingView: View {
                     
                     Image(systemName: "trash")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color(hex: "#FF5151"))
+                        .foregroundStyle(Color.textRed)
                     
                     Text("회원 탈퇴")
                         .font(.pretendard(.regular, size: 14))
-                        .foregroundStyle(Color(hex: "#FF5151"))
+                        .foregroundStyle(Color.textRed)
                     
                     Spacer()
                 }
@@ -155,7 +155,7 @@ struct AccountSettingView: View {
             ToolbarItem(placement: .navigation) {
                 Text("내 계정")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.B2)
+                    .foregroundStyle(Color.basicTextColor)
             }
         }
         .sheet(isPresented: $showWithdrawalSheet) {
@@ -174,7 +174,7 @@ struct AccountSettingView: View {
                     prompt:
                         Text("이메일")
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color(hex: "#94979F"))
+                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                 )
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
@@ -182,7 +182,7 @@ struct AccountSettingView: View {
                 .background(.white)
                 .overlay (
                     RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -207,7 +207,7 @@ struct AccountSettingView: View {
                     .padding(.vertical, 12)
 
                 }
-                .background(email.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.B2)
+                .background(email.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
                 .cornerRadius(22)
                 .padding(.top, 16)
                 .disabled(email.isEmpty || viewModel.isLoading)

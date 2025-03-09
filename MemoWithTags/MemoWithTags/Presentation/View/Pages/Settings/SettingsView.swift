@@ -12,19 +12,19 @@ struct SettingsView: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.W2_1
+            Color.backgroundColor
                 .ignoresSafeArea()
             
             VStack(spacing: 12) {
                 HStack {
                     Text("내 계정")
                         .font(.pretendard(.medium, size: 14))
-                        .foregroundStyle(Color.B2)
+                        .foregroundStyle(Color.basicTextColor)
                     Spacer()
                     
                     Image(systemName: "chevron.right")
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.W4)
+                        .foregroundStyle(Color.basicGray)
                 }
                 .padding(.vertical, 13)
                 .padding(.horizontal, 17)
@@ -39,7 +39,7 @@ struct SettingsView: View {
                     HStack{
                         Text("메모 정렬 기준은 만든 날짜 순입니다.")
                             .font(.pretendard(.regular, size: 12))
-                            .foregroundStyle(Color.W4)
+                            .foregroundStyle(Color.basicGray)
                             .padding(.leading, 6)
                         
                         Spacer()
@@ -47,7 +47,7 @@ struct SettingsView: View {
                     
                     Text("검색 정렬 기준은 만든 날짜 순입니다.")
                         .font(.pretendard(.regular, size: 12))
-                        .foregroundStyle(Color.W4)
+                        .foregroundStyle(Color.basicGray)
                         .padding(.leading, 6)
                     
                     
@@ -74,13 +74,13 @@ struct SettingsView: View {
             ToolbarItem(placement: .navigation) {
                 Text("설정")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.B2)
+                    .foregroundStyle(Color.basicTextColor)
             }
         }
     }
     
     
-    @ViewBuilder private func CustomCell(icon: String, text: String, color: Color? = Color.B2, onTap: (() -> Void)?) -> some View {
+    @ViewBuilder private func CustomCell(icon: String, text: String, color: Color? = Color.basicTextColor, onTap: (() -> Void)?) -> some View {
         HStack(spacing: 10) {
             Image(systemName: icon)
                 .font(.system(size: 14))
@@ -95,7 +95,7 @@ struct SettingsView: View {
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 18)
-        .background(Color.W1)
+        .background(Color.memoBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 2)
         .onTapGesture {
