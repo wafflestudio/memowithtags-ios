@@ -64,6 +64,10 @@ struct EmailVerificationView: View {
                     .padding(.top, 16)
                     .disabled(code.count < 6 || viewModel.isLoading)
                     
+                    //MARK: - 타이머와 재전송 버튼
+                    TimerView(viewModel: viewModel, email: email)
+                        .padding(.top, 16)
+                    
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "이전", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#E3E3E7", cornerRadius: 4) {
@@ -174,5 +178,40 @@ struct SeparatedTextField: View {
         } else if index > 0 {
             focusedIndex = index - 1 // 이전 필드로 포커스 이동
         }
+    }
+}
+
+struct TimerView: View {
+    @ObservedObject var viewModel: EmailVerificationViewModel
+    let email: String
+    
+    var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    var body: some View {
+        HStack {
+            DesignTagView(text: "인증번호 재발송", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: viewModel.isLoading ? "#E3E3E7" : "#FFBDBD", cornerRadius: 4) {
+                Task {
+                    await viewModel.sendCode(email: email)
+                }
+            }
+
+            Spacer()
+            
+            Text(timeString(time: viewModel.time))
+                .font(.pretendard(.regular, size: 14))
+                .foregroundStyle(Color.dateGray)
+            
+        }
+        .onReceive(timer) { _ in
+            if viewModel.time > 0 {
+                viewModel.time -= 1
+            }
+        }
+    }
+    
+    private func timeString(time: Int) -> String {
+        let minutes = time / 60
+        let seconds = time % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 }

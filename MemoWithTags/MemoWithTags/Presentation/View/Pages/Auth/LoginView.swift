@@ -112,25 +112,25 @@ struct LoginView: View {
                         }
                     }
                     
-                    Divider()
-                        .overlay {
-                            Text("다른 계정으로 로그인")
-                                .font(.pretendard(.medium, size: 12))
-                                .padding(.horizontal, 8)
-                                .foregroundStyle(Color.basicGray)
-                                .background(Color.white)
-                        }
-                    
-                    //MARK: - 소셜 로그인 버튼들
-                    HStack(spacing: 18) {
-                        // 카카오 로그인 버튼
-                        Link(destination: URL(string: "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ed92cd34690fb718013b559ebd98353a&redirect_uri=http://ec2-43-201-64-202.ap-northeast-2.compute.amazonaws.com:8080/api/v1/auth/code/kakao")!) {
-                            Image(.kakaoIcon)
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                        }
-                        
-                    }
+//                    Divider()
+//                        .overlay {
+//                            Text("다른 계정으로 로그인")
+//                                .font(.pretendard(.medium, size: 12))
+//                                .padding(.horizontal, 8)
+//                                .foregroundStyle(Color.tabBarNotSelectecdIconGray)
+//                                .background(Color.white)
+//                        }
+//                    
+//                    //MARK: - 소셜 로그인 버튼들
+//                    HStack(spacing: 18) {
+//                        // 카카오 로그인 버튼
+//                        Link(destination: URL(string: "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=ed92cd34690fb718013b559ebd98353a&redirect_uri=http://ec2-43-201-64-202.ap-northeast-2.compute.amazonaws.com:8080/api/v1/auth/code/kakao")!) {
+//                            Image(.kakaoIcon)
+//                                .resizable()
+//                                .frame(width: 40, height: 40)
+//                        }
+//                        
+//                    }
                 }
                 .padding(.vertical, 18)
                 .padding(.horizontal, 16)

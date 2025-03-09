@@ -315,7 +315,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         case .success(let user):
             appState.user.userId = user.id
             appState.user.userName = user.nickname
+            appState.user.userNumber = user.userNumber
             appState.user.userEmail = user.email
+            appState.user.isSocial = user.isSocial
         case .failure(let error):
             appState.system.alert(error: error)
         }

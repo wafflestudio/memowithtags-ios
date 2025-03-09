@@ -39,30 +39,27 @@ struct TagView: View {
             .onTapGesture {
                 onTap?()
             }
-            .customContextMenu {
-                AnyView(
-                    VStack(alignment: .leading, spacing: 10) {
-                        Button("이 태그로 검색하기", role: .none) {
-                            viewModel.clearSearch()
-                            viewModel.searchBarSelectedTagIds.append(tag.id)
-                            // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
-                            if viewModel.appState.navigation.current != .search {
-                                viewModel.appState.navigation.push(to: .search)
-                            }
+            .customContextMenu(
+                appState: viewModel.appState,
+                type: .tag(tag: tag),
+                menuItems: [
+                    .init(title: "태그 수정", icon: "pencil") {
+                        isUpdating = true
+                    },
+                    .init(title: "태그로 검색", icon: "magnifyingglass") {
+                        viewModel.clearSearch()
+                        viewModel.searchBarSelectedTagIds.append(tag.id)
+                        if viewModel.appState.navigation.current != .search {
+                            viewModel.appState.navigation.push(to: .search)
                         }
-                        
-                        Button("태그 수정", role: .none) {
-                            isUpdating = true
-                        }
-                        
-                        Button("태그 삭제", role: .none) {
-                            Task {
-                                await viewModel.deleteTag(tagId: tag.id)
-                            }
+                    },
+                    .init(title: "태그 삭제", icon: "trash", type: .delete) {
+                        Task {
+                            await viewModel.deleteTag(tagId: tag.id)
                         }
                     }
-                )
-            }
+                ]
+            )
             .sheet(isPresented: $isUpdating, onDismiss: {
                 isUpdating = false
             }) {
