@@ -15,25 +15,23 @@ struct EditingMemoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             //MARK: - 메모글 쓰는 곳
-            DynamicHeightTextEditor(
-                text: $viewModel.editorContent,
-                maxHeight: 100
-            )
-            .overlay (
-                Group {
-                    if viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty {
-                        Image(systemName: "square.and.pencil")
-                            .font(.system(size: 20))
-                            .foregroundColor(.black)
-                            .onTapGesture {
-                                Task {
-                                    await viewModel.submit()
+            DynamicHeightTextEditor(text: $viewModel.editorContent)
+                .overlay (
+                    Group {
+                        if viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty {
+                            Image(systemName: "square.and.pencil")
+                                .font(.system(size: 20))
+                                .foregroundColor(.black)
+                                .frame(width: 25, height: 27, alignment: .top)
+                                .onTapGesture {
+                                    Task {
+                                        await viewModel.submit()
+                                    }
                                 }
-                            }
+                        }
                     }
-                }
-                , alignment: .trailing
-            )
+                    , alignment: .trailing
+                )
             
             //MARK: - 메모에 넣은 태그들
             if !viewModel.editorTagIds.isEmpty {
@@ -62,7 +60,7 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 16))
-                            .foregroundColor(Color(hex: "#FF9C9C"))
+                            .foregroundColor(Color.memoTextBlack.opacity(0.15))
                             .onTapGesture {
                                 viewModel.editorState = .create
                                 viewModel.editorContent = ""
@@ -72,6 +70,7 @@ struct EditingMemoView: View {
                         Image(systemName: "square.and.pencil")
                             .font(.system(size: 20))
                             .foregroundColor(.black)
+                            .frame(width: 25, height: 27, alignment: .top)
                             .onTapGesture {
                                 Task {
                                     await viewModel.submit()
@@ -90,11 +89,11 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .regular))
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 5)
                             .foregroundColor(.memoBackgroundWhite)
+                            .padding(0)
+                            .frame(width: 24, height: 24, alignment: .center)
                             .background(Color.highlightRed)
-                            .clipShape(Circle())
+                            .cornerRadius(20)
                             .onTapGesture {
                                 viewModel.editorState = .create
                                 viewModel.editorContent = ""
@@ -103,11 +102,11 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .regular))
-                            .padding(.vertical, 3.5)
-                            .padding(.horizontal, 4)
                             .foregroundColor(.black)
+                            .padding(0)
+                            .frame(width: 24, height: 24, alignment: .center)
                             .background(Color.backgroundGray)
-                            .clipShape(Circle())
+                            .cornerRadius(20)
                             .onTapGesture {
                                 Task {
                                     await viewModel.submit()
@@ -117,7 +116,7 @@ struct EditingMemoView: View {
                 }
             }
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, 6)
         .padding(.horizontal, 17)
         .background(Color.memoBackgroundWhite)
         .cornerRadius(14)
