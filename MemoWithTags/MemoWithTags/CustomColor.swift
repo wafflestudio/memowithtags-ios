@@ -52,6 +52,11 @@ extension Color {
         dark: UIColor(hex: "#A0A0A1")
     )
     
+    static let editorIconBlack: Color = .dynamicColor(
+        light: UIColor(hex: "#000000"),
+        dark: UIColor(hex: "#FFFFFF")
+    )
+    
     static let searchBarBackgroundColor: Color = .dynamicColor(
         light: UIColor(hex: "#E3E3E7"), // W3
         dark: UIColor(hex: "#2F2F33")   //

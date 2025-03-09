@@ -21,7 +21,7 @@ struct EditingMemoView: View {
                         if viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty {
                             Image(systemName: "square.and.pencil")
                                 .font(.system(size: 20))
-                                .foregroundColor(.black)
+                                .foregroundColor(Color.editorIconBlack)
                                 .frame(width: 25, height: 27, alignment: .top)
                                 .onTapGesture {
                                     Task {
@@ -60,7 +60,7 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 16))
-                            .foregroundColor(Color.memoTextBlack.opacity(0.15))
+                            .foregroundColor(Color.textRed)
                             .onTapGesture {
                                 viewModel.editorState = .create
                                 viewModel.editorContent = ""
@@ -69,7 +69,7 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "square.and.pencil")
                             .font(.system(size: 20))
-                            .foregroundColor(.black)
+                            .foregroundColor(.editorIconBlack)
                             .frame(width: 25, height: 27, alignment: .top)
                             .onTapGesture {
                                 Task {
@@ -89,10 +89,10 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .regular))
-                            .foregroundColor(.memoBackgroundWhite)
+                            .foregroundColor(Color.memoBackgroundColor)
                             .padding(0)
                             .frame(width: 24, height: 24, alignment: .center)
-                            .background(Color.highlightRed)
+                            .background(Color.buttonRed)
                             .cornerRadius(20)
                             .onTapGesture {
                                 viewModel.editorState = .create
@@ -102,10 +102,10 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(.black)
+                            .foregroundColor(.editorIconBlack)
                             .padding(0)
                             .frame(width: 24, height: 24, alignment: .center)
-                            .background(Color.backgroundGray)
+                            .background(Color.backgroundColor)
                             .cornerRadius(20)
                             .onTapGesture {
                                 Task {
@@ -163,7 +163,7 @@ struct EditingMemoView: View {
                 HStack(spacing: 18) {
                     Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.basicTextColor)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(

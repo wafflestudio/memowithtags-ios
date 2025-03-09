@@ -77,11 +77,11 @@ struct EmailVerificationView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.textRed)
+                            .fill(Color.buttonRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.textRed)
+                            .fill(Color.buttonRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
@@ -199,7 +199,7 @@ struct TimerView: View {
             
             Text(timeString(time: viewModel.time))
                 .font(.pretendard(.regular, size: 14))
-                .foregroundStyle(Color.dateGray)
+                .foregroundStyle(Color.basicGray)
             
         }
         .onReceive(timer) { _ in

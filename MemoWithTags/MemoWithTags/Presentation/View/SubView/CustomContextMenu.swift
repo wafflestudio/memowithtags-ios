@@ -159,7 +159,7 @@ struct MemoPreview: View {
         VStack(alignment: .center, spacing: 0) {
             Text(memo.content)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.memoTextBlack)
+                .foregroundColor(Color.basicTextColor)
                 .lineLimit(4)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
@@ -184,7 +184,7 @@ struct MemoPreview: View {
             if memo.locked {
                 HStack {
                     Image(systemName: "lock.fill")
-                        .foregroundColor(Color.lockIconGray)
+                        .foregroundColor(Color.basicGray)
                         .font(.system(size: 14))
                     Spacer()
                 }
@@ -194,7 +194,7 @@ struct MemoPreview: View {
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 18)
-        .background(Color.memoBackgroundWhite)
+        .background(Color.memoBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
         .padding(.horizontal, 8)

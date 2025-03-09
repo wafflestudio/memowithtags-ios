@@ -82,7 +82,7 @@ struct EmailEnterView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.textRed)
+                            .fill(Color.buttonRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)

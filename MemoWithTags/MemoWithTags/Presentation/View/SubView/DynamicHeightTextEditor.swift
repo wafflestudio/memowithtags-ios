@@ -21,7 +21,7 @@ struct DynamicHeightTextEditor: View {
             .overlay (
                 Text(placeholder)
                     .font(.pretendard(.regular, size: 14))
-                    .foregroundColor(Color.dateGray)
+                    .foregroundColor(Color.basicGray)
                     .offset(x: 5)
                     .allowsHitTesting(false)
                     .opacity(text.isEmpty ? 1 : 0)
