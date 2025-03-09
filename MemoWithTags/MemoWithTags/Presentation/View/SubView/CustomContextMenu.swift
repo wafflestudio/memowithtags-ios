@@ -289,7 +289,7 @@ struct ContextMenu: View {
             }
         )
         .offset(x: outOfScreenX)
-        .scaleEffect(y: isAppeared ? 1 : 0) // 세로로만 펼쳐짐
+        .scaleEffect(y: isAppeared ? 1 : 0)
         .onAppear {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7, blendDuration: 0)) {
                 isAppeared = true
