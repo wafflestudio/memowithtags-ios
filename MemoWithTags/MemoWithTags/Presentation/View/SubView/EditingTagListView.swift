@@ -24,7 +24,7 @@ struct EditingTagListView: View {
                 .foregroundColor(Color.W4)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .background(Color.searchBarW2_1)
+                .background(Color.W3)
                 .frame(maxWidth: 80)
                 .cornerRadius(20)
             

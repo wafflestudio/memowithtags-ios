@@ -58,7 +58,7 @@ struct SearchView: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
-                    .background(Color.searchBarW2_1)
+                    .background(Color.W3)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
                 .padding(.horizontal, 16)

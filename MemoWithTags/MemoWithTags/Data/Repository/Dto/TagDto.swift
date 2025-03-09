@@ -17,7 +17,7 @@ struct TagDto: Decodable {
         
         let tagColor = Color.TagColor.allCases.first {
             $0.rawValue.lowercased() == colorHex.lowercased()
-        } ?? .color1
+        } ?? .Red
         
         return Tag(
             id: id,
