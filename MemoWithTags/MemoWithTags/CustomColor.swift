@@ -57,6 +57,11 @@ extension Color {
         dark: UIColor(hex: "#FFFFFF")
     )
     
+    static let designTagBackgroundColor: Color = .dynamicColor(
+        light: UIColor(hex: "#E3E3E7"), // W3
+        dark: UIColor(hex: "#2F2F33")   //
+    )
+    
     static let searchBarBackgroundColor: Color = .dynamicColor(
         light: UIColor(hex: "#E3E3E7"), // W3
         dark: UIColor(hex: "#2F2F33")   //
