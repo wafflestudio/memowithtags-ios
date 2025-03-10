@@ -161,11 +161,9 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     
     // MARK: - 추천 메모 ID 가져오기
     func recommendMemos() async {
-        if editorTagIds.isEmpty {
-            self.recommendingMemoIds = []
-            self.highlightingMemoIndex = -1
-            return
-        }
+        self.recommendingMemoIds = []
+        self.highlightingMemoIndex = -1
+        if editorTagIds.isEmpty { return }
         
         guard !isLoading else { return }
         
