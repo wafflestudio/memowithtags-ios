@@ -18,14 +18,14 @@ struct SignupView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("이메일로 회원가입")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.basicTextColor)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -40,7 +40,7 @@ struct SignupView: View {
                                 text: $nickname,
                                 prompt: Text("닉네임")
                                     .font(.pretendard(.regular, size: 16))
-                                    .foregroundStyle(Color(hex: "#94979F"))
+                                    .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                             )
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
@@ -48,7 +48,7 @@ struct SignupView: View {
                             .background(Color.white)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 14)
-                                    .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                                    .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                             )
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
@@ -58,7 +58,7 @@ struct SignupView: View {
                                 Spacer()
                                 Text("\(nickname.count)/8")
                                     .font(.pretendard(.regular, size: 12))
-                                    .foregroundStyle(nickname.count > 8 ? Color.red : Color.dateGray)
+                                    .foregroundStyle(nickname.count > 8 ? Color.red : Color.basicGray)
                                     .padding(.horizontal, 6)
                             }
                         }
@@ -70,7 +70,7 @@ struct SignupView: View {
                                 text: $password,
                                 prompt: Text("비밀번호")
                                     .font(.pretendard(.regular, size: 16))
-                                    .foregroundStyle(Color(hex: "#94979F"))
+                                    .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                             )
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
@@ -78,7 +78,7 @@ struct SignupView: View {
                             .background(Color.white)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 14)
-                                    .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                                    .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                             )
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
@@ -91,19 +91,19 @@ struct SignupView: View {
                                 HStack {
                                     Image(systemName: "checkmark")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
                                     Text("최소 8자 ~ 최대 16자")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidLength ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
                                 }
                                 
                                 HStack {
                                     Image(systemName: "checkmark")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
                                     Text("알파벳 대소문자, 숫자, 특수문자 포함")
                                         .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.titleTextBlack : Color.dateGray)
+                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
                                 }
                             }
                             .padding(.horizontal, 6)
@@ -115,7 +115,7 @@ struct SignupView: View {
                             text: $passwordRepeat,
                             prompt: Text("비밀번호 확인")
                                 .font(.pretendard(.regular, size: 16))
-                                .foregroundStyle(Color(hex: "#94979F"))
+                                .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
@@ -123,7 +123,7 @@ struct SignupView: View {
                         .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                                .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                         )
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
@@ -148,7 +148,7 @@ struct SignupView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 12)
                     }
-                    .background(nickname.isEmpty || password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                    .background(nickname.isEmpty || password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
                     .cornerRadius(22)
                     .padding(.top, 16)
                     .disabled(nickname.isEmpty || password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading)
@@ -163,15 +163,15 @@ struct SignupView: View {
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.buttonRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.buttonRed)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.highlightRed)
+                            .fill(Color.buttonRed)
                             .frame(width: 12, height: 24)
                         
                     }

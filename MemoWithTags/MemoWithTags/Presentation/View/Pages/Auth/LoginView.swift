@@ -16,14 +16,14 @@ struct LoginView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundGray.edgesIgnoringSafeArea(.all)
+            Color.backgroundColor.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("Memo with")
                         .font(.pretendard(.semibold, size: 22))
-                        .foregroundStyle(Color.titleTextBlack)
+                        .foregroundStyle(Color.basicTextColor)
                     
                     DesignTagView(text: "Tags", fontSize: 19, fontWeight: .regular, horizontalPadding: 8, verticalPadding: 3, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
                 }
@@ -40,7 +40,7 @@ struct LoginView: View {
                             prompt:
                                 Text("이메일")
                                 .font(.pretendard(.regular, size: 16))
-                                .foregroundStyle(Color(hex: "#94979F"))
+                                .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
@@ -48,7 +48,7 @@ struct LoginView: View {
                         .background(.white)
                         .overlay (
                             RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                                .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                         )
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
@@ -59,7 +59,7 @@ struct LoginView: View {
                             text: $password,
                             prompt: Text("비밀번호")
                                 .font(.pretendard(.regular, size: 16))
-                                .foregroundStyle(Color(hex: "#94979F"))
+                                .foregroundStyle(Color.placeholderGrayInWhiteBackground)
                         )
                         .padding(.horizontal, 16)
                         .padding(.vertical, 14)
@@ -67,7 +67,7 @@ struct LoginView: View {
                         .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color(hex: "#181E2226"), lineWidth: 1)
+                                .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
                         )
                         .autocorrectionDisabled(true)
                         .textInputAutocapitalization(.never)
@@ -93,7 +93,7 @@ struct LoginView: View {
                             .padding(.vertical, 12)
 
                         }
-                        .background(email.isEmpty || password.isEmpty || viewModel.isLoading ? Color(hex: "#E3E3E7") : Color.titleTextBlack)
+                        .background(email.isEmpty || password.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
                         .cornerRadius(22)
                         .padding(.top, 6)
                         .disabled(email.isEmpty || password.isEmpty || viewModel.isLoading)

@@ -24,7 +24,7 @@ struct DesignTagView: View {
             .foregroundStyle(Color.tagTextColor)
             .padding(.horizontal, horizontalPadding)
             .padding(.vertical, verticalPadding)
-            .background(Color.init(hex: backGroundColor))
+            .background(Color.backgroundColor)
             .cornerRadius(cornerRadius)
             .onTapGesture {
                 onTap?()

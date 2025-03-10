@@ -5,89 +5,124 @@
 //  Created by Swimming Ryu on 12/28/24.
 //
 
-import SwiftUICore
+import SwiftUI
 
-extension Color {
-    static let backgroundGray: Color = .init(red: 241 / 255, green: 241 / 255, blue: 243 / 255)
-    
-    static let dividerGray: Color = .init(red: 176 / 255, green: 176 / 255, blue: 177 / 255)
-    static let tabBarSelectecdIconBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
-    static let tabBarNotSelectecdIconGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
-    
-    static let titleTextBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
-    
-    static let memoBackgroundWhite: Color = .init(red: 255 / 255, green: 255 / 255, blue: 255 / 255)
-    static let memoTextBlack: Color = .init(red: 32 / 255, green: 32 / 255, blue: 33 / 255)
-    static let lockIconGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
-    static let dateGray: Color = .init(red: 160 / 255, green: 160 / 255, blue: 161 / 255)
-    
-    static let searchBarBackgroundGray: Color = .init(red: 229 / 255, green: 229 / 255, blue: 230 / 255)
-    static let searchBarPlaceholderGray: Color = .init(red: 176 / 255, green: 176 / 255, blue: 177 / 255)
-    static let searchBarIconGray: Color = .init(red: 176 / 255, green: 176 / 255, blue: 177 / 255)
-    
-    static let tagTextColor: Color = .init(red: 26 / 255, green: 26 / 255, blue: 27 / 255).opacity(0.8)
-    
-    static let highlightRed: Color = .init(hex: "#FFBDBD")
-    
-    // HEX 값을 받아서 swiftUI Color로 바꾸는 로직
-    init(hex: String) {
-        // HEX 문자열에서 # 제거
-        let cleanedHex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        
-        // 기본 값 (0, 0, 0) (블랙)
+// MARK: - UIColor extension: 6자리 HEX 문자열을 UIColor로 변환
+extension UIColor {
+    convenience init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
         var int: UInt64 = 0
-        Scanner(string: cleanedHex).scanHexInt64(&int)
+        Scanner(string: hex).scanHexInt64(&int)
         
-        let red, green, blue, alpha: Double
+        let red   = CGFloat((int >> 16) & 0xFF) / 255.0
+        let green = CGFloat((int >> 8) & 0xFF) / 255.0
+        let blue  = CGFloat(int & 0xFF) / 255.0
         
-        switch cleanedHex.count {
-        case 3: // 3글자짜리 HEX 표현 (#RGB)
-            red   = Double((int >> 8) & 0xF) / 15.0
-            green = Double((int >> 4) & 0xF) / 15.0
-            blue  = Double(int & 0xF) / 15.0
-            alpha = 1.0
-        case 6: // 6글자짜리 HEX 표현 (#RRGGBB)
-            red   = Double((int >> 16) & 0xFF) / 255.0
-            green = Double((int >> 8) & 0xFF) / 255.0
-            blue  = Double(int & 0xFF) / 255.0
-            alpha = 1.0
-        case 8: // 8글자짜리 HEX 표현 (#AARRGGBB)
-            alpha = Double((int >> 24) & 0xFF) / 255.0
-            red   = Double((int >> 16) & 0xFF) / 255.0
-            green = Double((int >> 8) & 0xFF) / 255.0
-            blue  = Double(int & 0xFF) / 255.0
-        default:
-            red = 0
-            green = 0
-            blue = 0
-            alpha = 1
-        }
-        
-        self.init(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
-    }
-    
-    // TagColor enum
-    enum TagColor: String, CaseIterable, Encodable, Decodable {
-        case color1 = "#FF9C9C"
-        case color2 = "#FFBDBD"
-        case color3 = "#FFE3DA"
-        case color4 = "#FFF0B8"
-        case color5 = "#FFF56F"
-        case color6 = "#DCF794"
-        case color7 = "#D4FDCB"
-        case color8 = "#92EDA1"
-        case color9 = "#CCFFF7"
-        case color10 = "#A6F7EA"
-        case color11 = "#D2E8FE"
-        case color12 = "#B3D9FF"
-        case color13 = "#EEDEFE"
-        case color14 = "#DEBDFF"
-        case color15 = "#FFBDDE"
-        case color16 = "#FFD9EC"
-        
-        var color: Color {
-            return Color(hex: self.rawValue)
-        }
+        self.init(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }
 
+// MARK: - SwiftUI Color extension: 실제 UIColor를 받아 동적 색상 생성
+extension Color {
+    /// 라이트 모드와 다크 모드에서 실제 UIColor 값을 받아 동적 색상을 생성합니다.
+    static func dynamicColor(light: UIColor, dark: UIColor) -> Color {
+        return Color(UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark ? dark : light
+        })
+    }
+    
+    // 기본 색상 정의
+    static let backgroundColor: Color = .dynamicColor(
+        light: UIColor(hex: "#F1F1F3"), // W2_1
+        dark: UIColor(hex: "#000000")   // B1
+    )
+    
+    static let memoBackgroundColor: Color = .dynamicColor(
+        light: UIColor(hex: "#FFFFFF"), // W1
+        dark: UIColor(hex: "#1A1A1B")   //
+    )
+    
+    static let editorBackgroundColor: Color = .dynamicColor(
+        light: UIColor(hex: "#FFFFFF"), // W1
+        dark: UIColor(hex: "#2F2F33")   //
+    )
+    
+    static let editorPlaceholder: Color = .dynamicColor(
+        light: UIColor(hex: "#A0A0A1"),
+        dark: UIColor(hex: "#A0A0A1")
+    )
+    
+    static let editorIconBlack: Color = .dynamicColor(
+        light: UIColor(hex: "#000000"),
+        dark: UIColor(hex: "#FFFFFF")
+    )
+    
+    static let searchBarBackgroundColor: Color = .dynamicColor(
+        light: UIColor(hex: "#E3E3E7"), // W3
+        dark: UIColor(hex: "#2F2F33")   //
+    )
+    
+    static let basicTextColor: Color = .dynamicColor(
+        light: UIColor(hex: "#202021"), // B2
+        dark: UIColor(hex: "#F5F5F5")   // W2
+    )
+    
+    // 태그 텍스트 색상에 70% opacity 적용
+    static let tagTextColor: Color = .dynamicColor(
+        light: UIColor(hex: "#202021").withAlphaComponent(0.7), // B2_70
+        dark: UIColor(hex: "#F5F5F5")                           // W2
+    )
+    
+    static let basicGray: Color = .dynamicColor(
+        light: UIColor(hex: "#A0A0A1"), // W4
+        dark: UIColor(hex: "#1C1C1E")   //
+    )
+    
+    static let textRed: Color = .dynamicColor(
+        light: UIColor(hex: "#FF5151"), // textRed
+        dark: UIColor(hex: "#FF5151")   // textRed
+    )
+    
+    static let buttonRed: Color = .dynamicColor(
+        light: UIColor(hex: "#FF9C9C"), // buttonRed
+        dark: UIColor(hex: "#FF9C9C")   //
+    )
+    
+    static let placeholderGrayInWhiteBackground: Color = .dynamicColor(
+        light: UIColor(hex: "#94979F"), //
+        dark: UIColor(hex: "#94979F")   //
+    )
+    
+    static let strokeGrayInWhiteBackground: Color = .dynamicColor(
+        light: UIColor(hex: "#DCDDDE"), //
+        dark: UIColor(hex: "#DCDDDE")   //
+    )
+    
+}
+
+// MARK: - TagColor 열거형
+extension Color {
+    enum TagColor: String, CaseIterable, Encodable, Decodable {
+        case Red = "#FF9C9C"
+        case Red2 = "#FFBDBD"
+        case Red3 = "#FFE3DA"
+        case Yellow = "#FFF0B8"
+        case Yellow2 = "#FFF56F"
+        case Green = "#D4FDCB"
+        case Green2 = "#DCF794"
+        case Green3 = "#92EDA1"
+        case Mint = "#CCFFF7"
+        case Mint2 = "#A6F7EA"
+        case Blue = "#D2E8FE"
+        case Blue2 = "#B3D9FF"
+        case Purple = "#EEDEFE"
+        case Purple2 = "#DEBDFF"
+        case Pink = "#FFBDDE"
+        case Pink2 = "#FFD9EC"
+        
+        var color: Color {
+            let base = UIColor(hex: self.rawValue)
+            return Color.dynamicColor(light: base, dark: base.withAlphaComponent(0.3))
+        }
+    }
+}
