@@ -34,10 +34,11 @@ struct MemoListView: View {
                             }
                         }
                 }
+                .padding(.top, 20) // 화면 하단, 코드 상으로는 top에 패딩
             }
             .rotationEffect(.degrees(180))
             .scrollIndicators(.hidden)
-            .padding(.bottom, 20)
+            
             // highlightingMemoIndex 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
             .onChange(of: viewModel.highlightingMemoIndex) {
                 Task {
