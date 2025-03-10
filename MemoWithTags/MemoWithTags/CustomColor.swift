@@ -95,7 +95,7 @@ extension Color {
     
     static let strokeGrayInWhiteBackground: Color = .dynamicColor(
         light: UIColor(hex: "#DCDDDE"), //
-        dark: UIColor(hex: "#DCDDDE")   //
+        dark: UIColor(hex: "#DCDDDE")   // 
     )
     
 }
