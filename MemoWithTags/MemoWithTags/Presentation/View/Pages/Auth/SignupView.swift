@@ -45,12 +45,13 @@ struct SignupView: View {
                     
                     //MARK: - 회원가입 버튼
                     SubmitButtonView(
-                        text: "다음", loading: viewModel.isLoading, disabled: nickname.isEmpty || password.isEmpty || passwordRepeat.isEmpty
+                        text: "다음", loading: viewModel.isLoading, disabled: !(1...16 ~= nickname.count) || password.isEmpty || passwordRepeat.isEmpty
                     ) {
                         Task {
                             await viewModel.signup(nickname: nickname, email: email, password: password, passwordRepeat: passwordRepeat)
                         }
                     }
+                    .padding(.top, 16)
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
@@ -79,7 +80,7 @@ struct SignupView: View {
                 .padding(.horizontal, 16)
                 .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
             }
             .padding(.horizontal, 12)
             .background(.clear)

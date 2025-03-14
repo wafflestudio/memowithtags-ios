@@ -76,7 +76,7 @@ struct ResetPasswordView: View {
             }
             .padding(.horizontal, 12)
             .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
         }
         .navigationBarBackButtonHidden()
         .onAppear {

@@ -15,7 +15,7 @@ struct DesignTagView: View {
     
     let fontWeight: Font.Weight = .regular
     let horizontalPadding: CGFloat = 6
-    let verticalPadding: CGFloat = 2
+    let verticalPadding: CGFloat = 4
     let cornerRadius: CGFloat = 4
     
     var body: some View {

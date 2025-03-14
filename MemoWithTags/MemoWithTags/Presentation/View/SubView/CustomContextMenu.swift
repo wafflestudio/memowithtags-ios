@@ -37,7 +37,7 @@ struct CustomContextMenu: ViewModifier {
     func body(content: Content) -> some View {
         content
             .scaleEffect(isPressing ? 1.03 : 1)
-            .shadow(color: Color.black.opacity(isPressing ? 0.3 : 0.05), radius: 6, x: 0, y: 2)
+            .shadow(color: Color.black.opacity(isPressing ? 0.2 : 0.05), radius: isPressing ? 6 : 3, x: 0, y: 2)
             .onLongPressGesture {
                 guard let position = position, let pressLocation = pressLocation else { return }
                 if position.minY < 50 || position.maxY > UIScreen.main.bounds.height - 50 {
@@ -159,7 +159,7 @@ struct MemoPreview: View {
         VStack(alignment: .center, spacing: 0) {
             Text(memo.content)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.basicTextColor)
+                .foregroundColor(Color.basicText)
                 .lineLimit(4)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
@@ -168,7 +168,7 @@ struct MemoPreview: View {
                     ForEach(tags, id: \.id) { tag in
                         Text(tag.name)
                             .font(.pretendard(.regular, size: 13))
-                            .foregroundColor(Color.tagTextColor)
+                            .foregroundColor(Color.tagText)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(tag.color.color)
@@ -184,7 +184,7 @@ struct MemoPreview: View {
             if memo.locked {
                 HStack {
                     Image(systemName: "lock.fill")
-                        .foregroundColor(Color.basicGray)
+                        .foregroundColor(Color.gray)
                         .font(.system(size: 14))
                     Spacer()
                 }
@@ -193,10 +193,10 @@ struct MemoPreview: View {
             
         }
         .padding(.vertical, 12)
-        .padding(.horizontal, 18)
-        .background(Color.memoBackgroundColor)
+        .padding(.horizontal, 17)
+        .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
+        .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 0)
         .padding(.horizontal, 8)
     }
 }
@@ -207,14 +207,14 @@ struct TagPreview: View {
     var body: some View {
         Text(tag.name)
             .font(.pretendard(.regular, size: 15))
-            .foregroundColor(Color.tagTextColor)
+            .foregroundColor(Color.tagText)
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
             .background(tag.color.color)
             .cornerRadius(10)
             .lineLimit(1)
             .truncationMode(.tail)
-            .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)
+            .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 0)
     }
 }
 
@@ -253,15 +253,15 @@ struct ContextMenu: View {
                 HStack {
                     Text(item.title)
                         .font(.pretendard(.regular, size: 15))
-                        .foregroundStyle(item.type == .delete ? .red : .black)
+                        .foregroundStyle(item.type == .delete ? Color.redText : Color.basicText)
                     
                     Spacer()
                     
                     Image(systemName: item.icon)
                         .font(.system(size: 15))
-                        .foregroundStyle(item.type == .delete ? .red : .black)
+                        .foregroundStyle(item.type == .delete ? Color.redText : Color.basicText)
                 }
-                .background(Color(white: 230/255))
+                .background(Color.searchBarBackground)
                 .onTapGesture {
                     closeAction()
                     item.action()
@@ -270,7 +270,7 @@ struct ContextMenu: View {
         }
         .padding(.vertical, 9)
         .padding(.horizontal, 12)
-        .background(Color(white: 230/255))
+        .background(Color.searchBarBackground)
         .frame(maxWidth: 200)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 0)

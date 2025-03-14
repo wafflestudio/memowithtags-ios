@@ -108,20 +108,33 @@ extension Color {
         dark: .Palette.TextRed
     )
     
-    static let pure: Color = .dynamicColor(
+    //진함
+    static let vivid: Color = .dynamicColor(
         light: .Palette.B1,
         dark: .Palette.W2
     )
     
+    //소프트
     static let soft: Color = .dynamicColor(
         light: .Palette.B2_70,
         dark: .Palette.W4
     )
     
-    //MARK: - border 색
+    //희미함
+    static let faded: Color = .dynamicColor(
+        light: .Palette.B2_15,
+        dark: .Palette.W4_30
+    )
+    
+    //MARK: - border, shadow 색
     static let basicBorder: Color = .dynamicColor(
         light: .Palette.B2_15,
         dark: .Palette.W4_30
+    )
+    
+    static let shadow: Color = .dynamicColor(
+        light: .init(white: 0, alpha: 0.3),
+        dark: .init(white: 1, alpha: 0.5)
     )
     
     //MARK: - 외
@@ -130,10 +143,21 @@ extension Color {
         dark: .Palette.B2
     )
     
+    static let titleTagText: Color = .dynamicColor(
+        light: .Palette.B2_70,
+        dark: .Palette.W4
+    )
+    
     static let colorlessTag: Color = .dynamicColor(
         light: .Palette.W2_1,
         dark: .Palette.B3
     )
+    
+    static let disabledButtonText: Color = .dynamicColor(
+        light: .Palette.W1,
+        dark: .Palette.W4_60
+    )
+        
     
     
 }

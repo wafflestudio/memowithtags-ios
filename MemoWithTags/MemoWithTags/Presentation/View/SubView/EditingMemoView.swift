@@ -21,7 +21,7 @@ struct EditingMemoView: View {
                         if viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty {
                             Image(systemName: "square.and.pencil")
                                 .font(.system(size: 20))
-                                .foregroundColor(Color.editorIconBlack)
+                                .foregroundColor(Color.vivid)
                                 .frame(width: 25, height: 27, alignment: .top)
                                 .onTapGesture {
                                     Task {
@@ -51,7 +51,7 @@ struct EditingMemoView: View {
                     case .create: // create 모드일 때
                         Image(systemName: "arrow.down.left.and.arrow.up.right")
                             .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.basicGray)
+                            .foregroundStyle(Color.placeholder)
                             .onTapGesture {
                                 viewModel.appState.navigation.push(to: .memoEditor)
                             }
@@ -60,7 +60,7 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 16))
-                            .foregroundColor(Color.textRed)
+                            .foregroundStyle(Color.faded)
                             .onTapGesture {
                                 viewModel.editorState = .create
                                 viewModel.editorContent = ""
@@ -69,7 +69,7 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "square.and.pencil")
                             .font(.system(size: 20))
-                            .foregroundColor(.editorIconBlack)
+                            .foregroundStyle(Color.vivid)
                             .frame(width: 25, height: 27, alignment: .top)
                             .onTapGesture {
                                 Task {
@@ -80,7 +80,7 @@ struct EditingMemoView: View {
                     case .update: // 업데이트 모드일 때
                         Image(systemName: "arrow.down.left.and.arrow.up.right")
                             .font(.system(size: 17, weight: .regular))
-                            .foregroundColor(.basicGray)
+                            .foregroundStyle(Color.placeholder)
                             .onTapGesture {
                                 viewModel.appState.navigation.push(to: .memoEditor)
                             }
@@ -89,10 +89,10 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .regular))
-                            .foregroundColor(Color.memoBackgroundColor)
+                            .foregroundStyle(Color.white)
                             .padding(0)
                             .frame(width: 24, height: 24, alignment: .center)
-                            .background(Color.buttonRed)
+                            .background(Color.TagColor.Red2.color)
                             .cornerRadius(20)
                             .onTapGesture {
                                 viewModel.editorState = .create
@@ -102,10 +102,10 @@ struct EditingMemoView: View {
                         
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(.editorIconBlack)
+                            .foregroundStyle(Color.black)
                             .padding(0)
                             .frame(width: 24, height: 24, alignment: .center)
-                            .background(Color.backgroundColor)
+                            .background(Color(UIColor.Palette.W2_1))
                             .cornerRadius(20)
                             .onTapGesture {
                                 Task {
@@ -116,9 +116,9 @@ struct EditingMemoView: View {
                 }
             }
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty ? 6 : 12)
         .padding(.horizontal, 17)
-        .background(Color.editorBackgroundColor)
+        .background(Color.editorBackground)
         .cornerRadius(14)
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
@@ -163,24 +163,25 @@ struct EditingMemoView: View {
                 HStack(spacing: 18) {
                     Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.vivid)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(
                             Rectangle()
-                                .fill(Color.memoBackgroundColor)
+                                .fill(Color.background)
                                 .cornerRadius(20)
                         )
-                        .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
                     
                     Image(systemName: "chevron.up")
                         .font(.system(size: 14, weight: .regular))
+                        .foregroundStyle(Color.vivid)
                         .background(
                             Circle()
-                                .fill(Color.memoBackgroundColor)
+                                .fill(Color.memoBackground)
                                 .frame(width: 27, height: 27)
                         )
-                        .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
                         .onTapGesture {
                             if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
                                 viewModel.highlightingMemoIndex += 1
@@ -189,12 +190,13 @@ struct EditingMemoView: View {
                     
                     Image(systemName: "chevron.down")
                         .font(.system(size: 14, weight: .regular))
+                        .foregroundStyle(Color.vivid)
                         .background(
                             Circle()
-                                .fill(Color.memoBackgroundColor)
+                                .fill(Color.memoBackground)
                                 .frame(width: 27, height: 27)
                         )
-                        .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 1)
+                        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
                         .onTapGesture {
                             if viewModel.highlightingMemoIndex > -1 {
                                 viewModel.highlightingMemoIndex -= 1

@@ -15,8 +15,7 @@ struct AccountSettingView: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            Color.backgroundColor
-                .ignoresSafeArea()
+            Color.background.ignoresSafeArea()
             
             VStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 12) {
@@ -27,11 +26,11 @@ struct AccountSettingView: View {
                         HStack(spacing: 6) {
                             Text(viewModel.appState.user.userName ?? "")
                                 .font(.pretendard(.semibold, size: 16))
-                                .foregroundStyle(Color.basicTextColor)
+                                .foregroundStyle(Color.basicText)
                             
                             Text("#\(viewModel.appState.user.userNumber ?? 0)")
                                 .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(Color.basicGray)
+                                .foregroundStyle(Color.grayText)
                             
                             Spacer()
                         }
@@ -39,15 +38,15 @@ struct AccountSettingView: View {
                         HStack {
                             Text("닉네임 변경")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.basicTextColor)
+                                .foregroundStyle(Color.basicText)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.basicGray)
+                                .foregroundStyle(Color.soft)
                         }
-                        .background(Color.memoBackgroundColor)
+                        .background(Color.memoBackground)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .changeNickname)
                         }
@@ -56,35 +55,35 @@ struct AccountSettingView: View {
                 }
                 .padding(.vertical, 13)
                 .padding(.horizontal, 17)
-                .background(Color.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 
                 VStack(spacing: 12) {
                     HStack(spacing: 10) {
                         Text("이메일")
                             .font(.pretendard(.regular, size: 14))
-                            .foregroundStyle(Color.basicTextColor)
+                            .foregroundStyle(Color.basicText)
                         
                         Spacer()
                         
                         Text(viewModel.appState.user.userEmail ?? "")
                             .font(.pretendard(.regular, size: 12))
-                            .foregroundStyle(Color.basicGray)
+                            .foregroundStyle(Color.grayText)
                     }
                     
                     if !viewModel.appState.user.isSocial {
                         HStack {
                             Text("비밀번호 변경")
                                 .font(.pretendard(.regular, size: 14))
-                                .foregroundStyle(Color.basicTextColor)
+                                .foregroundStyle(Color.basicText)
                             
                             Spacer()
                             
                             Image(systemName: "chevron.right")
                                 .font(.system(size: 16, weight: .regular))
-                                .foregroundStyle(Color.basicGray)
+                                .foregroundStyle(Color.soft)
                         }
-                        .background(Color.white)
+                        .background(Color.memoBackground)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .changePassword)
                         }
@@ -92,18 +91,18 @@ struct AccountSettingView: View {
                 }
                 .padding(.vertical, 13)
                 .padding(.horizontal, 17)
-                .background(Color.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 
                 HStack {
                     Text("로그아웃")
                         .font(.pretendard(.regular, size: 14))
-                        .foregroundStyle(Color.textRed)
+                        .foregroundStyle(Color.redText)
                     Spacer()
                 }
                 .padding(.vertical, 13)
                 .padding(.horizontal, 17)
-                .background(Color.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .onTapGesture {
                     Task {
@@ -116,17 +115,17 @@ struct AccountSettingView: View {
                     
                     Image(systemName: "trash")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.textRed)
+                        .foregroundStyle(Color.redText)
                     
                     Text("회원 탈퇴")
                         .font(.pretendard(.regular, size: 14))
-                        .foregroundStyle(Color.textRed)
+                        .foregroundStyle(Color.redText)
                     
                     Spacer()
                 }
                 .padding(.vertical, 13)
                 .padding(.horizontal, 17)
-                .background(Color.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .onTapGesture {
                     showWithdrawalSheet = true
@@ -147,6 +146,7 @@ struct AccountSettingView: View {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 17, weight: .regular))
+                    .foregroundStyle(Color.soft)
                     .onTapGesture {
                         viewModel.appState.navigation.pop()
                     }
@@ -155,67 +155,35 @@ struct AccountSettingView: View {
             ToolbarItem(placement: .navigation) {
                 Text("내 계정")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.basicTextColor)
+                    .foregroundStyle(Color.basicText)
             }
         }
         .sheet(isPresented: $showWithdrawalSheet) {
             VStack(spacing: 20) {
                 Text("회원을 탈퇴하시겠습니까?")
                     .font(.pretendard(.semibold, size: 20))
+                    .foregroundStyle(Color.basicText)
                     .padding(.top, 20)
                 
                 Text("이메일을 입력해주세요.")
                     .font(.pretendard(.regular, size: 14))
-                    .foregroundStyle(Color.gray)
+                    .foregroundStyle(Color.placeholder)
                 
-                TextField (
-                    "",
-                    text: $email,
-                    prompt:
-                        Text("이메일")
-                        .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                )
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .font(.pretendard(.regular, size: 16))
-                .background(.white)
-                .overlay (
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                )
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
+                InputFieldView(text: $email, placeholder: "이메일", showCount: false, showAlert: false)
                 
-                Button {
-                    //action
+                SubmitButtonView(text: "확인", loading: viewModel.isLoading, disabled: email.isEmpty) {
                     Task {
                         showWithdrawalSheet = false
                         await viewModel.withdrawal(email: email)
                     }
-                } label: {
-                    Group {
-                        if viewModel.isLoading {
-                            ProgressView()
-                        } else {
-                            Text("확인")
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .font(.pretendard(.semibold, size: 16))
-                    .foregroundStyle(.white)
-                    .padding(.vertical, 12)
-
                 }
-                .background(email.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
-                .cornerRadius(22)
                 .padding(.top, 16)
-                .disabled(email.isEmpty || viewModel.isLoading)
                 
                 Spacer()
             }
             .padding()
             .presentationDetents([.medium])
+            .background(Color.memoBackground)
         }
     }
 }

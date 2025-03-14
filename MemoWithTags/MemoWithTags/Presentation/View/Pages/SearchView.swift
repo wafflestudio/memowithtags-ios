@@ -16,8 +16,7 @@ struct SearchView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundColor
-                .ignoresSafeArea()
+            Color.background.ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 0) {
                 //MARK: - 맨 위 바
@@ -25,6 +24,7 @@ struct SearchView: View {
                     //MARK: - 뒤로가기 버튼
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18))
+                        .foregroundStyle(Color.soft)
                         .onTapGesture {
                             viewModel.appState.navigation.pop()
                         }
@@ -39,6 +39,7 @@ struct SearchView: View {
                         
                         TextField("텍스트와 태그로 메모 검색", text: $viewModel.searchBarText)
                             .font(.pretendard(.regular, size: 15))
+                            .foregroundStyle(Color.basicText)
                             .onChange(of: viewModel.searchBarText) {
                                 // 실행하고 있는 searchTask를 종료
                                 searchTask?.cancel()
@@ -58,7 +59,7 @@ struct SearchView: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
-                    .background(Color.searchBarBackgroundColor)
+                    .background(Color.searchBarBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
                 .padding(.horizontal, 16)
@@ -78,7 +79,7 @@ struct SearchView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Tags")
                             .font(.pretendard(.medium, size: 12))
-                            .foregroundStyle(Color.basicGray)
+                            .foregroundStyle(Color.grayText)
                             .padding(.horizontal, 14)
 
                         
@@ -101,13 +102,14 @@ struct SearchView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Memos")
                             .font(.pretendard(.medium, size: 12))
-                            .foregroundStyle(Color.basicGray)
+                            .foregroundStyle(Color.grayText)
                             .padding(.horizontal, 26)
                         
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 12) {
                                 ForEach(viewModel.searchedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
+                                        .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
                                 }
                                 
                                 HStack {

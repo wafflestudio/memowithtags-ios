@@ -25,7 +25,7 @@ struct SubmitButtonView: View {
                 }
             }
             .font(.pretendard(.semibold, size: 16))
-            .foregroundStyle(.white)
+            .foregroundStyle(disabled ? Color.disabledButtonText : .white)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
         }

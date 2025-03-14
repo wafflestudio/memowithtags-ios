@@ -31,7 +31,7 @@ struct NicknameSettingView: View {
                     InputFieldView(text: $nickname, placeholder: "닉네임", showCount: true, showAlert: nickname.count > 16)
                     
                     //MARK: - 확인 버튼
-                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: nickname.isEmpty) {
+                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: !(1...16 ~= nickname.count)) {
                         Task {
                             await viewModel.setNickname(nickname: nickname)
                         }
@@ -46,7 +46,7 @@ struct NicknameSettingView: View {
             }
             .padding(.horizontal, 12)
             .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
 
         }
         .navigationBarBackButtonHidden()
