@@ -12,14 +12,14 @@ struct SignupSuccessView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundColor.edgesIgnoringSafeArea(.all)
+            Color.background.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("회원가입이 완료되었습니다!")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.basicText)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -32,17 +32,17 @@ struct SignupSuccessView: View {
                             HStack(spacing: 3) {
                                 Text("Memo with")
                                     .font(.pretendard(.semibold, size: 17))
-                                    .foregroundStyle(Color.basicTextColor)
+                                    .foregroundStyle(Color.basicText)
                                 
-                                DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
+                                DesignTagView(text: "Tags", fontSize: 14, backGroundColor: Color.titleTag) {}
                             }
                             Text("를 통해")
                                 .font(.pretendard(.regular, size: 15))
-                                .foregroundStyle(Color.basicTextColor)
+                                .foregroundStyle(Color.basicText)
                         }
                         Text("복잡한 메모들을 간단하고 효율적으로 정리해보세요!")
                             .font(.pretendard(.regular, size: 15))
-                            .foregroundStyle(Color.basicTextColor)
+                            .foregroundStyle(Color.basicText)
                     }
                     .padding(.top, 8)
                     .padding(.bottom, 4)
@@ -58,19 +58,19 @@ struct SignupSuccessView: View {
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
                     }
-                    .background(Color.buttonRed)
+                    .background(Color.TagColor.Red2.color)
                     .cornerRadius(22)
                     .padding(.top, 16)
                 }
                 .padding(.top, 18)
                 .padding(.bottom, 16)
                 .padding(.horizontal, 16)
-                .background(.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .padding(.horizontal, 12)
             .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
 
         }
         .navigationBarBackButtonHidden()

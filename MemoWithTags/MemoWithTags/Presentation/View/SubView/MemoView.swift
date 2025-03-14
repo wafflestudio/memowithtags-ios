@@ -20,7 +20,7 @@ struct MemoView: View {
             //MARK: - 메모 내용
             Text(memo.content)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.basicTextColor)
+                .foregroundColor(Color.basicText)
                 .lineLimit(isExpanded ? nil : 2)
                 .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)
@@ -34,7 +34,7 @@ struct MemoView: View {
                     
                     if memo.locked {
                         Image(systemName: "lock.fill")
-                            .foregroundColor(Color.basicGray)
+                            .foregroundColor(Color.grayText)
                             .font(.system(size: 14))
                     }
                 }
@@ -47,7 +47,7 @@ struct MemoView: View {
                 HStack(alignment: .bottom) {
                     Text(dateFormat(date: memo.createdAt))
                         .font(.pretendard(.medium, size: 11))
-                        .foregroundStyle(Color.basicGray)
+                        .foregroundStyle(Color.grayText)
                         .padding(.vertical, 3)
                     
                     Spacer()
@@ -55,14 +55,15 @@ struct MemoView: View {
                     HStack(spacing: 4) {
                         Text("관련 검색")
                             .font(.pretendard(.medium, size: 11))
-                            .foregroundStyle(Color.basicTextColor)
+                            .foregroundStyle(Color.basicText)
                         Image(.searchIcon)
                             .resizable()
                             .frame(width: 11.5, height: 11.5)
+                            .foregroundStyle(Color.basicText)
                     }
                     .padding(.vertical, 6)
                     .padding(.horizontal, 13)
-                    .overlay(RoundedRectangle(cornerRadius: 22).stroke(.black.opacity(0.15), lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
                         viewModel.clearSearch()
                         viewModel.searchBarText = memo.content
@@ -75,15 +76,16 @@ struct MemoView: View {
                     HStack(spacing: 4) {
                         Text("간편 수정")
                             .font(.pretendard(.medium, size: 11))
-                            .foregroundStyle(Color.basicTextColor)
+                            .foregroundStyle(Color.basicText)
                         
                         Image(.aiPenIcon)
                             .resizable()
                             .frame(width: 12, height: 11)
+                            .foregroundStyle(Color.basicText)
                     }
                     .padding(.vertical, 6)
                     .padding(.horizontal, 13)
-                    .overlay(RoundedRectangle(cornerRadius: 22).stroke(.black.opacity(0.15), lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
                         viewModel.editorState = .update(target: memo)
                         viewModel.editorContent = memo.content
@@ -96,9 +98,9 @@ struct MemoView: View {
                     // 접기 버튼
                     Image(systemName: "chevron.up")
                         .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.basicTextColor.opacity(0.6))
+                        .foregroundStyle(Color.soft)
                         .frame(width: 27, height: 27)
-                        .background(Color.backgroundColor)
+                        .background(Color.background)
                         .clipShape(Circle())
                         .onTapGesture {
                             withAnimation(.spring) {
@@ -109,12 +111,10 @@ struct MemoView: View {
                 .padding(.top, 10)
             }
         }
-        .padding(.top, 9)
-        .padding(.bottom, 12)
+        .padding(.vertical, 12)
         .padding(.horizontal, 17)
-        .background(Color.memoBackgroundColor)
+        .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
         //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
             if memo.locked && !viewModel.appState.user.isBioAuthenticated {

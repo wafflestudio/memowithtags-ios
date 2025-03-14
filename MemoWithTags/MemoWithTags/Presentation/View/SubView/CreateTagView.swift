@@ -15,7 +15,7 @@ struct CreateTagView: View {
         HStack(alignment: .center, spacing: 4) {
             Text(searchText)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.tagTextColor)
+                .foregroundColor(Color.tagText)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
                 .background(randomColor.color)
@@ -25,6 +25,7 @@ struct CreateTagView: View {
             
             Text("만들기")
                 .font(.pretendard(.regular, size: 14))
+                .foregroundStyle(Color.basicText)
         }
     }
 }

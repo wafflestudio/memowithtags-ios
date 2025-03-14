@@ -20,10 +20,10 @@ struct MemoEditorView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 19, weight: .regular))
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.soft)
                     Text("확인")
                         .font(.pretendard(.medium, size: 17))
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.soft)
                 }
                 .onTapGesture {
                     Task {
@@ -39,7 +39,7 @@ struct MemoEditorView: View {
                 HStack(spacing: 4) {
                     Text("취소")
                         .font(.pretendard(.medium, size: 17))
-                        .foregroundColor(.red)
+                        .foregroundStyle(Color.redText)
                 }
                 .onTapGesture {
                     viewModel.editorState = .create
@@ -56,12 +56,15 @@ struct MemoEditorView: View {
             //MARK: - 메모 에디터
             TextEditor(text: $viewModel.editorContent)
                 .font(.pretendard(.regular, size: 16))
+                .foregroundStyle(Color.basicText)
+                .scrollContentBackground(.hidden)
+                .background(Color.memoBackground)
                 .overlay(Group { // placeholder
                     if viewModel.editorContent.isEmpty {
                         Text("메모를 작성해보세요.")
                             .font(.pretendard(.regular, size: 16))
-                            .foregroundStyle(Color.basicGray)
-                            .offset(x: 5, y: 10)
+                            .foregroundStyle(Color.placeholder)
+                            .offset(x: 5, y: 8)
                     }
                 }, alignment: .topLeading)
                 .padding(.vertical, 6)
@@ -75,18 +78,18 @@ struct MemoEditorView: View {
                 case .create:
                     Text(dateFormat(date: Date()))
                         .font(.pretendard(.medium, size: 13))
-                        .foregroundStyle(Color.basicGray)
+                        .foregroundStyle(Color.grayText)
                         .padding(.vertical, 3)
                     
                 case let .update(target):
                     Text(dateFormat(date: target.createdAt))
                         .font(.pretendard(.medium, size: 13))
-                        .foregroundStyle(Color.basicGray)
+                        .foregroundStyle(Color.grayText)
                         .padding(.vertical, 3)
                     
                     Image(systemName: "lock.fill")
-                        .foregroundColor(Color.basicGray)
                         .font(.system(size: 13))
+                        .foregroundColor(Color.grayText)
                         .opacity(target.locked ? 1 : 0)
                 }
                 
@@ -105,11 +108,13 @@ struct MemoEditorView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
+            .frame(maxWidth: .infinity, alignment: .leading)
             
             if keyboardManager.currentHeight > 0 {
                 EditingTagListView(viewModel: viewModel)
             }
         }
+        .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
     }
     

@@ -14,8 +14,7 @@ struct MainView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundColor
-                .ignoresSafeArea()
+            Color.background.ignoresSafeArea()
             
             VStack(spacing: 0) {
                 //MARK: - 메모 리스트
@@ -41,9 +40,9 @@ struct MainView: View {
                 HStack(spacing: 3) {
                     Text("Memo with")
                         .font(.pretendard(.semibold, size: 17))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.basicText)
                     
-                    DesignTagView(text: "Tags", fontSize: 14, fontWeight: .regular, horizontalPadding: 5, verticalPadding: 1, backGroundColor: "#E3E3E7", cornerRadius: 4) {}
+                    DesignTagView(text: "Tags", fontSize: 14, backGroundColor: .titleTag) {}
                 }
             }
             
@@ -52,11 +51,14 @@ struct MainView: View {
                 HStack(spacing: 14) {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 15))
+                        .foregroundStyle(Color.basicText)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .search)
                         }
+                    
                     Image(systemName: "list.bullet")
                         .font(.system(size: 15))
+                        .foregroundStyle(Color.basicText)
                         .onTapGesture {
                             viewModel.appState.navigation.push(to: .settings)
                         }

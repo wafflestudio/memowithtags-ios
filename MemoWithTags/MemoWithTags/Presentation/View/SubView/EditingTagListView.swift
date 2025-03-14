@@ -21,27 +21,21 @@ struct EditingTagListView: View {
             // 태그 검색하는 필드
             TextField("태그 찾기", text: $searchText)
                 .font(.pretendard(.regular, size: 14))
-                .foregroundColor(Color.basicGray)
+                .foregroundColor(Color.placeholder)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .background(Color.searchBarBackgroundColor)
+                .background(Color.searchBarBackground)
                 .frame(maxWidth: 80)
                 .cornerRadius(20)
             
             // Divider Line
             Rectangle()
-                .foregroundColor(Color.basicGray)
+                .foregroundColor(Color.placeholder)
                 .frame(width: 0.3, height: 32)
             
             // 태그 추천해주는 스크롤 라인
             ScrollView(.horizontal) {
                 HStack(alignment: .center, spacing: 8) {
-                    ForEach(filterTags(), id: \.id) { tag in
-                        TagView(viewModel: viewModel, tag: tag) {
-                            viewModel.editorTagIds.append(tag.id)
-                        }
-                    }
-                    
                     // "Create Tag" TagView
                     if canCreateTag() {
                         CreateTagView(
@@ -54,6 +48,12 @@ struct EditingTagListView: View {
                                 searchText = ""
                                 generateRandomHexColor()
                             }
+                        }
+                    }
+                    
+                    ForEach(filterTags(), id: \.id) { tag in
+                        TagView(viewModel: viewModel, tag: tag) {
+                            viewModel.editorTagIds.append(tag.id)
                         }
                     }
                 }

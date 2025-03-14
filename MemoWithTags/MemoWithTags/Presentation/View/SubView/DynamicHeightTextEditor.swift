@@ -16,12 +16,15 @@ struct DynamicHeightTextEditor: View {
     var body: some View {
         TextEditor(text: $text)
             .font(.pretendard(.regular, size: 14))
+            .foregroundStyle(Color.basicText)
             .frame(minHeight: 33, maxHeight: maxHeight)
             .fixedSize(horizontal: false, vertical: true)
+            .scrollContentBackground(.hidden)
+            .background(Color.editorBackground)
             .overlay (
                 Text(placeholder)
                     .font(.pretendard(.regular, size: 14))
-                    .foregroundColor(Color.basicGray)
+                    .foregroundColor(Color.placeholder)
                     .offset(x: 5)
                     .allowsHitTesting(false)
                     .opacity(text.isEmpty ? 1 : 0)

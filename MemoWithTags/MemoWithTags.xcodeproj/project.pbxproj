@@ -52,6 +52,9 @@
 		DA53E5192D338A0700C7C9F2 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */; };
 		DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E51B2D33941000C7C9F2 /* AppState.swift */; };
 		DA7230A72D34CD5C0065C65A /* SystemState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7230A62D34CD540065C65A /* SystemState.swift */; };
+		DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD612D831E7D00251412 /* InputFieldView.swift */; };
+		DA7AFD642D831E9800251412 /* SecureInputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */; };
+		DA7AFD672D83209600251412 /* SubmitButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD662D83209000251412 /* SubmitButtonView.swift */; };
 		DA8886C52D6A1AA000ED6C1A /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8886C42D6A1A9100ED6C1A /* UserService.swift */; };
 		DA8886C72D6A1BCC00ED6C1A /* SocialLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8886C62D6A1BC400ED6C1A /* SocialLoginService.swift */; };
 		DA8886C92D6A25E700ED6C1A /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8886C82D6A25E100ED6C1A /* AuthError.swift */; };
@@ -146,6 +149,9 @@
 		DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		DA53E51B2D33941000C7C9F2 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		DA7230A62D34CD540065C65A /* SystemState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemState.swift; sourceTree = "<group>"; };
+		DA7AFD612D831E7D00251412 /* InputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldView.swift; sourceTree = "<group>"; };
+		DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputFieldView.swift; sourceTree = "<group>"; };
+		DA7AFD662D83209000251412 /* SubmitButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitButtonView.swift; sourceTree = "<group>"; };
 		DA8886C42D6A1A9100ED6C1A /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		DA8886C62D6A1BC400ED6C1A /* SocialLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialLoginService.swift; sourceTree = "<group>"; };
 		DA8886C82D6A25E100ED6C1A /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
@@ -212,8 +218,6 @@
 		556EF4662D68B161001BE9B3 /* SubView */ = {
 			isa = PBXGroup;
 			children = (
-				556EF45D2D68B161001BE9B3 /* TagView.swift */,
-				556EF45E2D68B161001BE9B3 /* DesignTagView.swift */,
 				DADDA9BB2D6D946800A8BE97 /* CustomContextMenu.swift */,
 				556EF45F2D68B161001BE9B3 /* MemoView.swift */,
 				556EF4602D68B161001BE9B3 /* MemoListView.swift */,
@@ -222,6 +226,8 @@
 				556EF4632D68B161001BE9B3 /* CreateTagView.swift */,
 				556EF4642D68B161001BE9B3 /* DynamicHeightTextEditor.swift */,
 				556EF4652D68B161001BE9B3 /* UpdateTagView.swift */,
+				DAB432CE2D842683005D2ABA /* Tag */,
+				DA7AFD652D831FE400251412 /* Input */,
 			);
 			path = SubView;
 			sourceTree = "<group>";
@@ -342,6 +348,16 @@
 			path = States;
 			sourceTree = "<group>";
 		};
+		DA7AFD652D831FE400251412 /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				DA7AFD612D831E7D00251412 /* InputFieldView.swift */,
+				DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */,
+				DA7AFD662D83209000251412 /* SubmitButtonView.swift */,
+			);
+			path = Input;
+			sourceTree = "<group>";
+		};
 		DA98BFE82D1D4B6B00F992AC = {
 			isa = PBXGroup;
 			children = (
@@ -356,6 +372,15 @@
 				DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DAB432CE2D842683005D2ABA /* Tag */ = {
+			isa = PBXGroup;
+			children = (
+				556EF45D2D68B161001BE9B3 /* TagView.swift */,
+				556EF45E2D68B161001BE9B3 /* DesignTagView.swift */,
+			);
+			path = Tag;
 			sourceTree = "<group>";
 		};
 		DABFE2202D28416000B314E2 /* Preview Content */ = {
@@ -623,6 +648,7 @@
 				55ECA11E2D3A7DC4003E1517 /* BioAuthenticationManager.swift in Sources */,
 				DAFFD2032D68DAF900C44EF1 /* EmailEnterView.swift in Sources */,
 				DABFE25D2D28416000B314E2 /* BaseRepository.swift in Sources */,
+				DA7AFD672D83209600251412 /* SubmitButtonView.swift in Sources */,
 				DA40185D2D32D161008500E2 /* AuthDto.swift in Sources */,
 				55E610BE2D2A65B200E452A8 /* SearchView.swift in Sources */,
 				DA3DA52A2D3650F9002C4839 /* UserState.swift in Sources */,
@@ -633,6 +659,7 @@
 				DA8886CB2D6A2EE400ED6C1A /* UserError.swift in Sources */,
 				DABFE25E2D28416000B314E2 /* KeyChainManager.swift in Sources */,
 				556EF4672D68B161001BE9B3 /* UpdateTagView.swift in Sources */,
+				DA7AFD642D831E9800251412 /* SecureInputFieldView.swift in Sources */,
 				556EF4682D68B161001BE9B3 /* MemoView.swift in Sources */,
 				556EF4692D68B161001BE9B3 /* DynamicHeightTextEditor.swift in Sources */,
 				556EF46A2D68B161001BE9B3 /* EditingMemoView.swift in Sources */,
@@ -650,6 +677,7 @@
 				DABFE2822D28481100B314E2 /* MemoRouter.swift in Sources */,
 				DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */,
 				DA8886C52D6A1AA000ED6C1A /* UserService.swift in Sources */,
+				DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */,
 				556EF4572D68ACC1001BE9B3 /* Memo.swift in Sources */,
 				556EF4582D68ACC1001BE9B3 /* Tag.swift in Sources */,
 				DA212CD52D42A13C005D1E15 /* MemoEditorView.swift in Sources */,

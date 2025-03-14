@@ -17,14 +17,14 @@ struct EmailVerificationView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundColor.edgesIgnoringSafeArea(.all)
+            Color.background.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.basicText)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -33,36 +33,19 @@ struct EmailVerificationView: View {
                     Text("이메일로 발송된 인증번호를 입력해주세요.")
                         .padding(.vertical, 8)
                         .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.basicText)
                     
                     //MARK: - 인증 코드 입력란
                     SeparatedTextField(length: 6, value: $code)
                         .padding(.top, 8)
                     
                     //MARK: - 확인 버튼
-                    Button {
-                        //action
+                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: code.count < 6) {
                         Task {
                             await viewModel.verify(email: email, code: code)
                         }
-                        
-                    } label: {
-                        Group {
-                            if viewModel.isLoading {
-                                ProgressView()
-                            } else {
-                                Text("다음")
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .font(.pretendard(.semibold, size: 16))
-                        .foregroundStyle(.white)
-                        .padding(.vertical, 12)
                     }
-                    .background(code.count < 6 || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
-                    .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(code.count < 6 || viewModel.isLoading)
                     
                     //MARK: - 타이머와 재전송 버튼
                     TimerView(viewModel: viewModel, email: email)
@@ -70,22 +53,22 @@ struct EmailVerificationView: View {
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "이전", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#E3E3E7", cornerRadius: 4) {
+                        DesignTagView(text: "이전", fontSize: 13, backGroundColor: .colorlessTag) {
                             viewModel.appState.navigation.pop()
                         }
                         
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.buttonRed)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.buttonRed)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.backgroundColor)
+                            .fill(Color.colorlessTag)
                             .frame(width: 12, height: 24)
                         
                     }
@@ -94,12 +77,12 @@ struct EmailVerificationView: View {
                 .padding(.top, 18)
                 .padding(.bottom, 16)
                 .padding(.horizontal, 16)
-                .background(.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .padding(.horizontal, 12)
             .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
 
         }
         .navigationBarBackButtonHidden()
@@ -123,7 +106,7 @@ struct CharacterField: View {
             .font(.system(size: 22, weight: .semibold))
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
+                    .stroke(Color.basicBorder, lineWidth: 1)
             )
             .onChange(of: character) { oldValue, newValue in
                 if newValue.count > 1 {
@@ -189,7 +172,7 @@ struct TimerView: View {
     
     var body: some View {
         HStack {
-            DesignTagView(text: "인증번호 재발송", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: viewModel.isLoading ? "#E3E3E7" : "#FFBDBD", cornerRadius: 4) {
+            DesignTagView(text: "인증번호 재발송", fontSize: 13, backGroundColor: viewModel.isLoading ? .colorlessTag : .TagColor.Red2.color) {
                 Task {
                     await viewModel.sendCode(email: email)
                 }
@@ -199,7 +182,7 @@ struct TimerView: View {
             
             Text(timeString(time: viewModel.time))
                 .font(.pretendard(.regular, size: 14))
-                .foregroundStyle(Color.basicGray)
+                .foregroundStyle(Color.grayText)
             
         }
         .onReceive(timer) { _ in

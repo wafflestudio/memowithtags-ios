@@ -17,116 +17,21 @@ struct ChangePasswordView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 10) {
-                //MARK: - 기존 비밀번호 입력 필드
-                SecureField (
-                    "",
-                    text: $currentPassword,
-                    prompt:
-                        Text("기존 비밀번호")
-                        .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                )
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .font(.pretendard(.regular, size: 16))
-                .background(.white)
-                .overlay (
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                )
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-                
-                //MARK: - 세 비밀번호 입력 필드
-                VStack(alignment: .leading, spacing: 4) {
-                    SecureField(
-                        "",
-                        text: $newPassword,
-                        prompt: Text("새 비밀번호")
-                            .font(.pretendard(.regular, size: 16))
-                            .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                    )
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 14)
-                    .font(.pretendard(.regular, size: 16))
-                    .background(Color.white)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14)
-                            .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                    )
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
-                    .onChange(of: newPassword) {
-                        viewModel.checkPasswordValidity(password: newPassword)
-                    }
-                    
-                    //조건 표시
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
-                            Text("최소 8자 ~ 최대 16자")
-                                .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
-                        }
-                        
-                        HStack {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 12, weight: .regular))
-                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
-                            Text("알파벳 대소문자, 숫자, 특수문자 포함")
-                                .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
-                        }
-                    }
-                    .padding(.horizontal, 6)
-                }
-                
-                //MARK: - 새 비밀번호 확인 필드
-                SecureField(
-                    "",
-                    text: $newPasswordRepeat,
-                    prompt: Text("비밀번호 확인")
-                        .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                )
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .font(.pretendard(.regular, size: 16))
-                .background(Color.white)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                )
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
+                SecureInputFieldView(password: $currentPassword, placeholder: "기존 비밀번호", showCondition: false)
+            
+                SecureInputFieldView(password: $newPassword, placeholder: "새 비밀번호", showCondition: true)
+                SecureInputFieldView(password: $newPasswordRepeat, placeholder: "비밀번호 확인", showCondition: false)
             }
             
             Spacer()
             
-            //MARK: - 확인 버튼
-            Button {
+            SubmitButtonView(
+                text: "완료", loading: viewModel.isLoading, disabled: currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty
+            ) {
                 Task {
                     await viewModel.changePassword(currentPassword: currentPassword, newPassword: newPassword, newPasswordRepeat: newPasswordRepeat)
                 }
-            } label: {
-                Group {
-                    if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        Text("완료")
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .font(.pretendard(.semibold, size: 16))
-                .foregroundStyle(.white)
-                .padding(.vertical, 12)
             }
-            .background(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
-            .cornerRadius(22)
-            .disabled(currentPassword.isEmpty || newPassword.isEmpty || newPasswordRepeat.isEmpty || viewModel.isLoading)
-
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 16)
@@ -134,6 +39,7 @@ struct ChangePasswordView: View {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 17, weight: .regular))
+                    .foregroundStyle(Color.soft)
                     .onTapGesture {
                         viewModel.appState.navigation.pop()
                     }
@@ -142,13 +48,13 @@ struct ChangePasswordView: View {
             ToolbarItem(placement: .navigation) {
                 Text("비밀번호 변경")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.basicTextColor)
+                    .foregroundStyle(Color.basicText)
             }
         }
+        .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.isValidPasswordFormat = false
-            viewModel.isValidLength = false
+            viewModel.checkPasswordValidity(password: newPassword)
         }
     }
 }

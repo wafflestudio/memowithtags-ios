@@ -17,14 +17,14 @@ struct ResetPasswordView: View {
     var body: some View {
         
         ZStack {
-            Color.backgroundColor.edgesIgnoringSafeArea(.all)
+            Color.background.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("비밀번호 재설정")
                         .font(.pretendard(.semibold, size: 21))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.basicText)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
@@ -33,114 +33,37 @@ struct ResetPasswordView: View {
                 VStack(spacing: 0) {
                     VStack(spacing: 10) {
                         //MARK: - 비밀번호 입력 필드
-                        VStack(alignment: .leading, spacing: 4) {
-                            SecureField(
-                                "",
-                                text: $password,
-                                prompt: Text("비밀번호")
-                                    .font(.pretendard(.regular, size: 16))
-                                    .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                            )
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .font(.pretendard(.regular, size: 16))
-                            .background(Color.white)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 14)
-                                    .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                            )
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .onChange(of: password) {
-                                viewModel.checkPasswordValidity(password: password)
-                            }
-                            
-                            //조건 표시
-                            VStack(alignment: .leading, spacing: 6) {
-                                HStack {
-                                    Image(systemName: "checkmark")
-                                        .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
-                                    Text("최소 8자 ~ 최대 16자")
-                                        .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidLength ? Color.basicTextColor : Color.basicGray)
-                                }
-                                
-                                HStack {
-                                    Image(systemName: "checkmark")
-                                        .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
-                                    Text("알파벳 대소문자, 숫자, 특수문자 포함")
-                                        .font(.pretendard(.regular, size: 12))
-                                        .foregroundStyle(viewModel.isValidPasswordFormat ? Color.basicTextColor : Color.basicGray)
-                                }
-                            }
-                            .padding(.horizontal, 6)
-                        }
+                        SecureInputFieldView(password: $password, placeholder: "비밀번호", showCondition: true)
                         
                         //MARK: - 비밀번호 확인 필드
-                        SecureField(
-                            "",
-                            text: $passwordRepeat,
-                            prompt: Text("비밀번호 확인")
-                                .font(.pretendard(.regular, size: 16))
-                                .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                        )
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
-                        .font(.pretendard(.regular, size: 16))
-                        .background(Color.white)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                        )
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
+                        SecureInputFieldView(password: $passwordRepeat, placeholder: "비밀번호 확인", showCondition: false)
                     }
                     
                     //MARK: - 확인 버튼
-                    Button {
-                        //action
+                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: password.isEmpty || passwordRepeat.isEmpty) {
                         Task {
                             await viewModel.resetPassword(email: email, password: password, passwordRepeat: passwordRepeat)
                         }
-                    } label: {
-                        Group {
-                            if viewModel.isLoading {
-                                ProgressView()
-                            } else {
-                                Text("다음")
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .font(.pretendard(.semibold, size: 16))
-                        .foregroundStyle(.white)
-                        .padding(.vertical, 12)
-
                     }
-                    .background(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
-                    .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(password.isEmpty || passwordRepeat.isEmpty || viewModel.isLoading)
                     
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
-                        DesignTagView(text: "이전", fontSize: 13, fontWeight: .regular, horizontalPadding: 6, verticalPadding: 2, backGroundColor: "#E3E3E7", cornerRadius: 4) {
+                        DesignTagView(text: "이전", fontSize: 13, backGroundColor: .colorlessTag) {
                             viewModel.appState.navigation.pop()
                         }
                         
                         Spacer()
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.textRed)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.textRed)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
-                        
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.textRed)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
                     }
                     .padding(.top, 36)
@@ -148,12 +71,12 @@ struct ResetPasswordView: View {
                 .padding(.top, 18)
                 .padding(.bottom, 16)
                 .padding(.horizontal, 16)
-                .background(.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .padding(.horizontal, 12)
             .background(.clear)
-            .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
         }
         .navigationBarBackButtonHidden()
         .onAppear {

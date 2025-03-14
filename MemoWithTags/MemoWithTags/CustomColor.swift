@@ -22,6 +22,26 @@ extension UIColor {
     }
 }
 
+extension UIColor {
+    struct Palette {
+        static let B1 = UIColor(hex: "#000000")
+        static let B2 = UIColor(hex: "#202021")
+        static let B2_70 = UIColor(hex: "#202021").withAlphaComponent(0.7)
+        static let B2_15 = UIColor(hex: "#202021").withAlphaComponent(0.15)
+        static let B3 = UIColor(hex: "#2F2F33")
+        
+        static let W1 = UIColor(hex: "#FFFFFF")
+        static let W2 = UIColor(hex: "#F5F5F5")
+        static let W2_1 = UIColor(hex: "#F1F1F1")
+        static let W3 = UIColor(hex: "#E3E3E7")
+        static let W4 = UIColor(hex: "#A0A0A1")
+        static let W4_60 = UIColor(hex: "#A0A0A1").withAlphaComponent(0.6)
+        static let W4_30 = UIColor(hex: "#A0A0A1").withAlphaComponent(0.3)
+        
+        static let TextRed = UIColor(hex: "#FF5151")
+    }
+}
+
 // MARK: - SwiftUI Color extension: 실제 UIColor를 받아 동적 색상 생성
 extension Color {
     /// 라이트 모드와 다크 모드에서 실제 UIColor 값을 받아 동적 색상을 생성합니다.
@@ -31,77 +51,114 @@ extension Color {
         })
     }
     
-    // 기본 색상 정의
-    static let backgroundColor: Color = .dynamicColor(
-        light: UIColor(hex: "#F1F1F3"), // W2_1
-        dark: UIColor(hex: "#000000")   // B1
+    //MARK: - 배경색
+    static let background: Color = .dynamicColor(
+        light: .Palette.W2_1,
+        dark: .Palette.B1
     )
     
-    static let memoBackgroundColor: Color = .dynamicColor(
-        light: UIColor(hex: "#FFFFFF"), // W1
-        dark: UIColor(hex: "#1A1A1B")   //
+    static let memoBackground: Color = .dynamicColor(
+        light: .Palette.W1,
+        dark: .Palette.B2
     )
     
-    static let editorBackgroundColor: Color = .dynamicColor(
-        light: UIColor(hex: "#FFFFFF"), // W1
-        dark: UIColor(hex: "#2F2F33")   //
+    static let editorBackground: Color = .dynamicColor(
+        light: .Palette.W1,
+        dark: .Palette.B3
     )
     
-    static let editorPlaceholder: Color = .dynamicColor(
-        light: UIColor(hex: "#A0A0A1"),
-        dark: UIColor(hex: "#A0A0A1")
+    static let searchBarBackground: Color = .dynamicColor(
+        light: .Palette.W3,
+        dark: .Palette.B3
     )
     
-    static let editorIconBlack: Color = .dynamicColor(
-        light: UIColor(hex: "#000000"),
-        dark: UIColor(hex: "#FFFFFF")
+    static let buttonBackground: Color = .dynamicColor(
+        light: .Palette.B2,
+        dark: .Palette.W4_60
     )
     
-    static let designTagBackgroundColor: Color = .dynamicColor(
-        light: UIColor(hex: "#E3E3E7"), // W3
-        dark: UIColor(hex: "#2F2F33")   //
+    static let disabledButtonBackground: Color = .dynamicColor(
+        light: .Palette.W3,
+        dark: .Palette.B3
     )
     
-    static let searchBarBackgroundColor: Color = .dynamicColor(
-        light: UIColor(hex: "#E3E3E7"), // W3
-        dark: UIColor(hex: "#2F2F33")   //
+    //MARK: - 텍스트 및 아이콘
+    static let basicText: Color = .dynamicColor(
+        light: .Palette.B2,
+        dark: .Palette.W2
     )
     
-    static let basicTextColor: Color = .dynamicColor(
-        light: UIColor(hex: "#202021"), // B2
-        dark: UIColor(hex: "#F5F5F5")   // W2
+    static let tagText: Color = .dynamicColor(
+        light: .Palette.B2_70,
+        dark: .Palette.W3
     )
     
-    // 태그 텍스트 색상에 70% opacity 적용
-    static let tagTextColor: Color = .dynamicColor(
-        light: UIColor(hex: "#202021").withAlphaComponent(0.7), // B2_70
-        dark: UIColor(hex: "#F5F5F5")                           // W2
+    static let placeholder: Color = .dynamicColor(
+        light: .Palette.W4,
+        dark: .Palette.W4
     )
     
-    static let basicGray: Color = .dynamicColor(
-        light: UIColor(hex: "#A0A0A1"), // W4
-        dark: UIColor(hex: "#1C1C1E")   //
+    static let grayText: Color = .dynamicColor(
+        light: .Palette.W4,
+        dark: .Palette.W4_60
     )
     
-    static let textRed: Color = .dynamicColor(
-        light: UIColor(hex: "#FF5151"), // textRed
-        dark: UIColor(hex: "#FF5151")   // textRed
+    static let redText: Color = .dynamicColor(
+        light: .Palette.TextRed,
+        dark: .Palette.TextRed
     )
     
-    static let buttonRed: Color = .dynamicColor(
-        light: UIColor(hex: "#FF9C9C"), // buttonRed
-        dark: UIColor(hex: "#FF9C9C")   //
+    //진함
+    static let vivid: Color = .dynamicColor(
+        light: .Palette.B1,
+        dark: .Palette.W2
     )
     
-    static let placeholderGrayInWhiteBackground: Color = .dynamicColor(
-        light: UIColor(hex: "#94979F"), //
-        dark: UIColor(hex: "#94979F")   //
+    //소프트
+    static let soft: Color = .dynamicColor(
+        light: .Palette.B2_70,
+        dark: .Palette.W4
     )
     
-    static let strokeGrayInWhiteBackground: Color = .dynamicColor(
-        light: UIColor(hex: "#DCDDDE"), //
-        dark: UIColor(hex: "#DCDDDE")   // 
+    //희미함
+    static let faded: Color = .dynamicColor(
+        light: .Palette.B2_15,
+        dark: .Palette.W4_30
     )
+    
+    //MARK: - border, shadow 색
+    static let basicBorder: Color = .dynamicColor(
+        light: .Palette.B2_15,
+        dark: .Palette.W4_30
+    )
+    
+    static let shadow: Color = .dynamicColor(
+        light: .init(white: 0, alpha: 0.3),
+        dark: .init(white: 1, alpha: 0.5)
+    )
+    
+    //MARK: - 외
+    static let titleTag: Color = .dynamicColor(
+        light: .Palette.W3,
+        dark: .Palette.B2
+    )
+    
+    static let titleTagText: Color = .dynamicColor(
+        light: .Palette.B2_70,
+        dark: .Palette.W4
+    )
+    
+    static let colorlessTag: Color = .dynamicColor(
+        light: .Palette.W2_1,
+        dark: .Palette.B3
+    )
+    
+    static let disabledButtonText: Color = .dynamicColor(
+        light: .Palette.W1,
+        dark: .Palette.W4_60
+    )
+        
+    
     
 }
 

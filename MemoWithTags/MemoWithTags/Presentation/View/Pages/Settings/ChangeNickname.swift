@@ -14,57 +14,15 @@ struct ChangeNicknameView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            VStack(spacing: 4) {
-                TextField (
-                    "",
-                    text: $nickname,
-                    prompt: Text("닉네임 입력")
-                        .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                )
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .font(.pretendard(.regular, size: 16))
-                .background(Color.white)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                )
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-                
-                //조건 표시
-                HStack {
-                    Spacer()
-                    Text("\(nickname.count)/8")
-                        .font(.pretendard(.regular, size: 12))
-                        .foregroundStyle(nickname.count > 8 ? Color.red : Color.basicGray)
-                        .padding(.horizontal, 6)
-                }
-            }
+            InputFieldView(text: $nickname, placeholder: "닉네임", showCount: true, showAlert: nickname.count > 16)
             
             Spacer()
             
-            Button {
+            SubmitButtonView(text: "완료", loading: viewModel.isLoading, disabled: !(1...16 ~= nickname.count)) {
                 Task {
                     await viewModel.setNickname(nickname: nickname)
                 }
-            } label: {
-                Group {
-                    if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        Text("완료")
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .font(.pretendard(.semibold, size: 16))
-                .foregroundStyle(.white)
-                .padding(.vertical, 12)
             }
-            .background(nickname.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
-            .cornerRadius(22)
-            .disabled(nickname.isEmpty || viewModel.isLoading)
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 16)
@@ -72,6 +30,7 @@ struct ChangeNicknameView: View {
             ToolbarItem(placement: .topBarLeading) {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 17, weight: .regular))
+                    .foregroundStyle(Color.soft)
                     .onTapGesture {
                         viewModel.appState.navigation.pop()
                     }
@@ -80,9 +39,10 @@ struct ChangeNicknameView: View {
             ToolbarItem(placement: .navigation) {
                 Text("닉네임 변경")
                     .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.basicTextColor)
+                    .foregroundStyle(Color.basicText)
             }
         }
+        .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
     }
 }
