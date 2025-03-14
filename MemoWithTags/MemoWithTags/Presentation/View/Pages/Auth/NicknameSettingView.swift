@@ -14,79 +14,34 @@ struct NicknameSettingView: View {
     
     var body: some View {
         ZStack {
-            Color.backgroundColor.edgesIgnoringSafeArea(.all)
+            Color.background.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
                     Text("닉네임 설정")
                         .font(.pretendard(.semibold, size: 16))
-                        .foregroundStyle(Color.basicTextColor)
+                        .foregroundStyle(Color.basicText)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
                 
                 //login panel
                 VStack(spacing: 0) {
-                    VStack(spacing: 4) {
-                        //MARK: - 닉네임 설정 필드
-                        TextField (
-                            "",
-                            text: $nickname,
-                            prompt:
-                                Text("닉네임")
-                                .font(.pretendard(.regular, size: 16))
-                                .foregroundStyle(Color.placeholderGrayInWhiteBackground)
-                        )
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
-                        .font(.pretendard(.regular, size: 16))
-                        .background(.white)
-                        .overlay (
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.strokeGrayInWhiteBackground, lineWidth: 1)
-                        )
-                        .autocorrectionDisabled(true)
-                        .textInputAutocapitalization(.never)
-                        //조건 표시
-                        HStack {
-                            Spacer()
-                            Text("\(nickname.count)/8")
-                                .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(nickname.count > 8 ? Color.red : Color.basicGray)
-                                .padding(.horizontal, 6)
-                        }
-                    }
+                    InputFieldView(text: $nickname, placeholder: "닉네임", showCount: true, showAlert: nickname.count > 16)
                     
                     //MARK: - 확인 버튼
-                    Button {
-                        //action
+                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: nickname.isEmpty) {
                         Task {
                             await viewModel.setNickname(nickname: nickname)
                         }
-
-                    } label: {
-                        Group {
-                            if viewModel.isLoading {
-                                ProgressView()
-                            } else {
-                                Text("다음")
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                        .font(.pretendard(.semibold, size: 16))
-                        .foregroundStyle(.white)
-                        .padding(.vertical, 12)
                     }
-                    .background(nickname.isEmpty || viewModel.isLoading ? Color.searchBarBackgroundColor : Color.basicTextColor)
-                    .cornerRadius(22)
                     .padding(.top, 16)
-                    .disabled(nickname.isEmpty || viewModel.isLoading)
                 }
                 .padding(.top, 18)
                 .padding(.bottom, 24)
                 .padding(.horizontal, 16)
-                .background(.white)
+                .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .padding(.horizontal, 12)
