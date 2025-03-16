@@ -118,7 +118,6 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
             onTappingMemo()
         }
@@ -158,6 +157,7 @@ struct MemoView: View {
         .padding(.horizontal, 12)
     }
     
+    //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
     func onTappingMemo() {
         if memo.locked && !viewModel.appState.user.isBioAuthenticated {
             Task {
