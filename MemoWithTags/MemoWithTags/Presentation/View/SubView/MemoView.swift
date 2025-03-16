@@ -143,6 +143,19 @@ struct MemoView: View {
             appState: viewModel.appState,
             type: .memo(memo: memo, tags: viewModel.getTags(from: memo.tagIds)),
             menuItems: [
+                .init(title: viewModel.appState.navigation.current == .main ? "이 메모 내용으로 검색하기" : "이 메모를 메인 화면에서 보기",
+                      icon: viewModel.appState.navigation.current == .main ? "rectangle.and.text.magnifyingglass" : "text.viewfinder") {
+                          Task {
+                              if viewModel.appState.navigation.current == .main {
+                                  viewModel.clearSearch()
+                                  viewModel.searchBarText = memo.content
+                                  viewModel.appState.navigation.push(to: .search)
+                              } else {
+                                  viewModel.appState.navigation.pop()
+                                  viewModel.scrollTarget = memo.id
+                              }
+                          }
+                },
                 .init(title: memo.locked ? "잠금 해제" : "메모 잠금", icon: memo.locked ? "lock.open.fill" : "lock.fill") {
                     Task {
                         let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")

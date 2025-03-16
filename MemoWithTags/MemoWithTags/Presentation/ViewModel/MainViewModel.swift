@@ -18,6 +18,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var tags: [Tag] = []
     @Published var mainCurrentPage: Int = 0 // 로드된 페이지 중 가장 높은 페이지 (최초 값: 0)
     @Published var mainTotalPages: Int = 1
+    @Published var scrollTarget: Int = -1 // scroll할 memoId. (-1는 default 값으로, -1이 되면 가장 아래로 scroll된다.)
     
     //MARK: - searchPage 변수들
     @Published var searchBarText: String = ""
@@ -181,6 +182,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     }
     
     // MARK: - 선택된 memoId 기반 주변 메모 가져오기
+    // memoId가 속한 page만 가져오는 로직. 아래로 scroll할 때 끊기는 현상이 있어서 포기한 개발 방향이다.
     /*
     func fetchMemosByMemoId() async {
         if self.highlightingMemoIndex == -1 {
