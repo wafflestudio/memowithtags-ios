@@ -111,7 +111,8 @@ struct MemoView: View {
                 .padding(.top, 10)
             }
         }
-        .padding(.vertical, 12)
+        .padding(.top, 9)
+        .padding(.bottom, 12)
         .padding(.horizontal, 17)
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
