@@ -25,6 +25,9 @@ struct SearchView: View {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18))
                         .foregroundStyle(Color.soft)
+                        .padding(.leading, 8)
+                        .padding(.trailing, 4)
+                        .contentShape(Rectangle()) // 터치 영역을 더 넓게 설정
                         .onTapGesture {
                             viewModel.appState.navigation.pop()
                         }
@@ -62,7 +65,8 @@ struct SearchView: View {
                     .background(Color.searchBarBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
-                .padding(.horizontal, 16)
+                .padding(.leading, 8) // 뒤로가기 버튼의 터치 영역을 넓히기 위해 leading padidng을 줄임
+                .padding(.trailing, 16)
                 .padding(.bottom, 14)
                 
                 //MARK: - 로딩 아이콘
