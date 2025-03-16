@@ -139,7 +139,10 @@ struct SearchView: View {
             }
         }
         .onDisappear {
-            viewModel.clearSearch()
+            // memoEditor가 나타나는 경우를 제외하고 clearSearch() 호출
+            if viewModel.appState.navigation.current != .memoEditor {
+                viewModel.clearSearch()
+            }
         }
     }
     
