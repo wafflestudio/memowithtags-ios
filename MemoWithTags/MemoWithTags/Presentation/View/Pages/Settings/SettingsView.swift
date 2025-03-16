@@ -66,6 +66,8 @@ struct SettingsView: View {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 17, weight: .regular))
                     .foregroundStyle(Color.soft)
+                    .padding(4) // 터치 영역을 확장하기 위해 패딩 추가
+                    .contentShape(Rectangle()) // 전체 영역을 터치 가능 영역으로 지정
                     .onTapGesture {
                         viewModel.appState.navigation.pop()
                     }
