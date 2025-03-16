@@ -34,7 +34,7 @@ struct EditingTagListView: View {
                 .frame(width: 0.3, height: 32)
             
             // 태그 추천해주는 스크롤 라인
-            ScrollView(.horizontal) {
+            ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .center, spacing: 8) {
                     // "Create Tag" TagView
                     if canCreateTag() {
