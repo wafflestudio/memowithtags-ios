@@ -177,7 +177,12 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         let result = await useCases.memoService.recommendMemos(content: self.editorContent, tagIds: self.editorTagIds)
         switch result {
         case .success(let recommendedMemoIds):
-            self.recommendingMemoIds = recommendedMemoIds.memoIds
+            var ids = recommendedMemoIds.memoIds
+            // .update 상태인 경우, 업데이트 대상 memo id는 recommendedMemoIds에서 제외
+            if case let .update(target) = editorState {
+                ids.removeAll { $0 == target.id }
+            }
+            self.recommendingMemoIds = ids
         case .failure(let error):
             appState.system.alert(error: error)
         }
