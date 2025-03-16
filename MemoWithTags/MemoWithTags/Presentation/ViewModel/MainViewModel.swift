@@ -114,6 +114,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
+            print(tagIds)
+            print(memo.tagIds)
             self.memos.insert(memo, at: 0)
         case .failure(let error):
             appState.system.alert(error: error)
@@ -130,6 +132,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
+            print(tagIds)
+            print(memo.tagIds)
             if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
                 self.memos[index] = memo
             }
@@ -293,7 +297,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = false
     }
     
-    //MARK: - main view에서 onApear때 쓰는 함수
+    //MARK: - main view에서 onAppear때 쓰는 함수
     func initMemo() async {
         if tags.isEmpty {
             await fetchTags()
