@@ -66,22 +66,23 @@ extension LAContext {
     /// - Returns: `true` if authentication succeeds.
     func evaluatePolicyAsync(_ policy: LAPolicy, localizedReason: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
-            var didResume = false  // 단일 resume을 보장하기 위한 플래그
-            evaluatePolicy(policy, localizedReason: localizedReason) { success, error in
-                // 이미 resume이 호출된 경우 추가 호출 무시
-                guard !didResume else { return }
-                didResume = true
-                if success {
-                    continuation.resume(returning: true)
-                } else {
-                    if let error = error {
-                        continuation.resume(throwing: error)
+            // LAContext 인스턴스의 수명을 연장하여 인증이 완료될 때까지 유지
+            withExtendedLifetime(self) {
+                var didResume = false  // 단일 resume을 보장하기 위한 플래그
+                self.evaluatePolicy(policy, localizedReason: localizedReason) { success, error in
+                    guard !didResume else { return }
+                    didResume = true
+                    if success {
+                        continuation.resume(returning: true)
                     } else {
-                        continuation.resume(returning: false)
+                        if let error = error {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume(returning: false)
+                        }
                     }
                 }
             }
         }
     }
 }
-
