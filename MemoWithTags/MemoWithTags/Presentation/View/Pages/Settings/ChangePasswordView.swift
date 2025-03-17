@@ -16,6 +16,27 @@ struct ChangePasswordView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            //MARK: - navigation bar
+            HStack(spacing: 0) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 19))
+                    .foregroundStyle(Color.soft)
+                    .padding(12) // 터치 영역을 확장하기 위해 패딩 추가
+                    .contentShape(Rectangle()) // 전체 영역을 터치 가능 영역으로 지정
+                    .onTapGesture {
+                        viewModel.appState.navigation.pop()
+                    }
+                
+                Text("비밀번호 변경")
+                    .font(.pretendard(.semibold, size: 18))
+                    .foregroundStyle(Color.basicText)
+                
+                Spacer()
+            }
+            .padding(.vertical, 8)
+            
+            //MARK: -
+            
             VStack(spacing: 10) {
                 SecureInputFieldView(password: $currentPassword, placeholder: "기존 비밀번호", showCondition: false)
             
@@ -35,22 +56,6 @@ struct ChangePasswordView: View {
         }
         .padding(.horizontal, 12)
         .padding(.bottom, 16)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 17, weight: .regular))
-                    .foregroundStyle(Color.soft)
-                    .onTapGesture {
-                        viewModel.appState.navigation.pop()
-                    }
-            }
-            
-            ToolbarItem(placement: .navigation) {
-                Text("비밀번호 변경")
-                    .font(.pretendard(.semibold, size: 18))
-                    .foregroundStyle(Color.basicText)
-            }
-        }
         .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
         .onAppear {

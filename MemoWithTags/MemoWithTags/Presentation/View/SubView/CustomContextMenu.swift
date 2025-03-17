@@ -37,7 +37,7 @@ struct CustomContextMenu: ViewModifier {
     func body(content: Content) -> some View {
         content
             .scaleEffect(isPressing ? 1.03 : 1)
-            .shadow(color: Color.black.opacity(isPressing ? 0.2 : 0.05), radius: isPressing ? 6 : 3, x: 0, y: 2)
+            .shadow(color: isPressing ? Color.black.opacity(0.2) : .clear, radius: 6)
             .onLongPressGesture {
                 guard let position = position, let pressLocation = pressLocation else { return }
                 if position.minY < 50 || position.maxY > UIScreen.main.bounds.height - 50 {

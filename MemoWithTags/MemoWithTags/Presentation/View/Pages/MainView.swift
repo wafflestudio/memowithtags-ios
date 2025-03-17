@@ -66,6 +66,7 @@ struct MainView: View {
             }
 
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
     }
 }

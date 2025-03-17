@@ -30,13 +30,15 @@ struct EmailVerificationView: View {
                 .background(.clear)
                 
                 VStack(spacing: 0) {
-                    Text("이메일로 발송된 인증번호를 입력해주세요.")
-                        .padding(.vertical, 8)
-                        .font(.pretendard(.regular, size: 16))
-                        .foregroundStyle(Color.basicText)
+                    Text(
+                        viewModel.notMatchCode ? "입력하신 인증번호가 올바르지 않습니다." : "이메일로 발송된 인증번호를 입력해주세요."
+                    )
+                    .padding(.vertical, 8)
+                    .font(.pretendard(.regular, size: 16))
+                    .foregroundStyle(Color.basicText)
                     
                     //MARK: - 인증 코드 입력란
-                    SeparatedTextField(length: 6, value: $code)
+                    SeparatedTextField(length: 6, value: $code, showAlert: viewModel.notMatchCode)
                         .padding(.top, 8)
                     
                     //MARK: - 확인 버튼
@@ -93,6 +95,7 @@ struct EmailVerificationView: View {
 //MARK: - 숫자 하나 입력 필드
 struct CharacterField: View {
     @Binding var character: String
+    var showAlert: Bool
     @FocusState var isFocused: Bool
 
     var onChange: (_ newValue: String) -> Void
@@ -106,7 +109,7 @@ struct CharacterField: View {
             .font(.system(size: 22, weight: .semibold))
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.basicBorder, lineWidth: 1)
+                    .stroke(showAlert ? Color.redText : Color.basicBorder, lineWidth: 1)
             )
             .onChange(of: character) { oldValue, newValue in
                 if newValue.count > 1 {
@@ -122,20 +125,22 @@ struct CharacterField: View {
 struct SeparatedTextField: View {
     var length: Int
     @Binding var value: String
+    var showAlert: Bool
     
     @FocusState private var focusedIndex: Int?
     @State private var characters: [String]
     
-    init(length: Int, value: Binding<String>) {
+    init(length: Int, value: Binding<String>, showAlert: Bool) {
         self.length = length
         self._value = value
         self._characters = State(initialValue: Array(repeating: "", count: length))
+        self.showAlert = showAlert
     }
     
     var body: some View {
         HStack(spacing: 7) {
             ForEach(0..<length, id: \.self) { index in
-                CharacterField(character: $characters[index]) { newValue in
+                CharacterField(character: $characters[index], showAlert: showAlert) { newValue in
                     handleInputChange(for: index, with: newValue)
                 }
                 .font(.pretendard(.semibold, size: 22))

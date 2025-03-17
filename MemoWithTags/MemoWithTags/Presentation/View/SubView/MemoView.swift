@@ -113,11 +113,11 @@ struct MemoView: View {
                 .padding(.top, 10)
             }
         }
-        .padding(.top, 9)
-        .padding(.bottom, 12)
+        .padding(.vertical, 12)
         .padding(.horizontal, 17)
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
         .onTapGesture {
             onTappingMemo()
         }
