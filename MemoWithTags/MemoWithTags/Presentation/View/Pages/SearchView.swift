@@ -20,13 +20,14 @@ struct SearchView: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 //MARK: - 맨 위 바
-                HStack(spacing: 10) {
+                HStack(spacing: 2) {
                     //MARK: - 뒤로가기 버튼
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 18))
+                        .resizable()
+                        .frame(width: 8, height: 18)
                         .foregroundStyle(Color.soft)
-                        .padding(.leading, 8)
-                        .padding(.trailing, 4)
+                        .padding(.vertical, 2)
+                        .padding(.horizontal, 8)
                         .contentShape(Rectangle()) // 터치 영역을 더 넓게 설정
                         .onTapGesture {
                             viewModel.appState.navigation.pop()
@@ -113,7 +114,6 @@ struct SearchView: View {
                             LazyVStack(alignment: .leading, spacing: 12) {
                                 ForEach(viewModel.searchedMemos, id: \.id) { memo in
                                     MemoView(memo: memo, viewModel: viewModel)
-                                        .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
                                 }
                                 
                                 HStack {
