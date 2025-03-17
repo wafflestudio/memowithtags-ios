@@ -136,6 +136,7 @@ struct SearchView: View {
             }
 
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
         .onAppear {
             Task {
