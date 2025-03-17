@@ -18,6 +18,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     @Published var tags: [Tag] = []
     @Published var mainCurrentPage: Int = 0 // 로드된 페이지 중 가장 높은 페이지 (최초 값: 0)
     @Published var mainTotalPages: Int = 1
+    @Published var scrollTarget: Int = -1 // scroll할 memoId. (-1는 default 값으로, -1이 되면 가장 아래로 scroll된다.)
     
     //MARK: - searchPage 변수들
     @Published var searchBarText: String = ""
@@ -113,6 +114,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
+            print(tagIds)
+            print(memo.tagIds)
             self.memos.insert(memo, at: 0)
         case .failure(let error):
             appState.system.alert(error: error)
@@ -129,6 +132,8 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
+            print(tagIds)
+            print(memo.tagIds)
             if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
                 self.memos[index] = memo
             }
@@ -172,7 +177,12 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         let result = await useCases.memoService.recommendMemos(content: self.editorContent, tagIds: self.editorTagIds)
         switch result {
         case .success(let recommendedMemoIds):
-            self.recommendingMemoIds = recommendedMemoIds.memoIds
+            var ids = recommendedMemoIds.memoIds
+            // .update 상태인 경우, 업데이트 대상 memo id는 recommendedMemoIds에서 제외
+            if case let .update(target) = editorState {
+                ids.removeAll { $0 == target.id }
+            }
+            self.recommendingMemoIds = ids
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -181,6 +191,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     }
     
     // MARK: - 선택된 memoId 기반 주변 메모 가져오기
+    // memoId가 속한 page만 가져오는 로직. 아래로 scroll할 때 끊기는 현상이 있어서 포기한 개발 방향이다.
     /*
     func fetchMemosByMemoId() async {
         if self.highlightingMemoIndex == -1 {
@@ -291,7 +302,7 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         isLoading = false
     }
     
-    //MARK: - main view에서 onApear때 쓰는 함수
+    //MARK: - main view에서 onAppear때 쓰는 함수
     func initMemo() async {
         if tags.isEmpty {
             await fetchTags()

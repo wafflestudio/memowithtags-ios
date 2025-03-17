@@ -10,9 +10,8 @@ struct MemoListView: View {
                     
                     ForEach(viewModel.memos) { memo in
                         let isHighlighted: Bool = {
-                            if viewModel.highlightingMemoIndex >= 0 &&
-                                viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count {
-                                return viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex] == memo.id
+                            if viewModel.scrollTarget >= 0 {
+                                return viewModel.scrollTarget == memo.id
                             }
                             return false
                         }()
@@ -38,36 +37,42 @@ struct MemoListView: View {
             }
             .rotationEffect(.degrees(180))
             .scrollIndicators(.hidden)
-            
-            // highlightingMemoIndex 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
-            .onChange(of: viewModel.highlightingMemoIndex) {
+            // scrollTarget 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
+            .onChange(of: viewModel.scrollTarget) {
                 Task {
-                    if viewModel.highlightingMemoIndex == -1 {
+                    if viewModel.scrollTarget == -1 {
                         if let firstMemo = viewModel.memos.first {
                             withAnimation {
                                 proxy.scrollTo(firstMemo.id, anchor: .center)
                             }
                         }
                     } else {
-                        let targetMemoId = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
-                        // targetMemoId가 이미 memos에 있다면 바로 스크롤
-                        if viewModel.memos.contains(where: { $0.id == targetMemoId }) {
+                        if viewModel.memos.contains(where: { $0.id == viewModel.scrollTarget }) {
+                            // scrollTarget이 이미 memos에 있다면 바로 스크롤
                             withAnimation {
-                                proxy.scrollTo(targetMemoId, anchor: .center)
+                                proxy.scrollTo(viewModel.scrollTarget, anchor: .center)
                             }
                         } else {
-                            // targetMemoId가 memos에 없다면
+                            // scrollTarget이 memos에 없다면
                             // 해당하는 memo가 나올 때까지 fetchMemos()를 반복 실행하고, 찾으면 그 메모로 scroll
-                            while !viewModel.memos.contains(where: { $0.id == targetMemoId }) {
+                            while !viewModel.memos.contains(where: { $0.id == viewModel.scrollTarget }) {
                                 await viewModel.fetchMemos()
                             }
                             // fetchMemo가 된 것이 View에 반영될 때까지 0.1초 기다리기
                             try? await Task.sleep(nanoseconds: 100_000_000)
                             withAnimation {
-                                proxy.scrollTo(targetMemoId, anchor: .center)
+                                proxy.scrollTo(viewModel.scrollTarget, anchor: .center)
                             }
                         }
                     }
+                }
+            }
+            // highlightingMemoIndex 값이 바뀔 때, 그에 맞춰서 scrollTarget을 바꿈
+            .onChange(of: viewModel.highlightingMemoIndex) {
+                if viewModel.highlightingMemoIndex == -1 {
+                    viewModel.scrollTarget = -1
+                } else {
+                    viewModel.scrollTarget = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
                 }
             }
         }

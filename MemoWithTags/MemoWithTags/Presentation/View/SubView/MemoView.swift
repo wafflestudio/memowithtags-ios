@@ -29,7 +29,9 @@ struct MemoView: View {
             if !memo.tagIds.isEmpty || memo.locked {
                 HFlow {
                     ForEach(viewModel.getTags(from: memo.tagIds), id: \.id) { tag in
-                        TagView(viewModel: viewModel, tag: tag)
+                        TagView(viewModel: viewModel, tag: tag) {
+                            onTappingMemo() // MemoView에 있는 Tag는 Tap해도 아무 일이 일어나지 않으므로, Tag를 Tap해도 Memo를 Tap한 것과 같은 일이 일어나게 한다.
+                        }
                     }
                     
                     if memo.locked {
@@ -111,37 +113,32 @@ struct MemoView: View {
                 .padding(.top, 10)
             }
         }
-        .padding(.vertical, 12)
+        .padding(.top, 9)
+        .padding(.bottom, 12)
         .padding(.horizontal, 17)
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
         .onTapGesture {
-            if memo.locked && !viewModel.appState.user.isBioAuthenticated {
-                Task {
-                    let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
-                    if authenticated {
-                        withAnimation(.spring()) {
-                            viewModel.appState.user.isBioAuthenticated = true
-                        }
-                    }
-                }
-            } else if !isExpanded {
-                withAnimation(.spring) {
-                    isExpanded.toggle()
-                }
-            } else {
-                viewModel.editorState = .update(target: memo)
-                viewModel.editorContent = memo.content
-                viewModel.editorTagIds = memo.tagIds
-                viewModel.appState.navigation.push(to: .memoEditor)
-            }
+            onTappingMemo()
         }
         //MARK: - context menu
         .customContextMenu(
             appState: viewModel.appState,
             type: .memo(memo: memo, tags: viewModel.getTags(from: memo.tagIds)),
             menuItems: [
+                .init(title: viewModel.appState.navigation.current == .main ? "이 메모 내용으로 검색하기" : "이 메모를 메인 화면에서 보기",
+                      icon: viewModel.appState.navigation.current == .main ? "rectangle.and.text.magnifyingglass" : "text.viewfinder") {
+                          Task {
+                              if viewModel.appState.navigation.current == .main {
+                                  viewModel.clearSearch()
+                                  viewModel.searchBarText = memo.content
+                                  viewModel.appState.navigation.push(to: .search)
+                              } else {
+                                  viewModel.appState.navigation.pop()
+                                  viewModel.scrollTarget = memo.id
+                              }
+                          }
+                },
                 .init(title: memo.locked ? "잠금 해제" : "메모 잠금", icon: memo.locked ? "lock.open.fill" : "lock.fill") {
                     Task {
                         let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
@@ -158,6 +155,29 @@ struct MemoView: View {
             ]
         )
         .padding(.horizontal, 12)
+    }
+    
+    //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
+    func onTappingMemo() {
+        if memo.locked && !viewModel.appState.user.isBioAuthenticated {
+            Task {
+                let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
+                if authenticated {
+                    withAnimation(.spring()) {
+                        viewModel.appState.user.isBioAuthenticated = true
+                    }
+                }
+            }
+        } else if !isExpanded {
+            withAnimation(.spring) {
+                isExpanded.toggle()
+            }
+        } else {
+            viewModel.editorState = .update(target: memo)
+            viewModel.editorContent = memo.content
+            viewModel.editorTagIds = memo.tagIds
+            viewModel.appState.navigation.push(to: .memoEditor)
+        }
     }
     
     func dateFormat(date: Date) -> String {
