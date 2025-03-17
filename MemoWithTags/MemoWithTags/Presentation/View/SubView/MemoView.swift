@@ -144,6 +144,9 @@ struct MemoView: View {
                         let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
                         if authenticated {
                             await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                            withAnimation(.spring) {
+                                viewModel.appState.user.isBioAuthenticated = true
+                            }
                         }
                     }
                 },
@@ -161,9 +164,9 @@ struct MemoView: View {
     func onTappingMemo() {
         if memo.locked && !viewModel.appState.user.isBioAuthenticated {
             Task {
-                let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
+                let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠긴 메모를 확인하려면 인증이 필요합니다.")
                 if authenticated {
-                    withAnimation(.spring()) {
+                    withAnimation(.spring) {
                         viewModel.appState.user.isBioAuthenticated = true
                     }
                 }
