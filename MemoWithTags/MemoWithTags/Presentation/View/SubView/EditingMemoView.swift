@@ -76,7 +76,7 @@ struct EditingMemoView: View {
                                     await viewModel.submit()
                                 }
                             }
-
+                        
                     case .update: // 업데이트 모드일 때
                         Image(systemName: "arrow.down.left.and.arrow.up.right")
                             .font(.system(size: 17, weight: .regular))
@@ -126,21 +126,21 @@ struct EditingMemoView: View {
         .overlay(recommendingOverlay, alignment: .topTrailing)
         // 나중에 content로도 recommend를 할 때 사용한다.
         /*
-        .onChange(of: viewModel.editorContent) {
-            // 실행하고 있는 recommendingTask를 종료
-            memoEditingTask?.cancel()
-            
-            // 새로운 recommendingTask 생성
-            memoEditingTask = Task {
-                do {
-                    try await Task.sleep(nanoseconds: 500_000_000) // 0.5초 debounce
-                    await viewModel.recommendMemos()
-                } catch {
-                    // 취소된 경우 아무 작업도 하지 않아도 된다.
-                }
-            }
-        }
-        */
+         .onChange(of: viewModel.editorContent) {
+         // 실행하고 있는 recommendingTask를 종료
+         memoEditingTask?.cancel()
+         
+         // 새로운 recommendingTask 생성
+         memoEditingTask = Task {
+         do {
+         try await Task.sleep(nanoseconds: 500_000_000) // 0.5초 debounce
+         await viewModel.recommendMemos()
+         } catch {
+         // 취소된 경우 아무 작업도 하지 않아도 된다.
+         }
+         }
+         }
+         */
         .onChange(of: viewModel.editorTagIds) {
             // 실행하고 있는 recommendingTask를 종료
             memoEditingTask?.cancel()
@@ -160,51 +160,64 @@ struct EditingMemoView: View {
     private var recommendingOverlay: some View {
         Group {
             if !viewModel.recommendingMemoIds.isEmpty {
-                HStack(spacing: 18) {
+                HStack(spacing: 12) {
                     Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(Color.vivid)
                         .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 7)
                         .background(
                             Rectangle()
-                                .fill(Color.background)
+                                .fill(Color.memoBackground)
                                 .cornerRadius(20)
                         )
                         .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
                     
-                    Image(systemName: "chevron.up")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.vivid)
-                        .background(
-                            Circle()
-                                .fill(Color.memoBackground)
-                                .frame(width: 27, height: 27)
-                        )
-                        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
-                        .onTapGesture {
-                            if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
-                                viewModel.highlightingMemoIndex += 1
-                            }
+                    // ZStack을 사용하여 두 동그라미 사이 영역을 완전히 채움
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.background)
+                            .frame(width: 60, height: 27) // 일일이 때려맞춤
+                            .offset(x: -5.5 ) // 일일이 때려 맞춤
+                            .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
+                            
+                        
+                        HStack(spacing: 18) {
+                            Image(systemName: "chevron.up")
+                                .font(.system(size: 14, weight: .regular))
+                                .foregroundStyle(Color.vivid)
+                                .background(
+                                    Circle()
+                                        .fill(Color.memoBackground)
+                                        .frame(width: 27, height: 27)
+                                )
+                                .onTapGesture {
+                                    if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
+                                        viewModel.highlightingMemoIndex += 1
+                                    }
+                                }
+                            
+                            Image(systemName: "chevron.down")
+                                .font(.system(size: 14, weight: .regular))
+                                .foregroundStyle(Color.vivid)
+                                .background(
+                                    Circle()
+                                        .fill(Color.memoBackground)
+                                        .frame(width: 27, height: 27)
+                                )
+                                .onTapGesture {
+                                    if viewModel.highlightingMemoIndex > -1 {
+                                        viewModel.highlightingMemoIndex -= 1
+                                    }
+                                }
                         }
-                    
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundStyle(Color.vivid)
-                        .background(
-                            Circle()
-                                .fill(Color.memoBackground)
-                                .frame(width: 27, height: 27)
-                        )
-                        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
-                        .onTapGesture {
-                            if viewModel.highlightingMemoIndex > -1 {
-                                viewModel.highlightingMemoIndex -= 1
-                            }
-                        }
+                        
+                        
+                    }
                 }
             }
         }
         .offset(x: -20, y: -36)
     }
+    
 }
