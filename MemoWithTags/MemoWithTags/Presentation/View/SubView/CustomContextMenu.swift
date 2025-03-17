@@ -58,7 +58,9 @@ struct CustomContextMenu: ViewModifier {
                             Task {
                                 let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠김 메모를 확인하려면 인증이 필요합니다.")
                                 if authenticated {
-                                    appState.user.isBioAuthenticated = true
+                                    withAnimation(.spring()) {
+                                        appState.user.isBioAuthenticated = true
+                                    }
                                 }
                             }
                             return

@@ -8,81 +8,35 @@
 import LocalAuthentication
 
 final class BioAuthenticationManager {
-    ///singleton
+    /// Singleton 인스턴스
     static let shared = BioAuthenticationManager()
     private init() {}
     
-    // 생체 인증 또는 디바이스 비밀번호를 사용하여 사용자를 인증합니다.
-    // 인증에 성공하면 true, 실패하면 false 반환
+    /// 생체 인증 또는 기기 암호를 사용하여 사용자를 인증합니다.
+    /// - Parameter reason: 인증 요청 시 사용자에게 보여줄 메시지
+    /// - Returns: 인증 성공 시 true, 실패 또는 인증 불가 시 false
     func authenticateUser(reason: String) async -> Bool {
         let context = LAContext()
+        // 커스텀 Cancel 버튼 텍스트 설정
+        context.localizedCancelTitle = "기기 암호 입력하기"
+        
         var authError: NSError?
         
-        // 인증 정책 설정: Face ID 사용
-        let policy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
+        let policy: LAPolicy = .deviceOwnerAuthentication
         
         // 인증 가능 여부 확인
-        if context.canEvaluatePolicy(policy, error: &authError) {
-            do {
-                // 인증 시도
-                let success = try await context.evaluatePolicyAsync(policy, localizedReason: reason)
-                return success
-            } catch {
-                // 인증 실패 또는 에러 발생
-                print("Face ID authentication failed with error: \(error.localizedDescription)")
-                return false
-            }
-        } else {
-            print("Face ID not available. Switch to Device Passcode.")
-            
-            // 인증 정책 설정: 디바이스 비밀번호 사용
-            let policy: LAPolicy = .deviceOwnerAuthentication
-            
-            // 인증 가능 여부 확인
-            if context.canEvaluatePolicy(policy, error: &authError) {
-                do {
-                    // 인증 시도
-                    let success = try await context.evaluatePolicyAsync(policy, localizedReason: reason)
-                    return success
-                } catch {
-                    // 인증 실패 또는 에러 발생
-                    print("Device Passcode authentication failed with error: \(error.localizedDescription)")
-                    return false
-                }
-            } else {
-                // 인증을 사용할 수 없음
-                print("Authentication not available.")
-                return false
-            }
+        guard context.canEvaluatePolicy(policy, error: &authError) else {
+            print("FaceID 및 기기 암호 사용 불가: \(authError?.localizedDescription ?? "알 수 없는 에러")")
+            return false
         }
-    }
-}
-
-extension LAContext {
-    /// An async wrapper for `evaluatePolicy(_:localizedReason:)` using Swift concurrency.
-    /// - Parameters:
-    ///   - policy: The policy to evaluate.
-    ///   - localizedReason: The reason for requesting authentication.
-    /// - Returns: `true` if authentication succeeds.
-    func evaluatePolicyAsync(_ policy: LAPolicy, localizedReason: String) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            // LAContext 인스턴스의 수명을 연장하여 인증이 완료될 때까지 유지
-            withExtendedLifetime(self) {
-                var didResume = false  // 단일 resume을 보장하기 위한 플래그
-                self.evaluatePolicy(policy, localizedReason: localizedReason) { success, error in
-                    guard !didResume else { return }
-                    didResume = true
-                    if success {
-                        continuation.resume(returning: true)
-                    } else {
-                        if let error = error {
-                            continuation.resume(throwing: error)
-                        } else {
-                            continuation.resume(returning: false)
-                        }
-                    }
-                }
-            }
+        
+        do {
+            try await context.evaluatePolicy(policy, localizedReason: reason)
+            print("인증 성공")
+            return true
+        } catch {
+            print("인증 실패: \(error.localizedDescription)")
+            return false
         }
     }
 }
