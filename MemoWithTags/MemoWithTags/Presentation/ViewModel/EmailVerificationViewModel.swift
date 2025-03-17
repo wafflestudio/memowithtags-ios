@@ -10,13 +10,18 @@ import SwiftUI
 @MainActor
 final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
     @Published var isLoading = false
+    
+    @Published var notMatchCode = false
+    
     @Published var time = 300
     
     func sendCode(email: String) async {
         guard !isLoading else { return }
         
         isLoading = true
-    
+        
+        notMatchCode = false
+        
         let result = await useCases.authService.sendCode(email: email)
 
         switch result {
@@ -35,6 +40,8 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
         
         isLoading = true
         
+        notMatchCode = false
+        
         let result = await useCases.authService.verifyCode(email: email, code: code)
 
         switch result {
@@ -48,7 +55,15 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
             }
             
         case .failure(let error):
-            appState.system.alert(error: error)
+            switch error {
+            case .notMatchCode:
+                notMatchCode = true
+                break
+            default:
+                appState.system.alert(error: error)
+                break
+            }
+
         }
         
         isLoading = false
