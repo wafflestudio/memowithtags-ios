@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSFaceIDUsageDescription</key>
+	<string>메모 잠금 및 해제를 위해 기기 암호 대신 FaceID를 사용합니다.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
