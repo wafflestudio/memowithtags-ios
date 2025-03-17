@@ -138,14 +138,18 @@ struct MemoView: View {
                                   viewModel.scrollTarget = memo.id
                               }
                           }
-                },
+                      },
                 .init(title: memo.locked ? "잠금 해제" : "메모 잠금", icon: memo.locked ? "lock.open.fill" : "lock.fill") {
                     Task {
-                        let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-                        if authenticated {
+                        if viewModel.appState.user.isBioAuthenticated {
                             await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-                            withAnimation(.spring) {
-                                viewModel.appState.user.isBioAuthenticated = true
+                        } else {
+                            let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+                            if authenticated {
+                                await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                                withAnimation(.spring) {
+                                    viewModel.appState.user.isBioAuthenticated = true
+                                }
                             }
                         }
                     }
@@ -166,6 +170,8 @@ struct MemoView: View {
             Task {
                 let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠긴 메모를 확인하려면 인증이 필요합니다.")
                 if authenticated {
+                    // 이렇게 API 통신이 있어야 authenticated됐을 때 블러가 바로 없어진다.
+                    await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: memo.locked)
                     withAnimation(.spring) {
                         viewModel.appState.user.isBioAuthenticated = true
                     }
