@@ -26,6 +26,7 @@ extension View {
 }
 
 struct CustomContextMenu: ViewModifier {
+    @State private var showMemu: Bool = true
     @State private var position: CGRect?
     @State private var pressLocation: CGPoint? // 터치 위치 저장
     @State private var isPressing: Bool = false
@@ -39,6 +40,7 @@ struct CustomContextMenu: ViewModifier {
             .scaleEffect(isPressing ? 1.03 : 1)
             .shadow(color: isPressing ? Color.black.opacity(0.2) : .clear, radius: 6)
             .onLongPressGesture {
+                guard showMemu else { return }
                 guard let position = position, let pressLocation = pressLocation else { return }
                 if position.minY < 50 || position.maxY > UIScreen.main.bounds.height - 50 {
                     let newPosition = CGPoint(
@@ -61,10 +63,13 @@ struct CustomContextMenu: ViewModifier {
                                     withAnimation(.spring()) {
                                         appState.user.isBioAuthenticated = true
                                     }
+                                    showMemu = true
+                                } else {
+                                    showMemu = false
                                 }
                             }
-                            return
                         }
+                        break
                     default: break
                     }
                 }

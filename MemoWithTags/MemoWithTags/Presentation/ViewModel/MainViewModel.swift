@@ -51,7 +51,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     func fetchMemos() async {
         guard !isLoading else { return }
         isLoading = true
-        
         // 다음 페이지: 이미 로드된 최고 페이지보다 1 증가한 페이지
         let nextPage = mainCurrentPage + 1
         
@@ -114,8 +113,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
-            print(tagIds)
-            print(memo.tagIds)
             self.memos.insert(memo, at: 0)
         case .failure(let error):
             appState.system.alert(error: error)
@@ -132,8 +129,6 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         
         switch result {
         case .success(let memo):
-            print(tagIds)
-            print(memo.tagIds)
             if let index = self.memos.firstIndex(where: { $0.id == memo.id }) {
                 self.memos[index] = memo
             }
@@ -151,17 +146,63 @@ final class MainViewModel: BaseViewModel, ObservableObject {
     func deleteMemo(memoId: Int) async {
         isLoading = true
         
+        let mainPrefetched = await prefetchMainMemo()
+        let searchPrefetched = await prefetchSearchMemo()
+        
         let result = await useCases.memoService.deleteMemo(memoId: memoId)
         
         switch result {
         case .success:
+            var beforeCount = memos.count
             self.memos.removeAll { $0.id == memoId }
+            
+            if beforeCount != memos.count && mainPrefetched != nil {
+                self.memos.append(mainPrefetched!)
+            }
+
+            beforeCount = searchedMemos.count
             self.searchedMemos.removeAll { $0.id == memoId }
+            if beforeCount != searchedMemos.count && searchPrefetched != nil{
+                self.searchedMemos.append(searchPrefetched!)
+            }
+            
         case .failure(let error):
             appState.system.alert(error: error)
         }
         
         isLoading = false
+    }
+    
+    //MARK: - 삭제 시, 다음 페이지의 메모를 하나 미리 가져오기 위한 함수
+    func prefetchMainMemo() async -> Memo? {
+        guard mainCurrentPage + 1 <= mainTotalPages else { return nil }
+        
+        let resultMain = await useCases.memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage + 1)
+        
+        switch resultMain {
+        case .success(let paginatedMemos):
+            return paginatedMemos.memos.first
+        case .failure(let error):
+            appState.system.alert(error: error)
+            return nil
+        }
+    }
+    
+    func prefetchSearchMemo() async -> Memo? {
+        let content = searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !content.isEmpty || !searchBarSelectedTagIds.isEmpty else { return nil }
+        guard searchCurrentPage + 1 <= searchTotalPages else { return nil }
+        
+        let resultSearch = await useCases.memoService.searchMemos(content: content, tagIds: searchBarSelectedTagIds, dateRange: nil, page: searchCurrentPage + 1)
+        
+        switch resultSearch {
+        case .success(let paginatedMemos):
+            return paginatedMemos.memos.first
+        case .failure(let error):
+            appState.system.alert(error: error)
+            return nil
+        }
     }
     
     // MARK: - 추천 메모 ID 가져오기

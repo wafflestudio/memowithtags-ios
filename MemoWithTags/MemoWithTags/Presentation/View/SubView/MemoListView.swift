@@ -25,13 +25,17 @@ struct MemoListView: View {
                     }
                     
                     // ProgressView: 스크롤 맨 위(화면 상단, 코드 상에서는 아래쪽)에 도달하면 다음 페이지를 불러옴 (fetchMemos())
-                    ProgressView()
-                        .opacity(viewModel.isLoading ? 1 : 0)
-                        .onAppear {
-                            Task {
-                                await viewModel.fetchMemos()
-                            }
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                    .opacity(viewModel.isLoading ? 1 : 0)
+                    .onAppear {
+                        Task {
+                            await viewModel.fetchMemos()
                         }
+                    }
                 }
                 .padding(.top, 20) // 화면 하단, 코드 상으로는 top에 패딩
             }
