@@ -26,7 +26,7 @@ extension View {
 }
 
 struct CustomContextMenu: ViewModifier {
-    @State private var showMemu: Bool = true
+    @State private var showMemu: Bool = false
     @State private var position: CGRect?
     @State private var pressLocation: CGPoint? // 터치 위치 저장
     @State private var isPressing: Bool = false
@@ -68,10 +68,16 @@ struct CustomContextMenu: ViewModifier {
                                     showMemu = false
                                 }
                             }
+                        } else {
+                            showMemu = true
                         }
                         break
-                    default: break
+                    default:
+                        showMemu = true
+                        break
                     }
+                } else {
+                    showMemu = false
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
