@@ -54,6 +54,7 @@ struct EditingTagListView: View {
                     ForEach(filterTags(), id: \.id) { tag in
                         TagView(viewModel: viewModel, tag: tag) {
                             viewModel.editorTagIds.append(tag.id)
+                            searchText = ""
                         }
                     }
                 }
