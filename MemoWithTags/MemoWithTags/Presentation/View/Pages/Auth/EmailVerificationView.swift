@@ -35,7 +35,7 @@ struct EmailVerificationView: View {
                     )
                     .padding(.vertical, 8)
                     .font(.pretendard(.regular, size: 16))
-                    .foregroundStyle(Color.basicText)
+                    .foregroundStyle(viewModel.notMatchCode ? Color.redText : Color.basicText)
                     
                     //MARK: - 인증 코드 입력란
                     SeparatedTextField(length: 6, value: $code, showAlert: viewModel.notMatchCode)

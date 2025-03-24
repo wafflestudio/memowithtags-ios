@@ -57,6 +57,7 @@ struct MemoEditorView: View {
             TextEditor(text: $viewModel.editorContent)
                 .font(.pretendard(.regular, size: 16))
                 .foregroundStyle(Color.basicText)
+                .lineSpacing(3)
                 .scrollContentBackground(.hidden)
                 .background(Color.memoBackground)
                 .overlay(Group { // placeholder

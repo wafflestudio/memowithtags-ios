@@ -17,6 +17,7 @@ struct DynamicHeightTextEditor: View {
         TextEditor(text: $text)
             .font(.pretendard(.regular, size: 14))
             .foregroundStyle(Color.basicText)
+            .lineSpacing(3)
             .frame(minHeight: 33, maxHeight: maxHeight)
             .fixedSize(horizontal: false, vertical: true)
             .scrollContentBackground(.hidden)
