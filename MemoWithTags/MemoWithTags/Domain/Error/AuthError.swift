@@ -18,8 +18,8 @@ enum LoginError: CustomError {
         return .normal
     }
     
-    static func from(baseError: BaseError) -> LoginError {
-        switch baseError {
+    static func from(baseError: ServerError) -> LoginError {
+        switch baseError.code {
         case .UNAUTHORIZED: return .invalidCredentials
         case .INTERNAL_SERVER_ERROR: return .networkError
         default: return .unknown

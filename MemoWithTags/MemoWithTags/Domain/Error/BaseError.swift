@@ -7,32 +7,65 @@
 
 import Foundation
 
-enum BaseError: Int, Error {
-    case BAD_REQUEST = 400        // 잘못된 요청
-    case UNAUTHORIZED = 401       // 인증 실패 (Unauthorized)
-    case FORBIDDEN = 403          // 접근 금지 (Forbidden)
-    case NOT_FOUND = 404          // 요청한 리소스가 없음 (Not Found)
-    case METHOD_NOT_ALLOWED = 405 // 허용되지 않은 HTTP 메서드 (Method Not Allowed)
-    case NOT_ACCEPTABLE = 406     // 요청된 자원이 허용되지 않음 (Not Acceptable)
-    case PROXY_AUTHENTICATION_REQUIRED = 407 // 프록시 인증 필요 (Proxy Authentication Required)
-    case REQUEST_TIMEOUT = 408    // 요청 시간 초과 (Request Timeout)
-    case CONFLICT = 409           // 요청 충돌 (Conflict)
-    case GONE = 410               // 리소스가 더 이상 존재하지 않음 (Gone)
-    case LENGTH_REQUIRED = 411   // 길이 필요 (Length Required)
-    case PRECONDITION_FAILED = 412 // 전제 조건 실패 (Precondition Failed)
-    case PAYLOAD_TOO_LARGE = 413 // 요청 페이로드가 너무 큼 (Payload Too Large)
-    case URI_TOO_LONG = 414      // URI가 너무 길음 (URI Too Long)
-    case UNSUPPORTED_MEDIA_TYPE = 415 // 지원되지 않는 미디어 타입 (Unsupported Media Type)
-    case RANGE_NOT_SATISFIABLE = 416 // 범위가 만족되지 않음 (Range Not Satisfiable)
-    case EXPECTATION_FAILED = 417 // 예상 실패 (Expectation Failed)
+struct ServerError: Error, Decodable {
+    let status: Int
+    let code: ErrorCode // 옵셔널이 아니라 기본값을 갖도록 변경
+    let message: String
+
+    enum CodingKeys: CodingKey {
+        case status
+        case code
+        case message
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.status = try container.decode(Int.self, forKey: .status)
+        
+        // code 값을 ErrorCode enum으로 변환, 실패하면 .unknown
+        let codeString = try container.decode(String.self, forKey: .code)
+        self.code = ErrorCode(rawValue: codeString) ?? .UNKNOWN_ERROR
+        
+        self.message = try container.decode(String.self, forKey: .message)
+        
+        print("❌ERROR\n❌status: \(status)\n❌code: \(code)")
+    }
     
-    case INTERNAL_SERVER_ERROR = 500 // 서버 내부 오류 (Internal Server Error)
-    case NOT_IMPLEMENTED = 501       // 기능 미구현 (Not Implemented)
-    case BAD_GATEWAY = 502           // 잘못된 게이트웨이 (Bad Gateway)
-    case SERVICE_UNAVAILABLE = 503   // 서비스 불가 (Service Unavailable)
-    case GATEWAY_TIMEOUT = 504       // 게이트웨이 타임아웃 (Gateway Timeout)
-    case VERSION_NOT_SUPPORTED = 505 // HTTP 버전 지원하지 않음 (HTTP Version Not Supported)
+    init(status: Int, code: String, message: String) {
+        self.status = status
+        self.code = ErrorCode(rawValue: code) ?? .UNKNOWN_ERROR
+        self.message = message
+    }
+}
+
+enum ErrorCode: String {
+    case USER_NOT_FOUND = "USER_NOT_FOUND"
+    case USER_EMAIL_ALREADY_EXISTS = "USER_EMAIL_ALREADY_EXISTS"
+    case USER_UNABLE_TO_SEND_EMAIL = "USER_UNABLE_TO_SEND_EMAIL"
+    case USER_EMAIL_NOT_VERIFIED = "USER_EMAIL_NOT_VERIFIED"
+    case USER_SIGN_IN_INVALID = "USER_SIGN_IN_INVALID"
+    case USER_MAIL_VERIFICATION_FAILED = "USER_MAIL_VERIFICATION_FAILED"
+    case USER_AUTHENTICATION_FAILED = "USER_AUTHENTICATION_FAILED"
+    case USER_SOCIAL_LOGIN_FAILED = "USER_SOCIAL_LOGIN_FAILED"
+    case USER_UPDATE_PASSWORD_INVALID = "USER_UPDATE_PASSWORD_INVALID"
+    case USER_EMAIL_NOT_MATCHED = "USER_EMAIL_NOT_MATCHED"
+    case USER_WRONG_EMAIL_FORMAT = "USER_WRONG_EMAIL_FORMAT"
+    case USER_WRONG_PASSWORD_FORMAT = "USER_WRONG_PASSWORD_FORMAT"
+    case USER_WRONG_NICKNAME_FORMAT = "USER_WRONG_NICKNAME_FORMAT"
+    case USER_NOT_ADMIN = "USER_NOT_ADMIN"
+
+    case MEMO_NOT_FOUND = "MEMO_NOT_FOUND"
+    case MEMO_ACCESS_DENIED = "MEMO_ACCESS_DENIED"
+
+    case TAG_NOT_FOUND = "TAG_NOT_FOUND"
+    case TAG_NOT_OWNED_BY_USER = "TAG_NOT_OWNED_BY_USER"
+
+    case TOKEN_EXPIRED = "TOKEN_EXPIRED"
+    case TOKEN_INVALID_SIGNATURE = "TOKEN_INVALID_SIGNATURE"
+    case TOKEN_INVALID = "TOKEN_INVALID"
     
-    case UNKNOWN = 999  //알 수 없는 에러
-    case CANT_DECODE = -1 //서버에서 받은 정보를 DTO로 변환할 수 없음
+    case CANT_DECODE = "CANT_DECODE"
+    case CANT_DECODE_ERROR = "CANT_DECODE_ERROR"
+    case CONNECT_FAILED = "CONNECT_FAILED"
+    case UNKNOWN_ERROR = "UNKNOWN_ERROR"
 }
