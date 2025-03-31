@@ -23,9 +23,9 @@ enum GetUserError: CustomError {
     }
     
     static func from(baseError: BaseError) -> GetUserError {
-        switch baseError {
-        case .UNAUTHORIZED: return .userNotFound
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_AUTHENTICATION_FAILED: return .userNotFound
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -58,9 +58,9 @@ enum ChangeNicknameError: CustomError {
     }
     
     static func from(baseError: BaseError) -> ChangeNicknameError {
-        switch baseError {
-        case .UNAUTHORIZED: return .userNotFound
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_AUTHENTICATION_FAILED: return .userNotFound
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -95,11 +95,10 @@ enum ChangePasswordError: CustomError {
     }
     
     static func from(baseError: BaseError) -> ChangePasswordError {
-        switch baseError {
-        case .UNAUTHORIZED: return .userNotFound
-        case .FORBIDDEN: return .notMatchCurrentPassword
-        case .BAD_REQUEST: return .notMatchCurrentPassword
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_AUTHENTICATION_FAILED: return .userNotFound
+        case .USER_UPDATE_PASSWORD_INVALID: return .notMatchCurrentPassword
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -135,10 +134,10 @@ enum WithdrawalError: CustomError {
     }
     
     static func from(baseError: BaseError) -> WithdrawalError {
-        switch baseError {
-        case .UNAUTHORIZED: return .userNotFound
-        case .NOT_FOUND: return .emailNotMatch
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_AUTHENTICATION_FAILED: return .userNotFound
+        case .USER_EMAIL_NOT_MATCHED: return .emailNotMatch
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }

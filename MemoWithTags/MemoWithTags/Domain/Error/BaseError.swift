@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ServerError: Error, Decodable {
+struct BaseError: Error, Decodable {
     let status: Int
     let code: ErrorCode // 옵셔널이 아니라 기본값을 갖도록 변경
     let message: String
@@ -35,6 +35,8 @@ struct ServerError: Error, Decodable {
         self.status = status
         self.code = ErrorCode(rawValue: code) ?? .UNKNOWN_ERROR
         self.message = message
+        
+        print("❌ERROR\n❌status: \(status)\n❌code: \(code)")
     }
 }
 
