@@ -23,14 +23,14 @@ final class DefaultAuthRepository: AuthRepository {
     //MARK: - 인증코드 전송
     func sendEmail(email: String) async throws {
         print("🙏 send email")
-        let response = await AF.request(AuthRouter.sendEmail(email: email)).serializingData().response
+        let response = await AF.request(AuthRouter.sendEmail(email: email)).validate(statusCode: 200..<300).serializingData().response
         try handleError(response: response)
     }
     
     //MARK: - 인증코드 검증
     func verifyEmail(email: String, code: String) async throws {
         print("🙏 verify email")
-        let response = await AF.request(AuthRouter.verifyEmail(email: email, code: code)).serializingData().response
+        let response = await AF.request(AuthRouter.verifyEmail(email: email, code: code)).validate(statusCode: 200..<300).serializingData().response
         try handleError(response: response)
     }
     
@@ -45,7 +45,7 @@ final class DefaultAuthRepository: AuthRepository {
     //MARK: - 비밀번호 재설정
     func resetPassword(email:String, newPassword: String) async throws {
         print("🙏 reset password")
-        let response = await AF.request(AuthRouter.resetPassword(email: email, newPassword: newPassword)).serializingData().response
+        let response = await AF.request(AuthRouter.resetPassword(email: email, newPassword: newPassword)).validate(statusCode: 200..<300).serializingData().response
         try handleError(response: response)
     }
     
@@ -78,7 +78,7 @@ final class DefaultAuthRepository: AuthRepository {
     //MARK: - 회원탈퇴
     func withdrawal(email: String) async throws {
         print("🙏 withdrawal")
-        let response = await AF.request(AuthRouter.withdrawal(email: email), interceptor: tokenInterceptor).serializingData().response
+        let response = await AF.request(AuthRouter.withdrawal(email: email), interceptor: tokenInterceptor).validate(statusCode: 200..<300).serializingData().response
         try handleError(response: response)
     }
     

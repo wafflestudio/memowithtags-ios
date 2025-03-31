@@ -23,10 +23,10 @@ enum SocialLoginError: CustomError {
     }
     
     static func from(baseError: BaseError) -> SocialLoginError {
-        switch baseError {
-        case .UNAUTHORIZED: return .invalidCode
-        case .BAD_REQUEST: return .emailAlreadyExists
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_AUTHENTICATION_FAILED: return .invalidCode
+        case .USER_EMAIL_ALREADY_EXISTS: return .emailAlreadyExists
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }

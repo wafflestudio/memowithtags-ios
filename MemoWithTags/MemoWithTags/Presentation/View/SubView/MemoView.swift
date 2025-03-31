@@ -21,7 +21,7 @@ struct MemoView: View {
             Text(memo.content)
                 .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.basicText)
-                .lineLimit(isExpanded ? nil : 2)
+                .lineLimit(isExpanded ? nil : 3)
                 .lineSpacing(3)
                 .blur(radius: memo.locked && !viewModel.appState.user.isBioAuthenticated ? 6 : 0)
                 .animation(.spring, value: isExpanded)

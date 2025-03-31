@@ -16,3 +16,5 @@ enum ErrorType {
 protocol CustomError: Error {
     var type: ErrorType { get }
 }
+
+

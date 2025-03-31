@@ -36,7 +36,7 @@ final class DefaultTagRepository: TagRepository {
         print("🙏 delete tag")
         let response =  await AF.request(
             TagRouter.deleteTag(tagId: tagId), interceptor: tokenInterceptor
-        ).serializingData().response
+        ).validate(statusCode: 200..<300).serializingData().response
         try handleError(response: response)
     }
 

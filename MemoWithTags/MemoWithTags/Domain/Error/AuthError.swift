@@ -19,9 +19,9 @@ enum LoginError: CustomError {
     }
     
     static func from(baseError: BaseError) -> LoginError {
-        switch baseError {
-        case .UNAUTHORIZED: return .invalidCredentials
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_SIGN_IN_INVALID: return .invalidCredentials
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -68,9 +68,9 @@ enum SendCodeError: CustomError {
     }
     
     static func from(baseError: BaseError) -> SendCodeError {
-        switch baseError {
-        case .BAD_REQUEST: return .alreadySentCode
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_UNABLE_TO_SEND_EMAIL: return .alreadySentCode
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -98,9 +98,9 @@ enum VerifyCodeError: CustomError {
     }
     
     static func from(baseError: BaseError) -> VerifyCodeError {
-        switch baseError {
-        case .UNAUTHORIZED: return .notMatchCode
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_MAIL_VERIFICATION_FAILED: return .notMatchCode
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -119,22 +119,27 @@ extension VerifyCodeError: LocalizedError {
 //MARK: - 회원가입 에러
 enum RegisterError: CustomError {
     case emailAlreadyExists
+    case emailNotVerified
     case invalidEmail
-    case networkError
-    case unknown
-    case tokenSaveError
+    case invalidNickname
     case invalidPassword
     case passwordNotMatch
+    case tokenSaveError
+    case networkError
+    case unknown
     
     var type: ErrorType {
         return .normal
     }
     
     static func from(baseError: BaseError) -> RegisterError {
-        switch baseError {
-        case .CONFLICT: return .emailAlreadyExists
-        case .BAD_REQUEST: return .invalidEmail
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_EMAIL_ALREADY_EXISTS: return .emailAlreadyExists
+        case .USER_EMAIL_NOT_VERIFIED: return .emailNotVerified
+        case .USER_WRONG_EMAIL_FORMAT: return .invalidEmail
+        case .USER_WRONG_NICKNAME_FORMAT: return .invalidNickname
+        case .USER_WRONG_PASSWORD_FORMAT: return .invalidPassword
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -144,12 +149,14 @@ extension RegisterError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .emailAlreadyExists: return "이미 사용중인 이메일입니다."
-        case .invalidEmail: return "인증에 실패한 이메일입니다."
+        case .emailNotVerified: return "인증이 완료되지 않은 이메일입니다."
+        case .invalidEmail: return "이메일 형식이 잘못되었습니다."
+        case .invalidNickname: return "닉네임 형식이 잘못되었습니다."
+        case .invalidPassword: return "비밀번호 형식이 잘못되었습니다."
+        case .passwordNotMatch: return "비밀번호가 일치하지 않습니다."
         case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
         case .unknown: return "알 수 없는 오류가 발생했습니다."
         case .tokenSaveError: return "인증 토큰을 저장하는 중 오류가 발생했습니다."
-        case .invalidPassword: return "비밀번호 형식이 잘못되었습니다."
-        case .passwordNotMatch: return "비밀번호가 일치하지 않습니다."
         }
     }
 }
@@ -157,20 +164,22 @@ extension RegisterError: LocalizedError {
 
 //MARK: - 비밀번호 재설정 에러
 enum ResetPasswordError: CustomError {
-    case invalidEmail
-    case networkError
-    case unknown
+    case emailNotVerified
+    case userNotFound
     case invalidPassword
     case passwordNotMatch
+    case networkError
+    case unknown
     
     var type: ErrorType {
         return .normal
     }
     
     static func from(baseError: BaseError) -> ResetPasswordError {
-        switch baseError {
-        case .BAD_REQUEST: return .invalidEmail
-        case .INTERNAL_SERVER_ERROR: return .networkError
+        switch baseError.code {
+        case .USER_EMAIL_NOT_VERIFIED: return .emailNotVerified
+        case .USER_NOT_FOUND: return .userNotFound
+        case .CONNECT_FAILED: return .networkError
         default: return .unknown
         }
     }
@@ -179,11 +188,12 @@ enum ResetPasswordError: CustomError {
 extension ResetPasswordError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .invalidEmail: return "인증에 실패한 이메일입니다."
-        case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
-        case .unknown: return "알 수 없는 오류가 발생했습니다."
+        case .emailNotVerified: return "인증이 완료되지 않은 이메일입니다."
+        case .userNotFound: return "존재하지 않는 유저입니다."
         case .invalidPassword: return "비밀번호 형식이 잘못되었습니다."
         case .passwordNotMatch: return "비밀번호가 일치하지 않습니다."
+        case .networkError: return "네트워크 오류가 발생했습니다. 나중에 다시 시도해주세요."
+        case .unknown: return "알 수 없는 오류가 발생했습니다."
         }
     }
 }
