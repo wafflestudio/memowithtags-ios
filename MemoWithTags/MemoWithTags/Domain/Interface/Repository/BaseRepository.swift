@@ -27,6 +27,8 @@ extension BaseRepository {
             if let data = response.data {
                 do {
                     throw try JSONDecoder().decode(BaseError.self, from: data)
+                } catch let baseError as BaseError {
+                    throw baseError // 이미 BaseError라면 다시 throw
                 } catch {
                     if let status = response.response?.statusCode {
                         throw BaseError(status: status, code: "CANT_DECODE_ERROR", message: "에러 디코딩에 실패하였습니다.")
@@ -72,8 +74,11 @@ extension BaseRepository {
             if let data = response.data {
                 do {
                     throw try JSONDecoder().decode(BaseError.self, from: data)
+                } catch let baseError as BaseError {
+                    throw baseError
                 } catch {
                     if let status = response.response?.statusCode {
+                        print(error)
                         throw BaseError(status: status, code: "CANT_DECODE_ERROR", message: "에러 디코딩에 실패하였습니다.")
                     }
                     throw BaseError(status: -1, code: "CANT_DECODE_ERROR", message: "에러 디코딩에 실패하였습니다.")

@@ -28,7 +28,7 @@ struct BaseError: Error, Decodable {
         
         self.message = try container.decode(String.self, forKey: .message)
         
-        print("❌ERROR\n❌status: \(status)\n❌code: \(code)")
+        print("❌ ERROR\n❌ status: \(status)\n❌ code: \(code)")
     }
     
     init(status: Int, code: String, message: String) {
@@ -36,7 +36,7 @@ struct BaseError: Error, Decodable {
         self.code = ErrorCode(rawValue: code) ?? .UNKNOWN_ERROR
         self.message = message
         
-        print("❌ERROR\n❌status: \(status)\n❌code: \(code)")
+        print("❌ ERROR\n❌ status: \(status)\n❌ code: \(code)")
     }
 }
 

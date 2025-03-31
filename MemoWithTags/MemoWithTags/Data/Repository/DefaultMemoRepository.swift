@@ -41,7 +41,7 @@ final class DefaultMemoRepository: MemoRepository {
         print("🙏 delete memo")
         let response = await AF.request(
             MemoRouter.deleteMemo(memoId: memoId), interceptor: tokenInterceptor
-        ).serializingData(emptyResponseCodes: [204]).response
+        ).validate(statusCode: 200..<300).serializingData().response
         try handleError(response: response)
     }
 
