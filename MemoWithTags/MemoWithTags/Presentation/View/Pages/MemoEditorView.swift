@@ -16,11 +16,24 @@ struct MemoEditorView: View {
         VStack(spacing: 0) {
             //MARK: - 상단 바
             HStack(spacing: 12) {
-                // 왼쪽: 뒤로가기 chevron와 "확인" 버튼
+                // 왼쪽 "취소" 버튼
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 19, weight: .regular))
+                    .foregroundStyle(Color.soft)
                 HStack(spacing: 4) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 19, weight: .regular))
+                    Text("취소")
+                        .font(.pretendard(.medium, size: 17))
                         .foregroundStyle(Color.soft)
+                }
+                .onTapGesture {
+                    viewModel.editorState = .create
+                    viewModel.editorContent = ""
+                    viewModel.editorTagIds = []
+                    viewModel.appState.navigation.pop()
+                }
+                
+                // 오른쪽 "확인" 버튼
+                HStack(spacing: 4) {
                     Text("확인")
                         .font(.pretendard(.medium, size: 17))
                         .foregroundStyle(Color.soft)
@@ -35,18 +48,7 @@ struct MemoEditorView: View {
                 
                 Spacer()
                 
-                // 오른쪽: "취소" 버튼
-                HStack(spacing: 4) {
-                    Text("취소")
-                        .font(.pretendard(.medium, size: 17))
-                        .foregroundStyle(Color.redText)
-                }
-                .onTapGesture {
-                    viewModel.editorState = .create
-                    viewModel.editorContent = ""
-                    viewModel.editorTagIds = []
-                    viewModel.appState.navigation.pop()
-                }
+
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
