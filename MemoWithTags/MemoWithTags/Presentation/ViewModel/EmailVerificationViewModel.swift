@@ -10,24 +10,30 @@ import SwiftUI
 @MainActor
 final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
     @Published var isLoading = false
-    
     @Published var notMatchCode = false
-    
     @Published var time = 300
     
     func sendCode(email: String) async {
         guard !isLoading else { return }
         
         isLoading = true
-        
         notMatchCode = false
         
-        let result = await useCases.authService.sendCode(email: email)
-
+        // 내비게이션 상태에 따라 이메일 타입 결정: resetPasswordEmailVerification이면 .ResetPassword, 그 외는 .Register
+        let emailType: EmailType = {
+            switch appState.navigation.current {
+            case .resetPasswordEmailVerification(_):
+                return .ResetPassword
+            default:
+                return .Register
+            }
+        }()
+        
+        let result = await useCases.authService.sendCode(email: email, type: emailType)
+        
         switch result {
         case .success:
             time = 300
-
         case .failure(let error):
             appState.system.alert(error: error)
         }
@@ -39,11 +45,20 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
         guard !isLoading else { return }
         
         isLoading = true
-        
         notMatchCode = false
         
-        let result = await useCases.authService.verifyCode(email: email, code: code)
-
+        // 내비게이션 상태에 따라 이메일 타입 결정: resetPasswordEmailVerification이면 .ResetPassword, 그 외는 .Register
+        let emailType: EmailType = {
+            switch appState.navigation.current {
+            case .resetPasswordEmailVerification(_):
+                return .ResetPassword
+            default:
+                return .Register
+            }
+        }()
+        
+        let result = await useCases.authService.verifyCode(email: email, code: code, type: emailType)
+        
         switch result {
         case .success:
             switch appState.navigation.current {
@@ -53,19 +68,16 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
                 appState.navigation.push(to: .resetPassword(email: email))
             default: break
             }
-            
         case .failure(let error):
             switch error {
             case .notMatchCode:
                 notMatchCode = true
-                break
             default:
                 appState.system.alert(error: error)
-                break
             }
-
         }
         
         isLoading = false
     }
 }
+
