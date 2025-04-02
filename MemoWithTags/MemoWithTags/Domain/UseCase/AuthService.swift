@@ -8,17 +8,17 @@
 import Foundation
 
 protocol AuthService {
-    ///로그인
+    /// 로그인
     func login(email: String, password: String) async -> Result<Void, LoginError>
-    ///로그아웃
+    /// 로그아웃
     func logout() async -> Result<Void, LogoutError>
-    ///인증코드 전송
-    func sendCode(email: String) async -> Result<Void, SendCodeError>
-    ///인증코드 검증
-    func verifyCode(email: String, code: String) async -> Result<Void, VerifyCodeError>
-    ///회원가입
+    /// 인증코드 전송
+    func sendCode(email: String, type: EmailType) async -> Result<Void, SendCodeError>
+    /// 인증코드 검증
+    func verifyCode(email: String, code: String, type: EmailType) async -> Result<Void, VerifyCodeError>
+    /// 회원가입
     func register(email: String, passsword: String, nickname: String) async -> Result<Void, RegisterError>
-    ///비밀번호 재설정
+    /// 비밀번호 재설정
     func resetPassword(email: String, newPassword: String) async -> Result<Void, ResetPasswordError>
 }
 
@@ -61,9 +61,9 @@ final class DefaultAuthService: AuthService {
     }
     
     //MARK: - 인증코드 전송
-    func sendCode(email: String) async -> Result<Void, SendCodeError> {
+    func sendCode(email: String, type: EmailType) async -> Result<Void, SendCodeError> {
         do {
-            try await authRepository.sendEmail(email: email)
+            try await authRepository.sendEmail(email: email, type: type)
             return .success(())
         } catch let error {
             return .failure(.from(baseError: error as! BaseError))
@@ -71,9 +71,9 @@ final class DefaultAuthService: AuthService {
     }
     
     //MARK: - 인증코드 검증
-    func verifyCode(email: String, code: String) async -> Result<Void, VerifyCodeError> {
+    func verifyCode(email: String, code: String, type: EmailType) async -> Result<Void, VerifyCodeError> {
         do {
-            try await authRepository.verifyEmail(email: email, code: code)
+            try await authRepository.verifyEmail(email: email, code: code, type: type)
             return .success(())
         } catch let error {
             return .failure(.from(baseError: error as! BaseError))
