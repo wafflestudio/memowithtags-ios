@@ -22,7 +22,18 @@ struct EmailVerificationView: View {
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
-                    Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
+                    
+                    // 내비게이션 상태에 따라 이메일 타입 결정: resetPasswordEmailVerification이면 .ResetPassword, 그 외는 .Register
+                    let textType: String = {
+                        switch viewModel.appState.navigation.current {
+                        case .resetPasswordEmailVerification(_):
+                            return "비밀번호 찾기"
+                        default:
+                            return "이메일로 회원가입"
+                        }
+                    }()
+                    
+                    Text(textType)
                         .font(.pretendard(.semibold, size: 21))
                         .foregroundStyle(Color.basicText)
                 }
