@@ -15,12 +15,13 @@ struct MemoEditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             //MARK: - 상단 바
-            HStack(spacing: 8) {
+            HStack(spacing: 12) {
                 // 왼쪽 "취소" 버튼
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 19, weight: .regular))
-                    .foregroundStyle(Color.soft)
                 HStack(spacing: 4) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 19, weight: .regular))
+                        .foregroundStyle(Color.soft)
+                    
                     Text("취소")
                         .font(.pretendard(.medium, size: 17))
                         .foregroundStyle(Color.soft)
