@@ -15,7 +15,7 @@ struct MemoEditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             //MARK: - 상단 바
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 // 왼쪽 "취소" 버튼
                 Image(systemName: "chevron.left")
                     .font(.system(size: 19, weight: .regular))
@@ -32,6 +32,8 @@ struct MemoEditorView: View {
                     viewModel.appState.navigation.pop()
                 }
                 
+                Spacer()
+                
                 // 오른쪽 "확인" 버튼
                 HStack(spacing: 4) {
                     Text("확인")
@@ -45,10 +47,6 @@ struct MemoEditorView: View {
                         viewModel.appState.navigation.pop()
                     }
                 }
-                
-                Spacer()
-                
-
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
