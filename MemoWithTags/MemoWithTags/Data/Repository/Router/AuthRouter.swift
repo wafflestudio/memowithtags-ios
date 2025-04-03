@@ -3,14 +3,13 @@
 //  MemoWithTags
 //
 //  Created by 최진모 on 1/4/25.
-//
 
 import Foundation
 import Alamofire
 
 enum EmailType: String {
-    case Register
-    case ResetPassword
+    case Register = "Register"
+    case ResetPassword = "ResetPassword"
 }
 
 enum AuthRouter: Router {
@@ -32,7 +31,7 @@ enum AuthRouter: Router {
     case googleLogin(authCode: String)
     
     var baseURL: URL {
-        return URL(string: NetworkConfiguration.baseURL + "/auth")!
+        return URL(string: NetworkConfiguration.baseURL)!
     }
     
     var method: HTTPMethod {
@@ -51,32 +50,31 @@ enum AuthRouter: Router {
     var path: String {
         switch self {
         case .login:
-            return "/login"
-        case let .sendEmail(_, type):
-            return "/mail?type=\(type.rawValue)"
-        case let .verifyEmail(_, _, type):
-            return "/mail/verify?type=\(type.rawValue)"
+            return "/auth/login"
+        case .sendEmail:
+            return "/mail"
+        case .verifyEmail:
+            return "/mail/verify"
         case .register:
-            return "/register"
+            return "/auth/register"
         case .resetPassword:
-            return "/reset-password"
+            return "/auth/reset-password"
         case .refreshToken:
-            return "/refresh-token"
+            return "/auth/refresh-token"
         case .getUserInfo:
-            return "/me"
+            return "/auth/me"
         case .changeNickname:
-            return "/nickname"
+            return "/auth/nickname"
         case .changePassword:
-            return "/password"
+            return "/auth/password"
         case .withdrawal:
-            return "/withdrawal"
-            
+            return "/auth/withdrawal"
         case .kakaoLogin:
-            return "/login/kakao"
+            return "/auth/login/kakao"
         case .googleLogin:
-            return "/login/google"
+            return "/auth/login/google"
         case .naverLogin:
-            return "/login/naver"
+            return "/auth/login/naver"
         }
     }
     
@@ -102,10 +100,64 @@ enum AuthRouter: Router {
             return ["originalPassword": currentPassword, "newPassword": newPassword]
         case let .withdrawal(email):
             return ["email": email]
-            
         case let .kakaoLogin(code), let .googleLogin(code), let .naverLogin(code):
             return ["code": code]
         }
+    }
+    
+    // Custom URLRequest 생성: sendEmail, verifyEmail는 URL에 "type" 쿼리 파라미터를 추가합니다.
+    func asURLRequest() throws -> URLRequest {
+        // 기본 URL 생성 (예: https://memowithtags.kro.kr/api/v1/mail)
+        let url = baseURL.appendingPathComponent(path)
+        var request = URLRequest(url: url)
+        request.method = method
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        switch self {
+        case let .sendEmail(_, type):
+            // URL에 query parameter "type" 추가
+            if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+                var queryItems = urlComponents.queryItems ?? []
+                queryItems.append(URLQueryItem(name: "type", value: type.rawValue))
+                urlComponents.queryItems = queryItems
+                if let newURL = urlComponents.url {
+                    request.url = newURL
+                }
+            }
+            // 나머지 파라미터는 body에 JSON 인코딩
+            if let params = parameters {
+                request = try JSONEncoding.default.encode(request, with: params)
+            }
+            
+        case let .verifyEmail(_, _, type):
+            if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+                var queryItems = urlComponents.queryItems ?? []
+                queryItems.append(URLQueryItem(name: "type", value: type.rawValue))
+                urlComponents.queryItems = queryItems
+                if let newURL = urlComponents.url {
+                    request.url = newURL
+                }
+            }
+            if let params = parameters {
+                request = try JSONEncoding.default.encode(request, with: params)
+            }
+            
+        default:
+            // 다른 케이스는 기본 인코딩 방식을 사용 (GET이면 URLEncoding, 그 외는 JSONEncoding)
+            switch method {
+            case .get:
+                if let params = parameters {
+                    request = try URLEncoding.default.encode(request, with: params)
+                }
+            default:
+                if let params = parameters {
+                    request = try JSONEncoding.default.encode(request, with: params)
+                }
+            }
+        }
+        
+        print("👉 url: \(request.url?.absoluteString ?? "No URL")")
+        return request
     }
 }
 
