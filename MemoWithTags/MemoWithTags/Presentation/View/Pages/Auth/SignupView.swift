@@ -97,7 +97,7 @@ struct SignupView: View {
             }
             Button("취소", role: .cancel) {}
         } message: {
-            Text("로그인 화면으로 돌아가시겠습니끼?")
+            Text("로그인 화면으로 돌아가시겠습니까?")
         }
     }
 }

@@ -11,6 +11,7 @@ import Flow
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     @State private var memoEditingTask: Task<Void, Never>? = nil
+    @State private var showCancelAlert: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -46,7 +47,7 @@ struct EditingMemoView: View {
             
             //MARK: - editor 아래 버튼들
             if !(viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty) {
-                HStack {
+                HStack(spacing: 0) {
                     switch viewModel.editorState {
                     case .create: // create 모드일 때
                         Image(systemName: "arrow.down.left.and.arrow.up.right")
@@ -90,25 +91,36 @@ struct EditingMemoView: View {
                         
                         Spacer()
                         
+                        Image(systemName: "chevron.down")
+                            .resizable()
+                            .frame(width: 16, height: 6)
+                            .padding(.top, 9)
+                            .foregroundStyle(Color.placeholder)
+                            .onTapGesture {
+                                viewModel.hideKeyboard()
+                            }
+                            
+                        
+                        Spacer()
+                        
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .regular))
                             .foregroundStyle(Color.white)
                             .padding(0)
                             .frame(width: 24, height: 24, alignment: .center)
-                            .background(Color.TagColor.Red2.color)
+                            .background(Color.redText)
                             .cornerRadius(20)
+                            .padding(.trailing, 12)
                             .onTapGesture {
-                                viewModel.editorState = .create
-                                viewModel.editorContent = ""
-                                viewModel.editorTagIds = []
+                                showCancelAlert = true
                             }
                         
                         Image(systemName: "checkmark")
                             .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(Color(UIColor.Palette.W2_1))
                             .padding(0)
                             .frame(width: 24, height: 24, alignment: .center)
-                            .background(Color(UIColor.Palette.W2_1))
+                            .background(Color(UIColor.Palette.B2_70))
                             .cornerRadius(20)
                             .onTapGesture {
                                 Task {
@@ -152,6 +164,17 @@ struct EditingMemoView: View {
             memoEditingTask = Task {
                 await viewModel.recommendMemos()
             }
+        }
+        .alert("수정 취소", isPresented: $showCancelAlert) {
+            Button("확인", role: .destructive) {
+                viewModel.editorState = .create
+                viewModel.editorContent = ""
+                viewModel.editorTagIds = []
+                viewModel.hideKeyboard()
+            }
+            Button("취소", role: .cancel) {}
+        } message: {
+            Text("해당 메모 수정을 취소하시겠습니까?")
         }
     }
     
