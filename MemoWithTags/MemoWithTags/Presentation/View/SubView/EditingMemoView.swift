@@ -58,14 +58,17 @@ struct EditingMemoView: View {
                         
                         Spacer()
                         
-                        Image(systemName: "xmark")
-                            .font(.system(size: 16))
-                            .foregroundStyle(Color.faded)
+                        Image(systemName: "chevron.down")
+                            .resizable()
+                            .frame(width: 16, height: 6)
+                            .padding(.top, 9)
+                            .foregroundStyle(Color.placeholder)
                             .onTapGesture {
-                                viewModel.editorState = .create
-                                viewModel.editorContent = ""
-                                viewModel.editorTagIds = []
+                                viewModel.hideKeyboard()
                             }
+                            
+                        
+                        Spacer()
                         
                         Image(systemName: "square.and.pencil")
                             .font(.system(size: 20))
