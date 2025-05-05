@@ -78,7 +78,6 @@ extension BaseRepository {
                     throw baseError
                 } catch {
                     if let status = response.response?.statusCode {
-                        print(error)
                         throw BaseError(status: status, code: "CANT_DECODE_ERROR", message: "에러 디코딩에 실패하였습니다.")
                     }
                     throw BaseError(status: -1, code: "CANT_DECODE_ERROR", message: "에러 디코딩에 실패하였습니다.")

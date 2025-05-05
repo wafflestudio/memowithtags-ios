@@ -12,42 +12,24 @@ struct MemoEditorView: View {
 
     @StateObject var keyboardManager = KeyboardManager()
     
+    @State private var lastSavedContent: String = ""
+    @State private var debounceWorkItem: DispatchWorkItem?
+    
     var body: some View {
         VStack(spacing: 0) {
             //MARK: - 상단 바
             HStack(spacing: 12) {
-                // 왼쪽 "취소" 버튼
-                HStack(spacing: 4) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 19, weight: .regular))
-                        .foregroundStyle(Color.soft)
-                    
-                    Text("취소")
-                        .font(.pretendard(.medium, size: 17))
-                        .foregroundStyle(Color.soft)
-                }
-                .onTapGesture {
-                    viewModel.editorState = .create
-                    viewModel.editorContent = ""
-                    viewModel.editorTagIds = []
-                    viewModel.appState.navigation.pop()
-                }
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 19, weight: .regular))
+                    .foregroundStyle(Color.soft)
+                    .onTapGesture {
+                        Task {
+                            await viewModel.submit()
+                            viewModel.appState.navigation.pop()
+                        }
+                    }
                 
                 Spacer()
-                
-                // 오른쪽 "확인" 버튼
-                HStack(spacing: 4) {
-                    Text("확인")
-                        .font(.pretendard(.medium, size: 17))
-                        .foregroundStyle(Color.soft)
-                }
-                .onTapGesture {
-                    Task {
-                        // "확인" 동작: 제출 후 이전 화면으로 이동
-                        await viewModel.submit()
-                        viewModel.appState.navigation.pop()
-                    }
-                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -118,16 +100,45 @@ struct MemoEditorView: View {
         }
         .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
+        .onAppear {
+            lastSavedContent = viewModel.editorContent
+        }
+        .onChange(of: viewModel.editorContent) {
+            debounceAutoSave()
+        }
+        .onDisappear {
+            debounceWorkItem?.cancel()
+        }
     }
     
     private func removeTagFromSelectedTags(_ tagId: Int) {
         viewModel.editorTagIds.removeAll{ $0 == tagId }
     }
     
-    func dateFormat(date: Date) -> String {
+    private func dateFormat(date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"
         return dateFormatter.string(from: date)
+    }
+    
+    private func debounceAutoSave() {
+        debounceWorkItem?.cancel()
+
+        let workItem = DispatchWorkItem {
+            Task {
+                await saveChanges()
+            }
+        }
+
+        debounceWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: workItem)
+    }
+    
+    private func saveChanges() async {
+        guard viewModel.editorContent != lastSavedContent else { return }
+
+        await viewModel.save()
+        lastSavedContent = viewModel.editorContent
     }
 }
