@@ -69,11 +69,14 @@ struct MemoView: View {
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
                         viewModel.clearSearch()
-                        viewModel.searchBarText = memo.content
-                        // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
-                        if viewModel.appState.navigation.current != .search {
-                            viewModel.appState.navigation.push(to: .search)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            viewModel.searchBarText = memo.content
+                            // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
+                            if viewModel.appState.navigation.current != .search {
+                                viewModel.appState.navigation.push(to: .search)
+                            }
                         }
+
                     }
                     
                     HStack(spacing: 4) {
@@ -127,13 +130,11 @@ struct MemoView: View {
             appState: viewModel.appState,
             type: .memo(memo: memo, tags: viewModel.getTags(from: memo.tagIds)),
             menuItems: [
-                .init(title: viewModel.appState.navigation.current == .main ? "이 메모 내용으로 검색하기" : "이 메모를 메인 화면에서 보기",
-                      icon: viewModel.appState.navigation.current == .main ? "rectangle.and.text.magnifyingglass" : "text.viewfinder") {
+                .init(title: viewModel.appState.navigation.current == .main ? "메모 내용 복사" : "이 메모를 메인 화면에서 보기",
+                      icon: viewModel.appState.navigation.current == .main ? "document.on.document.fill" : "text.viewfinder") {
                           Task {
                               if viewModel.appState.navigation.current == .main {
-                                  viewModel.clearSearch()
-                                  viewModel.searchBarText = memo.content
-                                  viewModel.appState.navigation.push(to: .search)
+                                  UIPasteboard.general.string = memo.content
                               } else {
                                   viewModel.appState.navigation.pop()
                                   viewModel.scrollTarget = memo.id
