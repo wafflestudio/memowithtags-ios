@@ -58,7 +58,7 @@ struct SignupSuccessView: View {
                             .foregroundStyle(.white)
                             .padding(.vertical, 12)
                     }
-                    .background(Color.TagColor.Red2.color)
+                    .background(Color.redText)
                     .cornerRadius(22)
                     .padding(.top, 16)
                 }
