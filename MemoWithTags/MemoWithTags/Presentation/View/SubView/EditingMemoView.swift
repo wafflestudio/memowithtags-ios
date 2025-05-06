@@ -11,6 +11,7 @@ import Flow
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     @State private var memoEditingTask: Task<Void, Never>? = nil
+    @State private var isKeyboardVisible: Bool = false
     
     @State private var showCancelAlert: Bool = false
     @State private var showRecommendingPrompt: Bool = false
@@ -62,15 +63,17 @@ struct EditingMemoView: View {
                         
                         Spacer()
                         
-                        Image(systemName: "chevron.down")
-                            .resizable()
-                            .frame(width: 16, height: 6)
-                            .padding(.top, 9)
-                            .foregroundStyle(Color.placeholder)
-                            .onTapGesture {
-                                viewModel.hideKeyboard()
-                            }
-                            
+                        if isKeyboardVisible {
+                            Image(systemName: "chevron.down")
+                                .resizable()
+                                .frame(width: 16, height: 6)
+                                .padding(.top, 9)
+                                .foregroundStyle(Color.placeholder)
+                                .onTapGesture {
+                                    viewModel.hideKeyboard()
+                                    isKeyboardVisible = false
+                                }
+                        }
                         
                         Spacer()
                         
@@ -94,17 +97,20 @@ struct EditingMemoView: View {
                         
                         Spacer()
                         
-                        Image(systemName: "chevron.down")
-                            .resizable()
-                            .frame(width: 16, height: 6)
-                            .padding(.top, 9)
-                            .foregroundStyle(Color.placeholder)
-                            .onTapGesture {
-                                viewModel.hideKeyboard()
-                            }
-                            
+                        if isKeyboardVisible {
+                            Image(systemName: "chevron.down")
+                                .resizable()
+                                .frame(width: 16, height: 6)
+                                .padding(.top, 9)
+                                .foregroundStyle(Color.placeholder)
+                                .onTapGesture {
+                                    viewModel.hideKeyboard()
+                                    isKeyboardVisible = false
+                                }
+                        }
                         
                         Spacer()
+                        
                         
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .regular))
@@ -142,6 +148,18 @@ struct EditingMemoView: View {
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
         .overlay(recommendingOverlay, alignment: .topTrailing)
+        .onAppear {
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) { _ in
+                isKeyboardVisible = true
+            }
+            
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification, object: nil, queue: .main) { _ in
+                isKeyboardVisible = false
+            }
+        }
+        .onDisappear {
+            NotificationCenter.default.removeObserver(self)
+        }
         // 나중에 content로도 recommend를 할 때 사용한다.
         /*
          .onChange(of: viewModel.editorContent) {
@@ -280,3 +298,4 @@ struct EditingMemoView: View {
         .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
     }
 }
+
