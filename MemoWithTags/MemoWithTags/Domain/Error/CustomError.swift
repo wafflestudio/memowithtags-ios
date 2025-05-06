@@ -7,8 +7,8 @@
 
 // MARK: - 에러 유형
 enum ErrorType {
-    case normal           // 일반적인 에러
-    case relogin
+    case normal             // 일반적인 에러
+    case relogin            // 재로그인이 필요한 에러
     case fatal              // 치명적인 에러
 }
 

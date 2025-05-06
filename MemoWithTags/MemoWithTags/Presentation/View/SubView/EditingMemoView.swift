@@ -11,7 +11,10 @@ import Flow
 struct EditingMemoView: View {
     @ObservedObject var viewModel: MainViewModel
     @State private var memoEditingTask: Task<Void, Never>? = nil
+    
     @State private var showCancelAlert: Bool = false
+    @State private var showRecommendingPrompt: Bool = false
+    @State private var animationWorkItem: DispatchWorkItem?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -182,68 +185,98 @@ struct EditingMemoView: View {
         viewModel.editorTagIds.removeAll{ $0 == tagId }
     }
     
-    // overlay view를 computed property로 따로 분리
+    private func promptAnimation(togle: Bool) {
+        animationWorkItem?.cancel()
+
+        let workItem = DispatchWorkItem {
+            withAnimation(.spring) {
+                showRecommendingPrompt = togle
+            }
+        }
+
+        animationWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: togle ? .now() : .now() + 3 , execute: workItem)
+    }
+    
+    private var recommendingPrompt: some View {
+        HStack {
+            if (showRecommendingPrompt) {
+                Text("\(viewModel.recommendingMemoIds.count)개의 메모를 추천합니다.")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(Color.vivid.opacity(showRecommendingPrompt ? 1 : 0))
+                    .padding(.leading, 10)
+                    .padding(.trailing, 5)
+                    .onAppear {
+                        promptAnimation(togle: false)
+                    }
+            }
+            
+            Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(Color.vivid)
+                .padding(.vertical, 7)
+                .padding(.horizontal, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.memoBackground)
+                )
+        }
+        .background(Color.background)
+        .clipShape(
+            RoundedRectangle(cornerRadius: 20)
+        )
+        .onAppear {
+            promptAnimation(togle: true)
+        }
+        .onDisappear {
+            animationWorkItem?.cancel()
+            showRecommendingPrompt = false
+        }
+    }
+    
     private var recommendingOverlay: some View {
         Group {
             if !viewModel.recommendingMemoIds.isEmpty {
-                HStack(spacing: 12) {
-                    Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(Color.vivid)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 7)
-                        .background(
-                            Rectangle()
-                                .fill(Color.memoBackground)
-                                .cornerRadius(20)
-                        )
-                        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
+                HStack(spacing: 8) {
+                    recommendingPrompt
                     
-                    // ZStack을 사용하여 두 동그라미 사이 영역을 완전히 채움
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color.background)
-                            .frame(width: 60, height: 27) // 일일이 때려맞춤
-                            .offset(x: -5.5 ) // 일일이 때려 맞춤
-                            .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
-                            
-                        
-                        HStack(spacing: 18) {
-                            Image(systemName: "chevron.up")
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundStyle(Color.vivid)
-                                .background(
-                                    Circle()
-                                        .fill(Color.memoBackground)
-                                        .frame(width: 27, height: 27)
-                                )
-                                .onTapGesture {
-                                    if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
-                                        viewModel.highlightingMemoIndex += 1
-                                    }
+                    HStack(spacing: 10) {
+                        Image(systemName: "chevron.up")
+                            .font(.system(size: 14, weight: .regular))
+                            .foregroundStyle(Color.vivid)
+                            .frame(width: 27, height: 27)
+                            .background(Color.memoBackground)
+                            .clipShape(
+                                Circle()
+                            )
+                            .onTapGesture {
+                                if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
+                                    viewModel.highlightingMemoIndex += 1
                                 }
-                            
-                            Image(systemName: "chevron.down")
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundStyle(Color.vivid)
-                                .background(
-                                    Circle()
-                                        .fill(Color.memoBackground)
-                                        .frame(width: 27, height: 27)
-                                )
-                                .onTapGesture {
-                                    if viewModel.highlightingMemoIndex > -1 {
-                                        viewModel.highlightingMemoIndex -= 1
-                                    }
+                            }
+                        
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 14, weight: .regular))
+                            .foregroundStyle(Color.vivid)
+                            .frame(width: 27, height: 27)
+                            .background(Color.memoBackground)
+                            .clipShape(
+                                Circle()
+                            )
+                            .onTapGesture {
+                                if viewModel.highlightingMemoIndex > -1 {
+                                    viewModel.highlightingMemoIndex -= 1
                                 }
-                        }
-                        
-                        
+                            }
                     }
+                    .background(Color.background)
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 20)
+                    )
                 }
             }
         }
-        .offset(x: -20, y: -36)
+        .offset(x: -11, y: -35)
+        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
     }
-    
 }

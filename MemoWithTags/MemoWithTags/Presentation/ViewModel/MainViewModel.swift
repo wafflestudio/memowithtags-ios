@@ -457,6 +457,18 @@ final class MainViewModel: BaseViewModel, ObservableObject {
         hideKeyboard()
     }
     
+    func save() async {
+        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedContent.isEmpty else { return }
+        
+        switch editorState {
+        case .update(let target):
+            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
+        default:
+            break
+        }
+    }
+    
     //MARK: - 새로운 검색어, 태그에 대한 검색 수행
     func search() async {
         // 이전 검색 결과를 모두 리셋
