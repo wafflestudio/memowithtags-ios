@@ -1,0 +1,67 @@
+name: Deploy to App Store
+on:
+  push:
+    tags:
+      - 'appstore/v*'
+
+jobs:
+  deploy:
+    name: Execute fastlane for App Store release
+    defaults:
+      run:
+        working-directory: MemoWithTags
+    env:
+      SCHEME_NAME: ${{ secrets.SCHEME_NAME }}
+      XCODEPROJ_NAME: ${{ secrets.XCODEPROJ_NAME }}
+      BUNDLE_IDENTIFIER: ${{ secrets.BUNDLE_IDENTIFIER }}
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+      APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+      TEAM_ID: ${{ secrets.TEAM_ID }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_DEPLOY_KEY: ${{ secrets.MATCH_DEPLOY_KEY }}
+      GIT_PAT: ${{ secrets.GIT_PAT }}
+      GIT_TAG_NAME: ${{ github.ref_name }}
+      XCODE_VERSION: "16.0"
+    runs-on: macos-15
+
+    steps:
+      - name: Parse tag name
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex
+        with:
+          text: ${{ github.ref_name }}
+          regex: '^appstore\\/v(\\d+)\\.(\\d+)\\.(\\d+)(?:-[0-9A-Za-z\\.-]+)?(?:\\+[0-9A-Za-z\\.-]+)?$'
+
+      - uses: actions/checkout@v3
+
+      - run: |
+          sudo xcode-select -s /Applications/Xcode_${XCODE_VERSION}.app/Contents/Developer
+          ls
+
+      - name: Set version number and build number
+        run: |
+          echo "VERSION_NUMBER=${{ steps.regex.outputs.group1 }}.${{ steps.regex.outputs.group2 }}.${{ steps.regex.outputs.group3 }}" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=${{ steps.regex.outputs.group3 }}" >> $GITHUB_ENV
+
+      - name: Install Ruby Dependencies
+        run: |
+          bundle install
+          bundle update fastlane
+
+      - name: Setup git ssh - repo mapping
+        uses: shaunco/ssh-agent@git-repo-mapping
+        with:
+          ssh-private-key: ${{ secrets.MATCH_DEPLOY_KEY }}
+          repo-mappings: github.com/wafflestudio/wafflestudio-apple-certificates
+
+      - name: Configure ssh agent
+        env:
+          GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add - <<< "$MATCH_DEPLOY_KEY"
+
+      - name: Upload prod app to App Store
+        run: |
+          bundle exec fastlane release --env prod 
