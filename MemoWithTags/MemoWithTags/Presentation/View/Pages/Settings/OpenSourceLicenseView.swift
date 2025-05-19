@@ -1,3 +1,10 @@
+//
+//  OpenSourceLicenseView.swift
+//  MemoWithTags
+//
+//  Created by Swimming Ryu on 5/19/25.
+//
+
 import SwiftUI
 
 struct OpenSourceLicenseView: View {
