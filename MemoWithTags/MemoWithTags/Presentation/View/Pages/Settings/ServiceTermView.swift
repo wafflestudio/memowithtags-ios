@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ServiceTermView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var viewModel: MainViewModel
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.background.ignoresSafeArea()
@@ -20,7 +23,7 @@ struct ServiceTermView: View {
                         .padding(12)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            // Navigation pop action 필요시 여기에 추가
+                            viewModel.appState.navigation.pop()
                         }
                     Text("이용 약관")
                         .font(.pretendard(.semibold, size: 18))
@@ -48,7 +51,7 @@ Memo with Tags 이용약관
 
 제1장 총칙
 제1조(목적)
-본 약관은 Memo with Tags 팀(이하 "운영자")이 제공하는 개인 메모 관리 서비스 Memo with Tags의 이용과 관련하여, 회원과 운영자 간의 권리·의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 한다.
+본 약관은 WaffleStudio의 Memo with Tags 팀(이하 "운영자")이 제공하는 개인 메모 관리 서비스 Memo with Tags의 이용과 관련하여, 회원과 운영자 간의 권리·의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 한다.
 
 제2조(정의)
 이 약관에서 사용하는 용어의 정의는 다음 각 호와 같다.

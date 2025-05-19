@@ -74,11 +74,11 @@ struct AppRootView: View {
                     case .changeNickname:
                         ChangeNicknameView(viewModel: .init(container: container))
                     case .openSourceLicense:
-                        OpenSourceLicenseView()
+                        OpenSourceLicenseView(viewModel: mainViewModel)
                     case .serviceTerm:
-                        ServiceTermView()
+                        ServiceTermView(viewModel: mainViewModel)
                     case .privacyPolicy:
-                        PrivacyPolicyView()
+                        PrivacyPolicyView(viewModel: mainViewModel)
                     }
                 }
         }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PrivacyPolicyView: View {
+    @ObservedObject var viewModel: MainViewModel
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.background.ignoresSafeArea()
@@ -20,7 +22,7 @@ struct PrivacyPolicyView: View {
                         .padding(12)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            // Navigation pop action 필요시 여기에 추가
+                            viewModel.appState.navigation.pop()
                         }
                     Text("개인정보처리방침")
                         .font(.pretendard(.semibold, size: 18))
