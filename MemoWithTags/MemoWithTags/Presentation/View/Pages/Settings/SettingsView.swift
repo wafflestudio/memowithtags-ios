@@ -36,7 +36,6 @@ struct SettingsView: View {
                 }
                 .padding(.vertical, 8)
                 
-                //MARK: -
                 VStack(spacing: 12) {
                     HStack {
                         Text("내 계정")
@@ -78,6 +77,62 @@ struct SettingsView: View {
                     .padding(.horizontal, 17)
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                    HStack {
+                        Text("오픈소스 라이센스")
+                            .font(.pretendard(.medium, size: 14))
+                            .foregroundStyle(Color.basicText)
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.pretendard(.regular, size: 16))
+                            .foregroundStyle(Color.soft)
+                    }
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 17)
+                    .background(Color.memoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .onTapGesture {
+                        viewModel.appState.navigation.push(to: .openSourceLicense)
+                    }
+
+                    HStack {
+                        Text("이용 약관")
+                            .font(.pretendard(.medium, size: 14))
+                            .foregroundStyle(Color.basicText)
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.pretendard(.regular, size: 16))
+                            .foregroundStyle(Color.soft)
+                    }
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 17)
+                    .background(Color.memoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .onTapGesture {
+                        viewModel.appState.navigation.push(to: .serviceTerm)
+                    }
+
+                    HStack {
+                        Text("개인정보처리방침")
+                            .font(.pretendard(.medium, size: 14))
+                            .foregroundStyle(Color.basicText)
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.pretendard(.regular, size: 16))
+                            .foregroundStyle(Color.soft)
+                    }
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 17)
+                    .background(Color.memoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .onTapGesture {
+                        viewModel.appState.navigation.push(to: .privacyPolicy)
+                    }
+
+
                 }
 
             }

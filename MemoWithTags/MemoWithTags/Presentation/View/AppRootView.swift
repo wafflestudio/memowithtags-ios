@@ -73,6 +73,12 @@ struct AppRootView: View {
                         ChangePasswordView(viewModel: .init(container: container))
                     case .changeNickname:
                         ChangeNicknameView(viewModel: .init(container: container))
+                    case .openSourceLicense:
+                        OpenSourceLicenseView()
+                    case .serviceTerm:
+                        ServiceTermView()
+                    case .privacyPolicy:
+                        PrivacyPolicyView()
                     }
                 }
         }

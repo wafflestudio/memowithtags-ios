@@ -34,6 +34,9 @@ enum Route: Hashable {
     case accountSetting
     case changeNickname
     case changePassword
+    case openSourceLicense
+    case serviceTerm
+    case privacyPolicy
 }
 
 @MainActor
