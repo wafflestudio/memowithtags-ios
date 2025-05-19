@@ -58,7 +58,7 @@ platform :ios do
   desc "Upload app to App Store"
   lane :release do
     begin
-      release = get_github_release(url: "wafflestudio/22-5-team2-iOS", version: GIT_TAG_NAME, api_token: GIT_PAT)
+      release = get_github_release(url: "wafflestudio/memowithtags-ios", version: GIT_TAG_NAME, api_token: GIT_PAT)
       setup_ci
       match(type: "appstore", app_identifier: [BUNDLE_IDENTIFIER], readonly: true)
       update_xcodeproj(type: "appstore")
