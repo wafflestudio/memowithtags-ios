@@ -9,6 +9,9 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var viewModel: MainViewModel
+    @State private var showingOpenSourceLicense = false
+    @State private var showingServiceTerm = false
+    @State private var showingPrivacyPolicy = false
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -93,11 +96,11 @@ struct SettingsView: View {
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
                     .onTapGesture {
-                        viewModel.appState.navigation.push(to: .openSourceLicense)
+                        showingOpenSourceLicense = true
                     }
 
                     HStack {
-                        Text("이용 약관")
+                        Text("이용약관")
                             .font(.pretendard(.medium, size: 14))
                             .foregroundStyle(Color.basicText)
                         Spacer()
@@ -111,7 +114,7 @@ struct SettingsView: View {
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
                     .onTapGesture {
-                        viewModel.appState.navigation.push(to: .serviceTerm)
+                        showingServiceTerm = true
                     }
 
                     HStack {
@@ -129,7 +132,7 @@ struct SettingsView: View {
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
                     .onTapGesture {
-                        viewModel.appState.navigation.push(to: .privacyPolicy)
+                        showingPrivacyPolicy = true
                     }
 
 
@@ -140,5 +143,23 @@ struct SettingsView: View {
             
         }
         .navigationBarBackButtonHidden(true)
+        .sheet(isPresented: $showingOpenSourceLicense) {
+            DocumentView(
+                title: "오픈소스 라이센스",
+                content: Documents.openSourceLicense
+            )
+        }
+        .sheet(isPresented: $showingServiceTerm) {
+            DocumentView(
+                title: "이용약관",
+                content: Documents.serviceTerm
+            )
+        }
+        .sheet(isPresented: $showingPrivacyPolicy) {
+            DocumentView(
+                title: "개인정보처리방침",
+                content: Documents.privacyPolicy
+            )
+        }
     }
 }
