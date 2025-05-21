@@ -20,6 +20,8 @@
 		556EF46D2D68B161001BE9B3 /* DesignTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EF45E2D68B161001BE9B3 /* DesignTagView.swift */; };
 		556EF46E2D68B161001BE9B3 /* EditingTagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EF4622D68B161001BE9B3 /* EditingTagListView.swift */; };
 		556EF46F2D68B161001BE9B3 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EF45D2D68B161001BE9B3 /* TagView.swift */; };
+		558C3F492DDC84D300DEFC88 /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558C3F482DDC84D300DEFC88 /* DocumentView.swift */; };
+		558C3F4B2DDCD8EE00DEFC88 /* Documents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558C3F4A2DDCD8EE00DEFC88 /* Documents.swift */; };
 		55E610BC2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E610BB2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift */; };
 		55E610BE2D2A65B200E452A8 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E610BD2D2A65B200E452A8 /* SearchView.swift */; };
 		55E610C02D2A65C400E452A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E610BF2D2A65C400E452A8 /* SettingsView.swift */; };
@@ -118,6 +120,8 @@
 		556EF4632D68B161001BE9B3 /* CreateTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTagView.swift; sourceTree = "<group>"; };
 		556EF4642D68B161001BE9B3 /* DynamicHeightTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicHeightTextEditor.swift; sourceTree = "<group>"; };
 		556EF4652D68B161001BE9B3 /* UpdateTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateTagView.swift; sourceTree = "<group>"; };
+		558C3F482DDC84D300DEFC88 /* DocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
+		558C3F4A2DDCD8EE00DEFC88 /* Documents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Documents.swift; sourceTree = "<group>"; };
 		55E610BB2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedMainViewModel.swift; sourceTree = "<group>"; };
 		55E610BD2D2A65B200E452A8 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		55E610BF2D2A65C400E452A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -334,6 +338,7 @@
 				DA53E51B2D33941000C7C9F2 /* AppState.swift */,
 				DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */,
 				DA19C4E82D3FF9A200ACDC00 /* DeepLinkHandler.swift */,
+				558C3F4A2DDCD8EE00DEFC88 /* Documents.swift */,
 			);
 			path = AppEnvironment;
 			sourceTree = "<group>";
@@ -442,6 +447,7 @@
 				DA3C9E532D29072C00F28D07 /* MainView.swift */,
 				DA212CD42D42A136005D1E15 /* MemoEditorView.swift */,
 				55E610BD2D2A65B200E452A8 /* SearchView.swift */,
+				558C3F482DDC84D300DEFC88 /* DocumentView.swift */,
 				DAFFD2012D68D93F00C44EF1 /* Auth */,
 				DAFFD2062D68F1B400C44EF1 /* Settings */,
 			);
@@ -643,6 +649,7 @@
 				DABFE25A2D28416000B314E2 /* AuthRouter.swift in Sources */,
 				DABFE25B2D28416000B314E2 /* Router.swift in Sources */,
 				DABFE25C2D28416000B314E2 /* AuthRepository.swift in Sources */,
+				558C3F492DDC84D300DEFC88 /* DocumentView.swift in Sources */,
 				DA2DA6632D2A9492000C0495 /* SignupView.swift in Sources */,
 				DA40185A2D32C7FC008500E2 /* BaseError.swift in Sources */,
 				55ECA11E2D3A7DC4003E1517 /* BioAuthenticationManager.swift in Sources */,
@@ -699,6 +706,7 @@
 				DABFE2792D28416000B314E2 /* SignupViewModel.swift in Sources */,
 				DA0A4EB82D2B9F0A007E481D /* EmailVerificationView.swift in Sources */,
 				DABFE27B2D28416000B314E2 /* CustomColor.swift in Sources */,
+				558C3F4B2DDCD8EE00DEFC88 /* Documents.swift in Sources */,
 				55E610BC2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift in Sources */,
 				DABFE27D2D28416000B314E2 /* MemoWithTagsApp.swift in Sources */,
 				DA7230A72D34CD5C0065C65A /* SystemState.swift in Sources */,

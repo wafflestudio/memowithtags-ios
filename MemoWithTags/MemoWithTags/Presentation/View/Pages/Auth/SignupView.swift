@@ -16,6 +16,8 @@ struct SignupView: View {
     @State private var passwordRepeat: String = ""
     
     @State private var showBackAlert: Bool = false
+    @State private var showTerms: Bool = false
+    @State private var showPrivacyPolicy: Bool = false
     
     var body: some View {
         
@@ -55,6 +57,30 @@ struct SignupView: View {
                     }
                     .padding(.top, 16)
                     
+                    //MARK: - 안내 문구 및 링크
+                    VStack(spacing: 12) {
+                        Text("다음을 누르시면 이용약관과 개인정보처리방침에 동의한 것으로 간주됩니다.")
+                            .font(.pretendard(.regular, size: 12))
+                            .foregroundStyle(Color.basicText)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 12)
+
+                        HStack(spacing: 16) {
+                            Button("이용약관") {
+                                showTerms = true
+                            }
+                            .font(.pretendard(.regular, size: 14))
+                            .foregroundStyle(Color.blue) // iOS 기본 링크 컬러
+
+                            Button("개인정보처리방침") {
+                                showPrivacyPolicy = true
+                            }
+                            .font(.pretendard(.regular, size: 14))
+                            .foregroundStyle(Color.blue) // iOS 기본 링크 컬러
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "이전", fontSize: 13, backGroundColor: .colorlessTag) {
@@ -74,7 +100,7 @@ struct SignupView: View {
                             .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
                     }
-                    .padding(.top, 36)
+                    .padding(.top, 24)
                 }
                 .padding(.top, 18)
                 .padding(.bottom, 16)
@@ -98,6 +124,18 @@ struct SignupView: View {
             Button("취소", role: .cancel) {}
         } message: {
             Text("로그인 화면으로 돌아가시겠습니까?")
+        }
+        .sheet(isPresented: $showTerms) {
+            DocumentView(
+                title: "이용약관",
+                content: Documents.serviceTerm
+            )
+        }
+        .sheet(isPresented: $showPrivacyPolicy) {
+            DocumentView(
+                title: "개인정보처리방침",
+                content: Documents.privacyPolicy
+            )
         }
     }
 }
