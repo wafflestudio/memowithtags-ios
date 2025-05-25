@@ -1,17 +1,19 @@
-name: Deploy Testflight
+name: Deploy Testflight & App Store
+
 on:
   push:
     tags:
-      - testflight/v[0-9]+.[0-9]+.[0-9]+-*.[0-9]+
-      - appstore/v[0-9]+.[0-9]+.[0-9]+-*.[0-9]+
+      - 'testflight/v[0-9]+.[0-9]+.[0-9]+-(debug).[0-9]+'
+      - 'appstore/v[0-9]+.[0-9]+.[0-9]+-(release).[0-9]+'
+
 jobs:
   deploy:
-    name: Execute fastlane for testflight / app store
-    
+    name: Fastlane 배포
+    runs-on: macos-15
     defaults:
       run:
         working-directory: MemoWithTags
-    
+
     env:
       SCHEME_NAME: ${{ secrets.SCHEME_NAME }}
       XCODEPROJ_NAME: ${{ secrets.XCODEPROJ_NAME }}
@@ -25,55 +27,51 @@ jobs:
       GIT_PAT: ${{ secrets.GIT_PAT }}
       GIT_TAG_NAME: ${{ github.ref_name }}
       XCODE_VERSION: "16.0"
-      
-    runs-on: macos-15
-    
+
     steps:
-      - name: Parse tag name
-        uses: actions-ecosystem/action-regex-match@v2
+      - name: 태그 파싱
         id: regex
+        uses: actions-ecosystem/action-regex-match@v2
         with:
           text: ${{ github.ref_name }}
           regex: '^(testflight|appstore)\/v(\d+)\.(\d+)\.(\d+)-(release|debug)\.(\d+)$'
 
-      - uses: actions/checkout@v3
-      
-      - run: |
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Xcode 설정
+        run: |
           sudo xcode-select -s /Applications/Xcode_${XCODE_VERSION}.app/Contents/Developer
-          ls
-          
-      - name: Set version number and build number
+
+      - name: 버전·빌드 번호 설정
         run: |
           echo "VERSION_NUMBER=${{ steps.regex.outputs.group2 }}.${{ steps.regex.outputs.group3 }}.${{ steps.regex.outputs.group4 }}" >> $GITHUB_ENV
-          echo "BUILD_NUMBER=${{ steps.regex.outputs.group6 }}" >> $GITHUB_ENV
-          
-      - name: Install Ruby Dependencies
-        run: | 
+          echo "BUILD_NUMBER=${{ steps.regex.outputs.group6 }}"                       >> $GITHUB_ENV
+
+      - name: Ruby 의존성 설치
+        run: |
           bundle install
           bundle update fastlane
-          
-      - name: Setup git ssh - repo mapping
+
+      - name: SSH 에이전트 설정
         uses: shaunco/ssh-agent@git-repo-mapping
         with:
           ssh-private-key: ${{ secrets.MATCH_DEPLOY_KEY }}
           repo-mappings: github.com/wafflestudio/wafflestudio-apple-certificates
-      
-      - name: Configure ssh agent
+
+      - name: SSH 인증
         env:
           GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
         run: |
           eval "$(ssh-agent -s)"
           ssh-add - <<< "$MATCH_DEPLOY_KEY"
-          
-      - name: Upload dev app to TestFlight
+
+      - name: β (Debug) → TestFlight 업로드
         if: ${{ steps.regex.outputs.group1 == 'testflight' && steps.regex.outputs.group5 == 'debug' }}
         run: |
-          bundle exec fastlane beta --env dev
-      - name: Upload prod app to TestFlight
-        if: ${{ steps.regex.outputs.group1 == 'testflight' && steps.regex.outputs.group5 == 'release' }}
-        run: |
-          bundle exec fastlane beta --env prod
-      - name: Upload prod app to App Store
+          bundle exec fastlane beta
+
+      - name: 프로덕션 → App Store 업로드
         if: ${{ steps.regex.outputs.group1 == 'appstore' && steps.regex.outputs.group5 == 'release' }}
         run: |
-          bundle exec fastlane release --env prod
+          bundle exec fastlane release
