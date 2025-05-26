@@ -44,8 +44,62 @@ jobs:
 
       - name: Set version number and build number
         run: |
-          echo "VERSION_NUMBER=${{ steps.regex.outputs.group2 }}.${{ steps.regex.outputs.group3 }}.${{ steps.regex.outputs.group4 }}" >> $GITHUB_ENV
-          echo "BUILD_NUMBER=${{ steps.regex.outputs.group6 }}" >> $GITHUB_ENV
+          # 디버깅을 위한 출력
+          echo "🔍 Parsing tag: ${{ github.ref_name }}"
+          echo "Regex groups:"
+          echo "  group1 (platform): ${{ steps.regex.outputs.group1 }}"
+          echo "  group2 (major): ${{ steps.regex.outputs.group2 }}"
+          echo "  group3 (minor): ${{ steps.regex.outputs.group3 }}"
+          echo "  group4 (patch): ${{ steps.regex.outputs.group4 }}"
+          echo "  group5 (type): ${{ steps.regex.outputs.group5 }}"
+          echo "  group6 (build): ${{ steps.regex.outputs.group6 }}"
+          
+          # 각 그룹이 비어있지 않은지 확인
+          if [ -z "${{ steps.regex.outputs.group2 }}" ] || [ -z "${{ steps.regex.outputs.group3 }}" ] || [ -z "${{ steps.regex.outputs.group4 }}" ]; then
+            echo "❌ Error: Version components are empty"
+            echo "Major: '${{ steps.regex.outputs.group2 }}'"
+            echo "Minor: '${{ steps.regex.outputs.group3 }}'"
+            echo "Patch: '${{ steps.regex.outputs.group4 }}'"
+            exit 1
+          fi
+          
+          if [ -z "${{ steps.regex.outputs.group6 }}" ]; then
+            echo "❌ Error: Build number is empty"
+            echo "Build: '${{ steps.regex.outputs.group6 }}'"
+            exit 1
+          fi
+          
+          # 환경 변수 설정
+          VERSION_NUMBER="${{ steps.regex.outputs.group2 }}.${{ steps.regex.outputs.group3 }}.${{ steps.regex.outputs.group4 }}"
+          BUILD_NUMBER="${{ steps.regex.outputs.group6 }}"
+          
+          echo "✅ Setting VERSION_NUMBER=$VERSION_NUMBER"
+          echo "✅ Setting BUILD_NUMBER=$BUILD_NUMBER"
+          
+          echo "VERSION_NUMBER=$VERSION_NUMBER" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
+
+      - name: Validate version format
+        run: |
+          echo "🔧 Validating version format..."
+          echo "VERSION_NUMBER: '$VERSION_NUMBER'"
+          echo "BUILD_NUMBER: '$BUILD_NUMBER'"
+          
+          # 버전 형식 검증 (X.X.X)
+          if ! [[ $VERSION_NUMBER =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version format: $VERSION_NUMBER"
+            echo "Expected format: X.X.X (e.g., 1.0.0)"
+            exit 1
+          fi
+          
+          # 빌드 번호 검증 (숫자만)
+          if ! [[ $BUILD_NUMBER =~ ^[0-9]+$ ]]; then
+            echo "❌ Invalid build number format: $BUILD_NUMBER"
+            echo "Expected format: number (e.g., 0, 1, 123)"
+            exit 1
+          fi
+          
+          echo "✅ Version format validation passed"
 
       - name: Install Ruby Dependencies
         run: | 
