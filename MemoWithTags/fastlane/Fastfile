@@ -80,7 +80,6 @@ platform :ios do
         submit_for_review: true,
         automatic_release: false,
         precheck_include_in_app_purchases: false,
-        skip_version_check: true,
         release_notes: {
           'default' => release['body'],
           'ko' => release['body'],
