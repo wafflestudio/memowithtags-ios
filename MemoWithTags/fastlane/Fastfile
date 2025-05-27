@@ -67,10 +67,11 @@ platform :ios do
       increment_version_number_in_xcodeproj(version_number: VERSION_NUMBER)
       increment_build_number_in_xcodeproj(build_number: BUILD_NUMBER)
       build_app(
-	scheme: APP_NAME,
-	output_directory: "./archive",
-	silent: true,
-	clean: true
+	  scheme: APP_NAME,
+	  output_directory: "./archive",
+	  silent: true,
+	  clean: true,
+        xcargs: "MARKETING_VERSION=#{VERSION_NUMBER} CURRENT_PROJECT_VERSION=#{BUILD_NUMBER}"
       )
       app_store_connect_api_key(
         key_id: APP_STORE_CONNECT_API_KEY_ID,
