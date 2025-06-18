@@ -35,6 +35,7 @@
 		DA212CD52D42A13C005D1E15 /* MemoEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA212CD42D42A136005D1E15 /* MemoEditorView.swift */; };
 		DA2DA6632D2A9492000C0495 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2DA6622D2A9487000C0495 /* SignupView.swift */; };
 		DA2F3EDA2D313050006F156E /* Flow in Frameworks */ = {isa = PBXBuildFile; productRef = DA2F3ED92D313050006F156E /* Flow */; };
+		DA31C3462E0337BA00DA62A3 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = DA31C3452E0337BA00DA62A3 /* Factory */; };
 		DA3641CA2D396F350001EB20 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */; };
 		DA3641CC2D3971EC0001EB20 /* ResetPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */; };
 		DA3C9E542D29072F00F28D07 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3C9E532D29072C00F28D07 /* MainView.swift */; };
@@ -211,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA31C3462E0337BA00DA62A3 /* Factory in Frameworks */,
 				DA2F3EDA2D313050006F156E /* Flow in Frameworks */,
 				DA0A4E752D2B7AFE007E481D /* Alamofire in Frameworks */,
 			);
@@ -252,6 +254,8 @@
 			children = (
 				DABFE2232D28416000B314E2 /* Network */,
 				DABFE22C2D28416000B314E2 /* Repository */,
+				DA40185B2D32D054008500E2 /* Dto */,
+				DABFE2262D28416000B314E2 /* Router */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -419,8 +423,6 @@
 		DABFE22C2D28416000B314E2 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				DA40185B2D32D054008500E2 /* Dto */,
-				DABFE2262D28416000B314E2 /* Router */,
 				DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */,
 				DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */,
 				DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */,
@@ -557,6 +559,7 @@
 			packageProductDependencies = (
 				55E610D22D2AD5A500E452A8 /* Alamofire */,
 				DA2F3ED92D313050006F156E /* Flow */,
+				DA31C3452E0337BA00DA62A3 /* Factory */,
 			);
 			productName = MemoWithTags;
 			productReference = DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */;
@@ -589,6 +592,7 @@
 			packageReferences = (
 				55E610D12D2AD5A500E452A8 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				DA2F3ED82D313050006F156E /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */,
+				DA31C3442E0337BA00DA62A3 /* XCRemoteSwiftPackageReference "Factory" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DA98BFF22D1D4B6B00F992AC /* Products */;
@@ -941,6 +945,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		DA31C3442E0337BA00DA62A3 /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -953,6 +965,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DA2F3ED82D313050006F156E /* XCRemoteSwiftPackageReference "SwiftUI-Flow" */;
 			productName = Flow;
+		};
+		DA31C3452E0337BA00DA62A3 /* Factory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA31C3442E0337BA00DA62A3 /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = Factory;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
