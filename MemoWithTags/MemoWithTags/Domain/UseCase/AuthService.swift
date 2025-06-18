@@ -6,28 +6,19 @@
 //
 
 import Foundation
+import Factory
 
 protocol AuthService {
-    /// 로그인
     func login(email: String, password: String) async -> Result<Void, LoginError>
-    /// 로그아웃
     func logout() async -> Result<Void, LogoutError>
-    /// 인증코드 전송
     func sendCode(email: String, type: EmailType) async -> Result<Void, SendCodeError>
-    /// 인증코드 검증
     func verifyCode(email: String, code: String, type: EmailType) async -> Result<Void, VerifyCodeError>
-    /// 회원가입
     func register(email: String, passsword: String, nickname: String) async -> Result<Void, RegisterError>
-    /// 비밀번호 재설정
     func resetPassword(email: String, newPassword: String) async -> Result<Void, ResetPasswordError>
 }
 
 final class DefaultAuthService: AuthService {
-    private let authRepository: AuthRepository
-    
-    init(authRepository: AuthRepository) {
-        self.authRepository = authRepository
-    }
+    @Injected(\.authRepository) private var authRepository: AuthRepository
     
     //MARK: - 로그인
     func login(email: String, password: String) async -> Result<Void, LoginError> {
