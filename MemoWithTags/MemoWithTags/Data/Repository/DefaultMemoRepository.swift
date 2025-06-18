@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import Factory
 
 final class DefaultMemoRepository: MemoRepository {
     
@@ -79,5 +80,11 @@ final class DefaultMemoRepository: MemoRepository {
 
         let dto = try handleErrorDecodable(response: response)
         return dto
+    }
+}
+
+extension Container {
+    var memoRepository: Factory<MemoRepository> {
+        self { DefaultMemoRepository() }.singleton
     }
 }

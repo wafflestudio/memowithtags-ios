@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import Factory
 
 final class DefaultAuthRepository: AuthRepository {
     
@@ -131,3 +132,8 @@ final class DefaultAuthRepository: AuthRepository {
     }
 }
 
+extension Container {
+    var authRepository: Factory<AuthRepository> {
+        self { DefaultAuthRepository() }.singleton
+    }
+}

@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import Factory
 
 final class DefaultTagRepository: TagRepository {
     
@@ -52,3 +53,8 @@ final class DefaultTagRepository: TagRepository {
     }
 }
 
+extension Container {
+    var tagRepository: Factory<TagRepository> {
+        self { DefaultTagRepository() }.singleton
+    }
+}
