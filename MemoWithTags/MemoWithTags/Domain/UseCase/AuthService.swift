@@ -19,7 +19,7 @@ protocol AuthService {
 
 final class DefaultAuthService: AuthService {
     @Injected(\.authRepository) private var authRepository: AuthRepository
-    
+
     //MARK: - 로그인
     func login(email: String, password: String) async -> Result<Void, LoginError> {
         do {
@@ -98,5 +98,11 @@ final class DefaultAuthService: AuthService {
         } catch let error {
             return .failure(.from(baseError: error as! BaseError))
         }
+    }
+}
+
+extension Container {
+    var authService: Factory<AuthService> {
+        self { DefaultAuthService() }.singleton
     }
 }

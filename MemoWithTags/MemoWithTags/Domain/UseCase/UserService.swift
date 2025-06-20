@@ -62,3 +62,9 @@ final class DefaultUserService: UserService {
         }
     }
 }
+
+extension Container {
+    var userService: Factory<UserService> {
+        self { DefaultUserService() }.singleton
+    }
+}

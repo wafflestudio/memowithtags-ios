@@ -85,3 +85,9 @@ final class DefaultMemoService: MemoService {
         }
     }
 }
+
+extension Container {
+    var memoService: Factory<MemoService> {
+        self { DefaultMemoService() }.singleton
+    }
+}

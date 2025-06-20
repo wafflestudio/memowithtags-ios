@@ -6,9 +6,13 @@
 //
 
 import Foundation
+import Factory
+import SwiftUI
 
 @MainActor
-final class LoginViewModel: BaseViewModel, ObservableObject {
+final class LoginViewModel:ObservableObject {
+    @Injected(\.authService) private var authService: AuthService
+    
     @Published var isLoading = false
     
     ///정규식으로 이메일 형식 검사
@@ -28,7 +32,7 @@ final class LoginViewModel: BaseViewModel, ObservableObject {
         
         isLoading = true
         
-        let result = await useCases.authService.login(email: email, password: password)
+        let result = await authService.login(email: email, password: password)
 
         switch result {
         case .success:
@@ -39,5 +43,11 @@ final class LoginViewModel: BaseViewModel, ObservableObject {
         }
         
         isLoading = false
+    }
+}
+
+extension Container {
+    var loginViewModel: Factory<LoginViewModel> {
+        self { @MainActor in LoginViewModel() }.cached
     }
 }

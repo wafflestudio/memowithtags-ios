@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+import Factory
 
 @MainActor
-final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
+final class EmailVerificationViewModel: ObservableObject {
+    @Injected(\.authService) private var authService: AuthService
+    
     @Published var isLoading = false
     @Published var notMatchCode = false
     @Published var time = 300
     
+
     func sendCode(email: String) async {
         guard !isLoading else { return }
         
@@ -29,7 +33,7 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
             }
         }()
         
-        let result = await useCases.authService.sendCode(email: email, type: emailType)
+        let result = await authService.sendCode(email: email, type: emailType)
         
         switch result {
         case .success:
@@ -81,3 +85,8 @@ final class EmailVerificationViewModel: BaseViewModel, ObservableObject {
     }
 }
 
+extension Container {
+    var emailVerificationViewModel: Factory<EmailVerificationViewModel> {
+        self { @MainActor in EmailVerificationViewModel() }.cached
+    }
+}

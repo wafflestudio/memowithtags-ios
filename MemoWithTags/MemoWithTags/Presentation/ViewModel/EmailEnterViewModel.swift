@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import Factory
 
 @MainActor
-final class EmailEnterViewModel: BaseViewModel, ObservableObject {
+final class EmailEnterViewModel: ObservableObject {
+    @Injected(\.authService) private var authService: AuthService
+    
     @Published var isLoading = false
     
     func checkEmailValidity(email: String) -> Bool {
@@ -30,7 +33,7 @@ final class EmailEnterViewModel: BaseViewModel, ObservableObject {
         // 내비게이션 상태에 따라 이메일 타입 결정: 기본은 회원가입(.Register), 비밀번호 재설정이면 .ResetPassword
         let emailType: EmailType = appState.navigation.current == .resetPasswordEmailEnter ? .ResetPassword : .Register
     
-        let result = await useCases.authService.sendCode(email: email, type: emailType)
+        let result = await authService.sendCode(email: email, type: emailType)
 
         switch result {
         case .success:
@@ -47,5 +50,11 @@ final class EmailEnterViewModel: BaseViewModel, ObservableObject {
         }
         
         isLoading = false
+    }
+}
+
+extension Container {
+    var emailEnterViewModel: Factory<EmailEnterViewModel> {
+        self { @MainActor in EmailEnterViewModel() }.cached
     }
 }

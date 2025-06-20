@@ -79,7 +79,7 @@ struct SignupSuccessView: View {
 
 extension SignupSuccessView {
     @MainActor
-    final class ViewModel: BaseViewModel, ObservableObject {
+    final class ViewModel: ObservableObject {
         func start() {
             
             if let _ = KeyChainManager.shared.readAccessToken(),

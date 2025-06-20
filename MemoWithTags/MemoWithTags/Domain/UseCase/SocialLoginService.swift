@@ -74,3 +74,9 @@ final class DefaultSocialLoginService: SocialLoginService {
         }
     }
 }
+
+extension Container {
+    var socialLoginService: Factory<SocialLoginService> {
+        self { DefaultSocialLoginService() }.singleton
+    }
+}

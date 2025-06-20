@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Factory
 
 @MainActor
-final class SignupViewModel: BaseViewModel, ObservableObject {
-    @Published var isLoading = false
+final class SignupViewModel: ObservableObject {
+    @Injected(\.authService) private var authService: AuthService
     
+    @Published var isLoading = false
     @Published var isValidLength: Bool = false
     @Published var isValidPasswordFormat: Bool = false
     
@@ -42,7 +44,7 @@ final class SignupViewModel: BaseViewModel, ObservableObject {
         
         isLoading = true
         
-        let result = await useCases.authService.register(email: email, passsword: password, nickname: nickname)
+        let result = await authService.register(email: email, passsword: password, nickname: nickname)
         
         switch result {
         case .success:
@@ -52,5 +54,11 @@ final class SignupViewModel: BaseViewModel, ObservableObject {
         }
         
         isLoading = false
+    }
+}
+
+extension Container {
+    var signupViewModel: Factory<SignupViewModel> {
+        self { @MainActor in SignupViewModel() }.cached
     }
 }

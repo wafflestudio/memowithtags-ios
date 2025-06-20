@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Factory
 
 @MainActor
 final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
-    @Published var isLoading = false
+    @Injected(\.authService) private var authService: AuthService
     
+    @Published var isLoading = false
     @Published var isValidLength: Bool = false
     @Published var isValidPasswordFormat: Bool = false
     
@@ -42,7 +44,7 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
         
         isLoading = true
         
-        let result = await useCases.authService.resetPassword(email: email, newPassword: password)
+        let result = await authService.resetPassword(email: email, newPassword: password)
         
         switch result {
         case .success:
@@ -52,5 +54,11 @@ final class ResetPasswordViewModel: BaseViewModel, ObservableObject {
         }
         
         isLoading = false
+    }
+}
+
+extension Container {
+    var resetPasswordViewModel: Factory<ResetPasswordViewModel> {
+        self { @MainActor in ResetPasswordViewModel() }.cached
     }
 }

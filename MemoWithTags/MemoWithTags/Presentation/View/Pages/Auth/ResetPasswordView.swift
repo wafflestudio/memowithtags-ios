@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Factory
 
 struct ResetPasswordView: View {
-    @ObservedObject var viewModel: ResetPasswordViewModel
+    @InjectedObject(\.resetPasswordViewModel) var viewModel: ResetPasswordViewModel
     
     let email: String
     @State private var password: String = ""

@@ -61,5 +61,10 @@ final class DefaultTagServerice: TagService {
             return .failure(.from(baseError: error as! BaseError))
         }
     }
-    
+}
+
+extension Container {
+    var tagService: Factory<TagService> {
+        self { DefaultTagServerice() }.singleton
+    }
 }

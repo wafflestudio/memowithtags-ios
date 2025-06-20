@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Factory
 
 struct EmailVerificationView: View {
-    @ObservedObject var viewModel: EmailVerificationViewModel
+    @InjectedObject(\.emailVerificationViewModel) var viewModel: EmailVerificationViewModel
     
     let email: String
     

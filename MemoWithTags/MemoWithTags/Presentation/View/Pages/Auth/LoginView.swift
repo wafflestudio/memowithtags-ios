@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Factory
 
 struct LoginView: View {
-    @ObservedObject var viewModel: LoginViewModel
+    @InjectedObject(\.loginViewModel) var viewModel: LoginViewModel
     
     @State private var email: String = ""
     @State private var password: String = ""

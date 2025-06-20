@@ -55,7 +55,7 @@ struct NicknameSettingView: View {
 
 extension NicknameSettingView {
     @MainActor
-    final class ViewModel: BaseViewModel, ObservableObject {
+    final class ViewModel: ObservableObject {
         @Published var isLoading = false
         
         func setNickname(nickname: String) async {
