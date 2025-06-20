@@ -9,12 +9,13 @@ import SwiftUI
 import Factory
 
 @MainActor
-final class EmailVerificationViewModel: ObservableObject {
-    @Injected(\.authService) private var authService: AuthService
+@Observable
+final class EmailVerificationViewModel {
+    @ObservationIgnored @Injected(\.authService) private var authService: AuthService
     
-    @Published var isLoading = false
-    @Published var notMatchCode = false
-    @Published var time = 300
+    var isLoading = false
+    var notMatchCode = false
+    var time = 300
     
 
     func sendCode(email: String) async {
@@ -85,6 +86,7 @@ final class EmailVerificationViewModel: ObservableObject {
     }
 }
 
+@MainActor
 extension Container {
     var emailVerificationViewModel: Factory<EmailVerificationViewModel> {
         self { @MainActor in EmailVerificationViewModel() }.cached

@@ -9,12 +9,13 @@ import Foundation
 import Factory
 
 @MainActor
-final class SignupViewModel: ObservableObject {
-    @Injected(\.authService) private var authService: AuthService
+@Observable
+final class SignupViewModel {
+    @ObservationIgnored @Injected(\.authService) private var authService: AuthService
     
-    @Published var isLoading = false
-    @Published var isValidLength: Bool = false
-    @Published var isValidPasswordFormat: Bool = false
+    var isLoading = false
+    var isValidLength: Bool = false
+    var isValidPasswordFormat: Bool = false
     
     ///정규식으로 비밀번호 형식 검사
     func checkPasswordValidity(password: String) {
@@ -57,6 +58,7 @@ final class SignupViewModel: ObservableObject {
     }
 }
 
+@MainActor
 extension Container {
     var signupViewModel: Factory<SignupViewModel> {
         self { @MainActor in SignupViewModel() }.cached

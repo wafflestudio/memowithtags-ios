@@ -9,10 +9,11 @@ import SwiftUI
 import Factory
 
 @MainActor
-final class EmailEnterViewModel: ObservableObject {
-    @Injected(\.authService) private var authService: AuthService
+@Observable
+final class EmailEnterViewModel {
+    @ObservationIgnored @Injected(\.authService) private var authService: AuthService
     
-    @Published var isLoading = false
+    var isLoading = false
     
     func checkEmailValidity(email: String) -> Bool {
         let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}$"
@@ -54,6 +55,7 @@ final class EmailEnterViewModel: ObservableObject {
 }
 
 extension Container {
+    @MainActor
     var emailEnterViewModel: Factory<EmailEnterViewModel> {
         self { @MainActor in EmailEnterViewModel() }.cached
     }

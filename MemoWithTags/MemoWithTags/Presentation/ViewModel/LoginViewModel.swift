@@ -5,15 +5,15 @@
 //  Created by 최진모 on 12/26/24.
 //
 
-import Foundation
-import Factory
 import SwiftUI
+import Factory
 
 @MainActor
-final class LoginViewModel:ObservableObject {
-    @Injected(\.authService) private var authService: AuthService
+@Observable
+final class LoginViewModel {
+    @ObservationIgnored @Injected(\.authService) private var authService: AuthService
     
-    @Published var isLoading = false
+    var isLoading = false
     
     ///정규식으로 이메일 형식 검사
     func checkEmailValidity(email: String) -> Bool {
@@ -47,6 +47,7 @@ final class LoginViewModel:ObservableObject {
 }
 
 extension Container {
+    @MainActor
     var loginViewModel: Factory<LoginViewModel> {
         self { @MainActor in LoginViewModel() }.cached
     }

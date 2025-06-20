@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct EmailEnterView: View {
-    @InjectedObject(\.emailEnterViewModel) var viewModel: EmailEnterViewModel
+    @InjectedObservable(\.emailEnterViewModel) var viewModel: EmailEnterViewModel
     
     @State private var email: String = ""
     
