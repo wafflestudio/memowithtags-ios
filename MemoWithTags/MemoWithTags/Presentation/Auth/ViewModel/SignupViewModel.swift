@@ -12,6 +12,8 @@ import Factory
 @Observable
 final class SignupViewModel {
     @ObservationIgnored @Injected(\.authService) private var authService: AuthService
+    @Injected(\.navigation) private var navigation: Navigation
+    @Injected(\.alert) private var alert: Alert
     
     var isLoading = false
     var isValidLength: Bool = false
@@ -34,12 +36,12 @@ final class SignupViewModel {
         checkPasswordValidity(password: password)
         
         guard isValidLength && isValidPasswordFormat else {
-            appState.system.alert(error: RegisterError.invalidPassword)
+            alert.alert(error: RegisterError.invalidPassword)
             return
         }
         
         guard password == passwordRepeat else {
-            appState.system.alert(error: RegisterError.passwordNotMatch)
+            alert.alert(error: RegisterError.passwordNotMatch)
             return
         }
         
@@ -49,17 +51,18 @@ final class SignupViewModel {
         
         switch result {
         case .success:
-            appState.navigation.push(to: .signupSuccess)
+            navigation.push(to: .signupSuccess)
         case .failure(let error):
-            appState.system.alert(error: error)
+            alert.alert(error: error)
         }
         
         isLoading = false
     }
 }
 
-@MainActor
+
 extension Container {
+    @MainActor
     var signupViewModel: Factory<SignupViewModel> {
         self { @MainActor in SignupViewModel() }.cached
     }

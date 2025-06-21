@@ -40,7 +40,6 @@
 		DA3641CC2D3971EC0001EB20 /* ResetPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */; };
 		DA3C9E542D29072F00F28D07 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3C9E532D29072C00F28D07 /* MainView.swift */; };
 		DA3C9E562D290D1500F28D07 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3C9E552D290D0E00F28D07 /* AppRootView.swift */; };
-		DA3DA52A2D3650F9002C4839 /* UserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3DA5292D3650F3002C4839 /* UserState.swift */; };
 		DA40185A2D32C7FC008500E2 /* BaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4018592D32C7D3008500E2 /* BaseError.swift */; };
 		DA40185D2D32D161008500E2 /* AuthDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40185C2D32D15B008500E2 /* AuthDto.swift */; };
 		DA40185F2D32D336008500E2 /* UserDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40185E2D32D32F008500E2 /* UserDto.swift */; };
@@ -52,9 +51,7 @@
 		DA4018712D32DD02008500E2 /* DefaultTagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */; };
 		DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */; };
 		DA40BABE2D468ED1002A5893 /* ChangeNickname.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */; };
-		DA53E5192D338A0700C7C9F2 /* DIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */; };
 		DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E51B2D33941000C7C9F2 /* AppState.swift */; };
-		DA7230A72D34CD5C0065C65A /* SystemState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7230A62D34CD540065C65A /* SystemState.swift */; };
 		DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD612D831E7D00251412 /* InputFieldView.swift */; };
 		DA7AFD642D831E9800251412 /* SecureInputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */; };
 		DA7AFD672D83209600251412 /* SubmitButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD662D83209000251412 /* SubmitButtonView.swift */; };
@@ -64,10 +61,13 @@
 		DA8886CB2D6A2EE400ED6C1A /* UserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8886CA2D6A2EE000ED6C1A /* UserError.swift */; };
 		DA8886CD2D6A310B00ED6C1A /* SocialLoginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8886CC2D6A310400ED6C1A /* SocialLoginError.swift */; };
 		DA8886CF2D6A317800ED6C1A /* MemoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8886CE2D6A317300ED6C1A /* MemoError.swift */; };
-		DA888AF52D2FA03B00525291 /* NavigationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA888AF42D2FA01500525291 /* NavigationState.swift */; };
 		DA888AF72D2FA73300525291 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA888AF62D2FA72F00525291 /* SplashView.swift */; };
 		DA8F562A2D34152000B8C23F /* BaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA8F56292D34151B00B8C23F /* BaseViewModel.swift */; };
 		DAA6789F2D45512F00EFB929 /* TextFormatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA6789E2D45512600EFB929 /* TextFormatManager.swift */; };
+		DAB375752E05B835009E4E2B /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB375742E05B830009E4E2B /* Navigation.swift */; };
+		DAB375772E05B891009E4E2B /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB375762E05B88E009E4E2B /* Alert.swift */; };
+		DAB375792E05C5BB009E4E2B /* SignupSuccessViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB375782E05C5AB009E4E2B /* SignupSuccessViewModel.swift */; };
+		DAB3757D2E05C796009E4E2B /* NicknameSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB3757C2E05C78F009E4E2B /* NicknameSettingViewModel.swift */; };
 		DAB782692D7220A400E6AE14 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB782682D72209A00E6AE14 /* Font.swift */; };
 		DAB782722D72244100E6AE14 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB782702D72244100E6AE14 /* Pretendard-SemiBold.otf */; };
 		DAB782732D72244100E6AE14 /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826D2D72244100E6AE14 /* Pretendard-Light.otf */; };
@@ -139,7 +139,6 @@
 		DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewModel.swift; sourceTree = "<group>"; };
 		DA3C9E532D29072C00F28D07 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DA3C9E552D290D0E00F28D07 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
-		DA3DA5292D3650F3002C4839 /* UserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserState.swift; sourceTree = "<group>"; };
 		DA4018592D32C7D3008500E2 /* BaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseError.swift; sourceTree = "<group>"; };
 		DA40185C2D32D15B008500E2 /* AuthDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDto.swift; sourceTree = "<group>"; };
 		DA40185E2D32D32F008500E2 /* UserDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDto.swift; sourceTree = "<group>"; };
@@ -151,9 +150,7 @@
 		DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTagRepository.swift; sourceTree = "<group>"; };
 		DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNickname.swift; sourceTree = "<group>"; };
-		DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DIContainer.swift; sourceTree = "<group>"; };
 		DA53E51B2D33941000C7C9F2 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		DA7230A62D34CD540065C65A /* SystemState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemState.swift; sourceTree = "<group>"; };
 		DA7AFD612D831E7D00251412 /* InputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldView.swift; sourceTree = "<group>"; };
 		DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputFieldView.swift; sourceTree = "<group>"; };
 		DA7AFD662D83209000251412 /* SubmitButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitButtonView.swift; sourceTree = "<group>"; };
@@ -163,11 +160,14 @@
 		DA8886CA2D6A2EE000ED6C1A /* UserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserError.swift; sourceTree = "<group>"; };
 		DA8886CC2D6A310400ED6C1A /* SocialLoginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialLoginError.swift; sourceTree = "<group>"; };
 		DA8886CE2D6A317300ED6C1A /* MemoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoError.swift; sourceTree = "<group>"; };
-		DA888AF42D2FA01500525291 /* NavigationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationState.swift; sourceTree = "<group>"; };
 		DA888AF62D2FA72F00525291 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		DA8F56292D34151B00B8C23F /* BaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewModel.swift; sourceTree = "<group>"; };
 		DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemoWithTags.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAA6789E2D45512600EFB929 /* TextFormatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFormatManager.swift; sourceTree = "<group>"; };
+		DAB375742E05B830009E4E2B /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
+		DAB375762E05B88E009E4E2B /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		DAB375782E05C5AB009E4E2B /* SignupSuccessViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSuccessViewModel.swift; sourceTree = "<group>"; };
+		DAB3757C2E05C78F009E4E2B /* NicknameSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameSettingViewModel.swift; sourceTree = "<group>"; };
 		DAB782682D72209A00E6AE14 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		DAB7826A2D72244100E6AE14 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		DAB7826B2D72244100E6AE14 /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
@@ -276,6 +276,12 @@
 			children = (
 				DABFE24C2D28416000B314E2 /* ViewModel */,
 				DABFE2452D28416000B314E2 /* View */,
+				DAFFD2012D68D93F00C44EF1 /* Auth */,
+				DAFFD2062D68F1B400C44EF1 /* Settings */,
+				556EF4662D68B161001BE9B3 /* SubView */,
+				DABFE2512D28416000B314E2 /* MemoWithTagsApp.swift */,
+				DA3C9E552D290D0E00F28D07 /* AppRootView.swift */,
+				DA888AF62D2FA72F00525291 /* SplashView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -338,23 +344,13 @@
 		DA53E51A2D3393EE00C7C9F2 /* AppEnvironment */ = {
 			isa = PBXGroup;
 			children = (
-				DA7230A52D34CD4E0065C65A /* States */,
 				DA53E51B2D33941000C7C9F2 /* AppState.swift */,
-				DA53E5182D3389FD00C7C9F2 /* DIContainer.swift */,
+				DAB375742E05B830009E4E2B /* Navigation.swift */,
+				DAB375762E05B88E009E4E2B /* Alert.swift */,
 				DA19C4E82D3FF9A200ACDC00 /* DeepLinkHandler.swift */,
 				558C3F4A2DDCD8EE00DEFC88 /* Documents.swift */,
 			);
 			path = AppEnvironment;
-			sourceTree = "<group>";
-		};
-		DA7230A52D34CD4E0065C65A /* States */ = {
-			isa = PBXGroup;
-			children = (
-				DA7230A62D34CD540065C65A /* SystemState.swift */,
-				DA888AF42D2FA01500525291 /* NavigationState.swift */,
-				DA3DA5292D3650F3002C4839 /* UserState.swift */,
-			);
-			path = States;
 			sourceTree = "<group>";
 		};
 		DA7AFD652D831FE400251412 /* Input */ = {
@@ -381,6 +377,52 @@
 				DA98BFF12D1D4B6B00F992AC /* MemoWithTags.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DAB3757A2E05C74D009E4E2B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DABFE23E2D28416000B314E2 /* LoginView.swift */,
+				DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */,
+				DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */,
+				DA2DA6622D2A9487000C0495 /* SignupView.swift */,
+				DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */,
+				DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */,
+				DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DAB3757B2E05C768009E4E2B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				DABFE2462D28416000B314E2 /* LoginViewModel.swift */,
+				DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */,
+				DABFE2892D286BD200B314E2 /* EmailVerificationViewModel.swift */,
+				DABFE24A2D28416000B314E2 /* SignupViewModel.swift */,
+				DAB375782E05C5AB009E4E2B /* SignupSuccessViewModel.swift */,
+				DAB3757C2E05C78F009E4E2B /* NicknameSettingViewModel.swift */,
+				DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		DAB3757E2E05C997009E4E2B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
+				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
+				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
+				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		DAB3757F2E05C9A1009E4E2B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		DAB432CE2D842683005D2ABA /* Tag */ = {
@@ -445,13 +487,10 @@
 		DABFE2432D28416000B314E2 /* Pages */ = {
 			isa = PBXGroup;
 			children = (
-				DA888AF62D2FA72F00525291 /* SplashView.swift */,
 				DA3C9E532D29072C00F28D07 /* MainView.swift */,
 				DA212CD42D42A136005D1E15 /* MemoEditorView.swift */,
 				55E610BD2D2A65B200E452A8 /* SearchView.swift */,
 				558C3F482DDC84D300DEFC88 /* DocumentView.swift */,
-				DAFFD2012D68D93F00C44EF1 /* Auth */,
-				DAFFD2062D68F1B400C44EF1 /* Settings */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -459,9 +498,6 @@
 		DABFE2452D28416000B314E2 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				DABFE2512D28416000B314E2 /* MemoWithTagsApp.swift */,
-				DA3C9E552D290D0E00F28D07 /* AppRootView.swift */,
-				556EF4662D68B161001BE9B3 /* SubView */,
 				DABFE2432D28416000B314E2 /* Pages */,
 			);
 			path = View;
@@ -471,11 +507,6 @@
 			isa = PBXGroup;
 			children = (
 				DA8F56292D34151B00B8C23F /* BaseViewModel.swift */,
-				DABFE2462D28416000B314E2 /* LoginViewModel.swift */,
-				DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */,
-				DABFE2892D286BD200B314E2 /* EmailVerificationViewModel.swift */,
-				DABFE24A2D28416000B314E2 /* SignupViewModel.swift */,
-				DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */,
 				55E610BB2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift */,
 				55FD2B7D2D4B6615008BA108 /* MainViewModel.swift */,
 			);
@@ -518,13 +549,8 @@
 		DAFFD2012D68D93F00C44EF1 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
-				DABFE23E2D28416000B314E2 /* LoginView.swift */,
-				DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */,
-				DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */,
-				DA2DA6622D2A9487000C0495 /* SignupView.swift */,
-				DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */,
-				DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */,
-				DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */,
+				DAB3757B2E05C768009E4E2B /* ViewModel */,
+				DAB3757A2E05C74D009E4E2B /* View */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -532,10 +558,8 @@
 		DAFFD2062D68F1B400C44EF1 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
-				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
-				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
-				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
+				DAB3757F2E05C9A1009E4E2B /* ViewModel */,
+				DAB3757E2E05C997009E4E2B /* View */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -630,7 +654,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA4018642D32D3E5008500E2 /* TagDto.swift in Sources */,
-				DA53E5192D338A0700C7C9F2 /* DIContainer.swift in Sources */,
 				DABFE2542D28416000B314E2 /* Auth.swift in Sources */,
 				DAA6789F2D45512F00EFB929 /* TextFormatManager.swift in Sources */,
 				DA3641CA2D396F350001EB20 /* ResetPasswordView.swift in Sources */,
@@ -639,6 +662,7 @@
 				DAE56E9C2D69E6570009548D /* AuthService.swift in Sources */,
 				DAE56E9E2D69E6690009548D /* MemoService.swift in Sources */,
 				DA40185F2D32D336008500E2 /* UserDto.swift in Sources */,
+				DAB375792E05C5BB009E4E2B /* SignupSuccessViewModel.swift in Sources */,
 				DA3641CC2D3971EC0001EB20 /* ResetPasswordViewModel.swift in Sources */,
 				DA8F562A2D34152000B8C23F /* BaseViewModel.swift in Sources */,
 				DA4018712D32DD02008500E2 /* DefaultTagRepository.swift in Sources */,
@@ -662,7 +686,6 @@
 				DA7AFD672D83209600251412 /* SubmitButtonView.swift in Sources */,
 				DA40185D2D32D161008500E2 /* AuthDto.swift in Sources */,
 				55E610BE2D2A65B200E452A8 /* SearchView.swift in Sources */,
-				DA3DA52A2D3650F9002C4839 /* UserState.swift in Sources */,
 				DA888AF72D2FA73300525291 /* SplashView.swift in Sources */,
 				DA8886C72D6A1BCC00ED6C1A /* SocialLoginService.swift in Sources */,
 				DABFE2842D284E7200B314E2 /* TagRouter.swift in Sources */,
@@ -682,10 +705,10 @@
 				556EF46F2D68B161001BE9B3 /* TagView.swift in Sources */,
 				DA4018612D32D35C008500E2 /* MemoDto.swift in Sources */,
 				DA3C9E562D290D1500F28D07 /* AppRootView.swift in Sources */,
-				DA888AF52D2FA03B00525291 /* NavigationState.swift in Sources */,
 				DABFE2882D28634600B314E2 /* User.swift in Sources */,
 				DA8886CF2D6A317800ED6C1A /* MemoError.swift in Sources */,
 				DABFE2822D28481100B314E2 /* MemoRouter.swift in Sources */,
+				DAB3757D2E05C796009E4E2B /* NicknameSettingViewModel.swift in Sources */,
 				DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */,
 				DA8886C52D6A1AA000ED6C1A /* UserService.swift in Sources */,
 				DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */,
@@ -694,6 +717,7 @@
 				DA212CD52D42A13C005D1E15 /* MemoEditorView.swift in Sources */,
 				DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */,
 				DAB782692D7220A400E6AE14 /* Font.swift in Sources */,
+				DAB375752E05B835009E4E2B /* Navigation.swift in Sources */,
 				DAE504052D465E0C0089B7D0 /* NicknameSettingView.swift in Sources */,
 				DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */,
 				DA19C4E92D3FF9AF00ACDC00 /* DeepLinkHandler.swift in Sources */,
@@ -709,11 +733,11 @@
 				DABFE2752D28416000B314E2 /* LoginViewModel.swift in Sources */,
 				DABFE2792D28416000B314E2 /* SignupViewModel.swift in Sources */,
 				DA0A4EB82D2B9F0A007E481D /* EmailVerificationView.swift in Sources */,
+				DAB375772E05B891009E4E2B /* Alert.swift in Sources */,
 				DABFE27B2D28416000B314E2 /* CustomColor.swift in Sources */,
 				558C3F4B2DDCD8EE00DEFC88 /* Documents.swift in Sources */,
 				55E610BC2D2A5FA600E452A8 /* DeprecatedMainViewModel.swift in Sources */,
 				DABFE27D2D28416000B314E2 /* MemoWithTagsApp.swift in Sources */,
-				DA7230A72D34CD5C0065C65A /* SystemState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

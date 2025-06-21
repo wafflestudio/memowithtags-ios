@@ -6,34 +6,15 @@
 //
 
 import SwiftUI
+import Factory
 
 struct AppRootView: View {
-    var container: DIContainer
-    let deepLinkHandler: DeepLinkHandler
-    
-    // stateobject로 관리해야하는 viewmodel들 = 큼직큼직한 뷰들
-    @StateObject private var mainViewModel: MainViewModel
-    @StateObject private var loginViewModel: LoginViewModel
-    @StateObject private var emailEnterViewModel: EmailEnterViewModel
-    @StateObject private var emailVerificationViewModel: EmailVerificationViewModel
-    @StateObject private var signupViewModel: SignupViewModel
-    @StateObject private var resetPasswordViewModel: ResetPasswordViewModel
-    
-    
-    init(container: DIContainer) {
-        self.container = container
-        self.deepLinkHandler = .init(appState: container.appState, socialLoginService: container.useCases.socialLoginService)
-        
-        _mainViewModel = StateObject(wrappedValue: MainViewModel(container: container))
-        _loginViewModel = StateObject(wrappedValue: LoginViewModel(container: container))
-        _emailEnterViewModel = StateObject(wrappedValue: EmailEnterViewModel(container: container))
-        _emailVerificationViewModel = StateObject(wrappedValue: EmailVerificationViewModel(container: container))
-        _signupViewModel = StateObject(wrappedValue: SignupViewModel(container: container))
-        _resetPasswordViewModel = StateObject(wrappedValue: ResetPasswordViewModel(container: container))
-    }
+    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.alert) private var alert: Alert
     
     var body: some View {
-        NavigationStack(path: container.appState.$navigation.path) {
+        //MARK: - 네비게이션
+        NavigationStack(path: $navigation.path) {
             SplashView(viewModel: .init(container: container))
                 .navigationDestination(for: Route.self) { route in
                     switch route {
@@ -46,25 +27,25 @@ struct AppRootView: View {
                     case .memoEditor:
                         MemoEditorView(viewModel: mainViewModel)
                         
-                    //MARK: - 로그인
+                    //로그인
                     case .login:
-                        LoginView(viewModel: loginViewModel)
+                        LoginView()
 
-                    //MARK: - 회원가입, 비밀번호 찾기
+                    //회원가입, 비밀번호 찾기
                     case .emailEnter, .resetPasswordEmailEnter:
-                        EmailEnterView(viewModel: emailEnterViewModel)
+                        EmailEnterView()
                     case .emailVerification(let email), .resetPasswordEmailVerification(let email):
-                        EmailVerificationView(viewModel: emailVerificationViewModel, email: email)
+                        EmailVerificationView(email: email)
                     case .signup(let email):
-                        SignupView(viewModel: signupViewModel, email: email)
+                        SignupView(email: email)
                     case .signupSuccess, .resetPasswordSuccess:
-                        SignupSuccessView(viewModel: .init(container: container))
+                        SignupSuccessView()
                     case .nicknameSetting:
-                        NicknameSettingView(viewModel: .init(container: container))
+                        NicknameSettingView()
                     case .resetPassword(let email):
-                        ResetPasswordView(viewModel: resetPasswordViewModel, email: email)
+                        ResetPasswordView(email: email)
                       
-                    //MARK: - 세팅
+                    //세팅
                     case .settings:
                         SettingsView(viewModel: mainViewModel)
                     case .accountSetting:
@@ -123,8 +104,8 @@ struct AppRootView: View {
             }
         }
         //MARK: - alert
-        .alert(isPresented: container.appState.$system.showAlert) {
-            let error = container.appState.system.error
+        .alert(isPresented: $alert.showAlert) {
+            let error = alert.error
             
             if let customError = error as? CustomError {
                 switch customError.type {
@@ -136,8 +117,8 @@ struct AppRootView: View {
                             _ = KeyChainManager.shared.deleteAccessToken()
                             _ = KeyChainManager.shared.deleteRefreshToken()
                             
-                            container.appState.navigation.reset()
-                            container.appState.navigation.push(to: .root)
+                            navigation.reset()
+                            navigation.push(to: .root)
                         })
                     )
                     

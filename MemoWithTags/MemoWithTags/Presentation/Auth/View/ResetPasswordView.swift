@@ -1,41 +1,50 @@
 //
-//  EmailView.swift
+//  ResetPasswordView.swift
 //  MemoWithTags
 //
-//  Created by 최진모 on 2/22/25.
+//  Created by 최진모 on 1/17/25.
 //
 
 import SwiftUI
 import Factory
 
-struct EmailEnterView: View {
-    @InjectedObservable(\.emailEnterViewModel) var viewModel: EmailEnterViewModel
+struct ResetPasswordView: View {
+    @InjectedObservable(\.resetPasswordViewModel) var viewModel: ResetPasswordViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
-    @State private var email: String = ""
+    let email: String
+    @State private var password: String = ""
+    @State private var passwordRepeat: String = ""
     
     var body: some View {
+        
         ZStack {
             Color.background.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 36) {
-                //MARK: - 타이틀
+                //MARK: - title
                 HStack(spacing: 4) {
-                    Text(viewModel.appState.navigation.current == .emailEnter ? "이메일로 회원가입" : "비밀번호 찾기")
-                        .font(.pretendard(.medium, size: 22))
+                    Text("비밀번호 재설정")
+                        .font(.pretendard(.semibold, size: 21))
                         .foregroundStyle(Color.basicText)
                 }
                 .padding(.vertical, 8)
                 .background(.clear)
                 
-                //login panel
+                //signup panel
                 VStack(spacing: 0) {
-                    //MARK: - 이메일 입력 필드
-                    InputFieldView(text: $email, placeholder: "이메일", showCount: false, showAlert: false)
+                    VStack(spacing: 10) {
+                        //MARK: - 비밀번호 입력 필드
+                        SecureInputFieldView(password: $password, placeholder: "비밀번호", showCondition: true)
+                        
+                        //MARK: - 비밀번호 확인 필드
+                        SecureInputFieldView(password: $passwordRepeat, placeholder: "비밀번호 확인", showCondition: false)
+                    }
                     
                     //MARK: - 확인 버튼
-                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: email.isEmpty) {
+                    SubmitButtonView(text: "다음", loading: viewModel.isLoading, disabled: password.isEmpty || passwordRepeat.isEmpty) {
                         Task {
-                            await viewModel.sendCode(email: email)
+                            await viewModel.resetPassword(email: email, password: password, passwordRepeat: passwordRepeat)
                         }
                     }
                     .padding(.top, 16)
@@ -43,7 +52,7 @@ struct EmailEnterView: View {
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "이전", fontSize: 13, backGroundColor: .colorlessTag) {
-                            viewModel.appState.navigation.pop()
+                            navigation.pop()
                         }
                         
                         Spacer()
@@ -53,11 +62,10 @@ struct EmailEnterView: View {
                             .frame(width: 12, height: 24)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.colorlessTag)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
-                        
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.colorlessTag)
+                            .fill(Color.TagColor.Red2.color)
                             .frame(width: 12, height: 24)
                     }
                     .padding(.top, 36)
@@ -67,12 +75,14 @@ struct EmailEnterView: View {
                 .padding(.horizontal, 16)
                 .background(Color.memoBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
             }
             .padding(.horizontal, 12)
             .background(.clear)
-
+            .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
         }
         .navigationBarBackButtonHidden()
+        .onAppear {
+            viewModel.checkPasswordValidity(password: password)
+        }
     }
 }

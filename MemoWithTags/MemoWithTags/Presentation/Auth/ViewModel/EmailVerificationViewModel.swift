@@ -12,22 +12,22 @@ import Factory
 @Observable
 final class EmailVerificationViewModel {
     @ObservationIgnored @Injected(\.authService) private var authService: AuthService
+    @Injected(\.navigation) private var navigation: Navigation
+    @Injected(\.alert) private var alert: Alert
     
     var isLoading = false
     var notMatchCode = false
     var time = 300
     
-
     func sendCode(email: String) async {
         guard !isLoading else { return }
         
         isLoading = true
         notMatchCode = false
         
-        // 내비게이션 상태에 따라 이메일 타입 결정: resetPasswordEmailVerification이면 .ResetPassword, 그 외는 .Register
         let emailType: EmailType = {
-            switch appState.navigation.current {
-            case .resetPasswordEmailVerification(_):
+            switch navigation.current {
+            case .resetPasswordEmailVerification:
                 return .ResetPassword
             default:
                 return .Register
@@ -40,7 +40,7 @@ final class EmailVerificationViewModel {
         case .success:
             time = 300
         case .failure(let error):
-            appState.system.alert(error: error)
+            alert.alert(error: error)
         }
         
         isLoading = false
@@ -52,25 +52,24 @@ final class EmailVerificationViewModel {
         isLoading = true
         notMatchCode = false
         
-        // 내비게이션 상태에 따라 이메일 타입 결정: resetPasswordEmailVerification이면 .ResetPassword, 그 외는 .Register
         let emailType: EmailType = {
-            switch appState.navigation.current {
-            case .resetPasswordEmailVerification(_):
+            switch navigation.current {
+            case .resetPasswordEmailVerification:
                 return .ResetPassword
             default:
                 return .Register
             }
         }()
         
-        let result = await useCases.authService.verifyCode(email: email, code: code, type: emailType)
+        let result = await authService.verifyCode(email: email, code: code, type: emailType)
         
         switch result {
         case .success:
-            switch appState.navigation.current {
+            switch navigation.current {
             case .emailVerification:
-                appState.navigation.push(to: .signup(email: email))
+                navigation.push(to: .signup(email: email))
             case .resetPasswordEmailVerification:
-                appState.navigation.push(to: .resetPassword(email: email))
+                navigation.push(to: .resetPassword(email: email))
             default: break
             }
         case .failure(let error):
@@ -78,7 +77,7 @@ final class EmailVerificationViewModel {
             case .notMatchCode:
                 notMatchCode = true
             default:
-                appState.system.alert(error: error)
+                alert.alert(error: error)
             }
         }
         
@@ -86,8 +85,8 @@ final class EmailVerificationViewModel {
     }
 }
 
-@MainActor
 extension Container {
+    @MainActor
     var emailVerificationViewModel: Factory<EmailVerificationViewModel> {
         self { @MainActor in EmailVerificationViewModel() }.cached
     }

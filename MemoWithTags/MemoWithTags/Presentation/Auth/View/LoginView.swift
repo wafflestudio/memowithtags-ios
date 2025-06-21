@@ -9,7 +9,8 @@ import SwiftUI
 import Factory
 
 struct LoginView: View {
-    @InjectedObservable(\.loginViewModel) var viewModel: LoginViewModel
+    @InjectedObservable(\.loginViewModel) private var viewModel: LoginViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
     @State private var email: String = ""
     @State private var password: String = ""
@@ -52,13 +53,13 @@ struct LoginView: View {
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "회원가입", fontSize: 13, backGroundColor: .TagColor.Red2.color) {
-                            viewModel.appState.navigation.push(to: .emailEnter)
+                            navigation.push(to: .emailEnter)
                         }
                         
                         Spacer()
                         
                         DesignTagView(text: "비밀번호 찾기", fontSize: 13, backGroundColor: .colorlessTag) {
-                            viewModel.appState.navigation.push(to: .resetPasswordEmailEnter)
+                            navigation.push(to: .resetPasswordEmailEnter)
                         }
                     }
                 }

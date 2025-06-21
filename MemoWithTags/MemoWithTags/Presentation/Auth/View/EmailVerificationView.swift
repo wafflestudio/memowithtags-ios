@@ -9,7 +9,8 @@ import SwiftUI
 import Factory
 
 struct EmailVerificationView: View {
-    @InjectedObservable(\.emailVerificationViewModel) var viewModel: EmailVerificationViewModel
+    @InjectedObservable(\.emailVerificationViewModel) private var viewModel: EmailVerificationViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
     let email: String
     
@@ -23,10 +24,8 @@ struct EmailVerificationView: View {
             VStack(spacing: 36) {
                 //MARK: - title
                 HStack(spacing: 4) {
-                    
-                    // 내비게이션 상태에 따라 이메일 타입 결정: resetPasswordEmailVerification이면 .ResetPassword, 그 외는 .Register
                     let textType: String = {
-                        switch viewModel.appState.navigation.current {
+                        switch navigation.current {
                         case .resetPasswordEmailVerification(_):
                             return "비밀번호 찾기"
                         default:
@@ -68,7 +67,7 @@ struct EmailVerificationView: View {
                     //MARK: - 아래 버튼들
                     HStack(spacing: 8) {
                         DesignTagView(text: "이전", fontSize: 13, backGroundColor: .colorlessTag) {
-                            viewModel.appState.navigation.pop()
+                            navigation.pop()
                         }
                         
                         Spacer()
@@ -182,7 +181,7 @@ struct SeparatedTextField: View {
 }
 
 struct TimerView: View {
-    @ObservedObject var viewModel: EmailVerificationViewModel
+    var viewModel: EmailVerificationViewModel
     let email: String
     
     var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()

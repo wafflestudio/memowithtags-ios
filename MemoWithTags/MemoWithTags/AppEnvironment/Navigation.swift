@@ -1,11 +1,13 @@
 //
-//  Untitled.swift
+//  Navigation.swift
 //  MemoWithTags
 //
-//  Created by 최진모 on 1/9/25.
+//  Created by 최진모 on 6/21/25.
 //
 
+import Foundation
 import SwiftUI
+import Factory
 
 enum Route: Hashable {
     case root
@@ -37,13 +39,11 @@ enum Route: Hashable {
 }
 
 @MainActor
-final class NavigationState: ObservableObject {
-    @Published var path = NavigationPath()
-    // path는 push, pop, count 기능만 지원한다
-    // 따라서 현재 Page가 어떤 Page인지 알기 위해 explicit한 stack이 필요하다.
+@Observable
+final class Navigation {
+    var path = NavigationPath()
     var explicitStack: [Route] = []
     
-    // 현재 활성화된 Route를 반환하는 계산 프로퍼티
     var current: Route {
         return explicitStack.last ?? .root
     }
@@ -57,11 +57,25 @@ final class NavigationState: ObservableObject {
         if !path.isEmpty {
             path.removeLast()
         }
-        explicitStack.removeLast()
+        if !explicitStack.isEmpty {
+            explicitStack.removeLast()
+        }
     }
     
     func reset() {
-        path.removeLast(path.count)
-        explicitStack.removeLast(explicitStack.count)
+        if !path.isEmpty {
+            path.removeLast(path.count)
+        }
+        if !explicitStack.isEmpty {
+            explicitStack.removeLast(explicitStack.count)
+        }
     }
 }
+
+extension Container {
+    @MainActor
+    var navigation: Factory<Navigation> {
+        self { @MainActor in Navigation() }.singleton
+    }
+}
+

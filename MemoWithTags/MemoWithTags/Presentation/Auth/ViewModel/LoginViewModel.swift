@@ -12,6 +12,9 @@ import Factory
 @Observable
 final class LoginViewModel {
     @ObservationIgnored @Injected(\.authService) private var authService: AuthService
+    @Injected(\.navigation) private var navigation: Navigation
+    @Injected(\.alert) private var alert: Alert
+    
     
     var isLoading = false
     
@@ -26,7 +29,7 @@ final class LoginViewModel {
         guard !isLoading else { return }
         
         guard checkEmailValidity(email: email) else {
-            appState.system.alert(error: LoginError.invalidEmail)
+            alert.alert(error: LoginError.invalidEmail)
             return
         }
         
@@ -36,10 +39,9 @@ final class LoginViewModel {
 
         switch result {
         case .success:
-            appState.user.isLoggedIn = true
-            appState.navigation.push(to: .main)
+            navigation.push(to: .main)
         case .failure(let error):
-            appState.system.alert(error: error)
+            alert.alert(error: error)
         }
         
         isLoading = false

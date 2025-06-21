@@ -9,7 +9,8 @@ import SwiftUI
 import Factory
 
 struct SignupView: View {
-    @InjectedObservable(\.signupViewModel) var viewModel: SignupViewModel
+    @InjectedObservable(\.signupViewModel) private var viewModel: SignupViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
     let email: String
     @State private var nickname: String = ""
@@ -119,8 +120,8 @@ struct SignupView: View {
         }
         .alert("이전", isPresented: $showBackAlert) {
             Button("확인", role: .destructive) {
-                viewModel.appState.navigation.reset()
-                viewModel.appState.navigation.push(to: .root)
+                navigation.reset()
+                navigation.push(to: .root)
             }
             Button("취소", role: .cancel) {}
         } message: {

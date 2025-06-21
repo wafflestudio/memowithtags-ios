@@ -12,6 +12,8 @@ import Factory
 @Observable
 final class EmailEnterViewModel {
     @ObservationIgnored @Injected(\.authService) private var authService: AuthService
+    @Injected(\.navigation) private var navigation: Navigation
+    @Injected(\.alert) private var alert: Alert
     
     var isLoading = false
     
@@ -25,29 +27,26 @@ final class EmailEnterViewModel {
         guard !isLoading else { return }
         
         guard checkEmailValidity(email: email) else {
-            appState.system.alert(error: SendCodeError.invalidEmail)
+            alert.alert(error: SendCodeError.invalidEmail)
             return
         }
         
         isLoading = true
-        
-        // 내비게이션 상태에 따라 이메일 타입 결정: 기본은 회원가입(.Register), 비밀번호 재설정이면 .ResetPassword
-        let emailType: EmailType = appState.navigation.current == .resetPasswordEmailEnter ? .ResetPassword : .Register
     
-        let result = await authService.sendCode(email: email, type: emailType)
+        let result = await authService.sendCode(email: email, type: navigation.current == .resetPasswordEmailEnter ? .ResetPassword : .Register)
 
         switch result {
         case .success:
-            switch appState.navigation.current {
+            switch navigation.current {
             case .emailEnter:
-                appState.navigation.push(to: .emailVerification(email: email))
+                navigation.push(to: .emailVerification(email: email))
             case .resetPasswordEmailEnter:
-                appState.navigation.push(to: .resetPasswordEmailVerification(email: email))
+                navigation.push(to: .resetPasswordEmailVerification(email: email))
             default: break
             }
 
         case .failure(let error):
-            appState.system.alert(error: error)
+            alert.alert(error: error)
         }
         
         isLoading = false

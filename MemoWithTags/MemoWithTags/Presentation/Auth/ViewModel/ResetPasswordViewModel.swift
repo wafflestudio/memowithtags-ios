@@ -12,6 +12,8 @@ import Factory
 @Observable
 final class ResetPasswordViewModel {
     @ObservationIgnored @Injected(\.authService) private var authService: AuthService
+    @Injected(\.navigation) private var navigation: Navigation
+    @Injected(\.alert) private var alert: Alert
     
     var isLoading = false
     var isValidLength: Bool = false
@@ -34,12 +36,12 @@ final class ResetPasswordViewModel {
         checkPasswordValidity(password: password)
         
         guard isValidLength && isValidPasswordFormat else {
-            appState.system.alert(error: RegisterError.invalidPassword)
+            alert.alert(error: RegisterError.invalidPassword)
             return
         }
         
         guard password == passwordRepeat else {
-            appState.system.alert(error: RegisterError.passwordNotMatch)
+            alert.alert(error: RegisterError.passwordNotMatch)
             return
         }
         
@@ -49,17 +51,17 @@ final class ResetPasswordViewModel {
         
         switch result {
         case .success:
-            appState.navigation.push(to: .resetPasswordSuccess)
+            navigation.push(to: .resetPasswordSuccess)
         case .failure(let error):
-            appState.system.alert(error: error)
+            alert.alert(error: error)
         }
         
         isLoading = false
     }
 }
 
-@MainActor
 extension Container {
+    @MainActor
     var resetPasswordViewModel: Factory<ResetPasswordViewModel> {
         self { @MainActor in ResetPasswordViewModel() }.cached
     }

@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Factory
 
 struct SignupSuccessView: View {
-    @ObservedObject var viewModel: ViewModel
+    @InjectedObservable(\.signupSuccessViewModel) private var viewModel: SignupSuccessViewModel
     
     var body: some View {
         ZStack {
@@ -77,20 +78,3 @@ struct SignupSuccessView: View {
     }
 }
 
-extension SignupSuccessView {
-    @MainActor
-    final class ViewModel: ObservableObject {
-        func start() {
-            
-            if let _ = KeyChainManager.shared.readAccessToken(),
-               let _ = KeyChainManager.shared.readRefreshToken() {
-                appState.navigation.reset()
-                appState.navigation.push(to: .main)
-            } else {
-                appState.navigation.reset()
-                appState.navigation.push(to: .login)
-            }
-            
-        }
-    }
-}

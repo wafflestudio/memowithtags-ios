@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Factory
 
 struct NicknameSettingView: View {
-    @ObservedObject var viewModel: ViewModel
+    @InjectedObservable(\.nicknameSettingViewModel) private var viewModel: NicknameSettingViewModel
     
     @State private var nickname: String = ""
     
@@ -50,29 +51,5 @@ struct NicknameSettingView: View {
 
         }
         .navigationBarBackButtonHidden()
-    }
-}
-
-extension NicknameSettingView {
-    @MainActor
-    final class ViewModel: ObservableObject {
-        @Published var isLoading = false
-        
-        func setNickname(nickname: String) async {
-            guard !isLoading else { return }
-            
-            isLoading = true
-            
-            let result = await useCases.userService.changeNickname(nickname: nickname)
-            
-            switch result {
-            case .success:
-                appState.navigation.push(to: .signupSuccess)
-            case .failure(let error):
-                appState.system.alert(error: error)
-            }
-            
-            isLoading = false
-        }
     }
 }
