@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Factory
 
 struct ChangeNicknameView: View {
-    @ObservedObject var viewModel: ViewModel
-    
+    @InjectedObservable(\.settingViewModel) private var viewModel: SettingViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
+
     @State private var nickname: String = ""
     
     var body: some View {
@@ -23,7 +25,7 @@ struct ChangeNicknameView: View {
                     .padding(12) // 터치 영역을 확장하기 위해 패딩 추가
                     .contentShape(Rectangle()) // 전체 영역을 터치 가능 영역으로 지정
                     .onTapGesture {
-                        viewModel.appState.navigation.pop()
+                        navigation.pop()
                     }
                 
                 Text("닉네임 변경")
@@ -50,29 +52,5 @@ struct ChangeNicknameView: View {
         .padding(.bottom, 16)
         .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
-    }
-}
-
-extension ChangeNicknameView {
-    @MainActor
-    final class ViewModel: BaseViewModel, ObservableObject {
-        @Published var isLoading = false
-        
-        func setNickname(nickname: String) async {
-            guard !isLoading else { return }
-            
-            isLoading = true
-            
-            let result = await useCases.userService.changeNickname(nickname: nickname)
-            
-            switch result {
-            case .success:
-                appState.navigation.pop()
-            case .failure(let error):
-                appState.system.alert(error: error)
-            }
-            
-            isLoading = false
-        }
     }
 }

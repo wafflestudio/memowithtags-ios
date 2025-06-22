@@ -12,8 +12,8 @@ import Factory
 @Observable
 final class AppState {
     var user: User?
-    var memos: [Memo]?
-    var tags: [Tag]?
+    var memos: [Memo] = []
+    var tags: [Tag] = []
     
     var isBioAuthenticated: Bool = false
 }

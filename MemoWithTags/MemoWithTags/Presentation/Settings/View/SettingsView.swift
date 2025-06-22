@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Factory
 
 struct SettingsView: View {
-    @ObservedObject var viewModel: MainViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
+    
     @State private var showingOpenSourceLicense = false
     @State private var showingServiceTerm = false
     @State private var showingPrivacyPolicy = false
@@ -20,7 +22,6 @@ struct SettingsView: View {
             VStack(spacing: 0) {
                 
                 //MARK: - navigation bar
-                
                 HStack(spacing: 0) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 19))
@@ -28,7 +29,7 @@ struct SettingsView: View {
                         .padding(12) // 터치 영역을 확장하기 위해 패딩 추가
                         .contentShape(Rectangle()) // 전체 영역을 터치 가능 영역으로 지정
                         .onTapGesture {
-                            viewModel.appState.navigation.pop()
+                            navigation.pop()
                         }
                     
                     Text("설정")
@@ -39,6 +40,7 @@ struct SettingsView: View {
                 }
                 .padding(.vertical, 8)
                 
+                //MARK: - 아래 메뉴들
                 VStack(spacing: 12) {
                     HStack {
                         Text("내 계정")
@@ -55,31 +57,8 @@ struct SettingsView: View {
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
                     .onTapGesture {
-                        viewModel.appState.navigation.push(to: .accountSetting)
+                        navigation.push(to: .accountSetting)
                     }
-                    
-                    VStack(alignment: .leading, spacing: 20) {
-                        
-                        HStack{
-                            Text("메모 정렬 기준은 만든 날짜 순입니다.")
-                                .font(.pretendard(.regular, size: 12))
-                                .foregroundStyle(Color.grayText)
-                                .padding(.leading, 6)
-                            
-                            Spacer()
-                        }
-                        
-                        Text("검색 정렬 기준은 만든 날짜 순입니다.")
-                            .font(.pretendard(.regular, size: 12))
-                            .foregroundStyle(Color.grayText)
-                            .padding(.leading, 6)
-                        
-                        
-                    }
-                    .padding(.vertical, 13)
-                    .padding(.horizontal, 17)
-                    .background(Color.memoBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     HStack {
                         Text("오픈소스 라이센스")
@@ -134,8 +113,6 @@ struct SettingsView: View {
                     .onTapGesture {
                         showingPrivacyPolicy = true
                     }
-
-
                 }
 
             }

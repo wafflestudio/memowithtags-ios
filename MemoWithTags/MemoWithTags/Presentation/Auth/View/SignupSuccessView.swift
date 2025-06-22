@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct SignupSuccessView: View {
-    @InjectedObservable(\.signupSuccessViewModel) private var viewModel: SignupSuccessViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
     var body: some View {
         ZStack {
@@ -51,7 +51,7 @@ struct SignupSuccessView: View {
                     //MARK: - 시작버튼
                     Button {
                         //action
-                        viewModel.start()
+                        start()
                     } label: {
                         Text("시작하기")
                             .frame(maxWidth: .infinity)
@@ -75,6 +75,17 @@ struct SignupSuccessView: View {
 
         }
         .navigationBarBackButtonHidden()
+    }
+    
+    func start() {
+        if let _ = KeyChainManager.shared.readAccessToken(),
+           let _ = KeyChainManager.shared.readRefreshToken() {
+            navigation.reset()
+            navigation.push(to: .main)
+        } else {
+            navigation.reset()
+            navigation.push(to: .login)
+        }
     }
 }
 

@@ -19,13 +19,13 @@ struct AppRootView: View {
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .root:
-                        SplashView(viewModel: .init(container: container))
+                        SplashView()
                     case .main:
-                        MainView(viewModel: mainViewModel)
+                        MainView()
                     case .search:
-                        SearchView(viewModel: mainViewModel)
+                        SearchView()
                     case .memoEditor:
-                        MemoEditorView(viewModel: mainViewModel)
+                        MemoEditorView()
                         
                     //로그인
                     case .login:
@@ -47,13 +47,13 @@ struct AppRootView: View {
                       
                     //세팅
                     case .settings:
-                        SettingsView(viewModel: mainViewModel)
+                        SettingsView()
                     case .accountSetting:
-                        AccountSettingView(viewModel: mainViewModel)
+                        AccountSettingView()
                     case .changePassword:
-                        ChangePasswordView(viewModel: .init(container: container))
+                        ChangePasswordView()
                     case .changeNickname:
-                        ChangeNicknameView(viewModel: .init(container: container))
+                        ChangeNicknameView()
                     }
                 }
         }
@@ -98,11 +98,11 @@ struct AppRootView: View {
             }
         }
         //MARK: - 외부 링크에서 접근 (소셜 로그인)
-        .onOpenURL { url in
-            Task {
-                await deepLinkHandler.handle(url: url)
-            }
-        }
+//        .onOpenURL { url in
+//            Task {
+//                await deepLinkHandler.handle(url: url)
+//            }
+//        }
         //MARK: - alert
         .alert(isPresented: $alert.showAlert) {
             let error = alert.error
@@ -134,7 +134,7 @@ struct AppRootView: View {
                         title: Text("치명적인 오류"),
                         message: Text(customError.localizedDescription),
                         dismissButton: .destructive(Text("앱 종료"), action: {
-                            // 앱 종료 또는 강제 리셋 처리
+                            /* 앱 종료 또는 강제 리셋 처리 */
                         })
                     )
                 }

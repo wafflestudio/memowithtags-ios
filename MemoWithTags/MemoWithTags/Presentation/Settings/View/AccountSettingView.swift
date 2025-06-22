@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import Factory
 
 struct AccountSettingView: View {
-    @ObservedObject var viewModel: MainViewModel
+    @InjectedObservable(\.settingViewModel) private var viewModel: SettingViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.appState) private var appState: AppState
     
     @State private var showWithdrawalSheet = false
     @State private var email = ""
@@ -20,7 +23,6 @@ struct AccountSettingView: View {
             VStack(spacing: 0) {
                 
                 //MARK: - navigation bar
-                
                 HStack(spacing: 0) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 19))
@@ -28,7 +30,7 @@ struct AccountSettingView: View {
                         .padding(12) // 터치 영역을 확장하기 위해 패딩 추가
                         .contentShape(Rectangle()) // 전체 영역을 터치 가능 영역으로 지정
                         .onTapGesture {
-                            viewModel.appState.navigation.pop()
+                            navigation.pop()
                         }
                     
                     Text("내 계정")
@@ -43,38 +45,36 @@ struct AccountSettingView: View {
                 VStack(spacing: 12) {
                  
                     VStack(alignment: .leading, spacing: 12) {
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .padding(.leading, 40)
-                        } else {
-                            HStack(spacing: 6) {
-                                Text(viewModel.appState.user.userName ?? "")
+                        HStack(spacing: 6) {
+                            if let name = appState.user?.nickname, let number = appState.user?.userNumber {
+                                Text(name)
                                     .font(.pretendard(.semibold, size: 16))
                                     .foregroundStyle(Color.basicText)
                                 
-                                Text("#\(viewModel.appState.user.userNumber ?? 0)")
+                                Text("#\(number)")
                                     .font(.pretendard(.regular, size: 12))
                                     .foregroundStyle(Color.grayText)
-                                
-                                Spacer()
+                            } else {
+                                ProgressView()
+                                    .padding(.leading, 40)
                             }
+                            Spacer()
+                        }
+                        
+                        HStack {
+                            Text("닉네임 변경")
+                                .font(.pretendard(.regular, size: 14))
+                                .foregroundStyle(Color.basicText)
                             
-                            HStack {
-                                Text("닉네임 변경")
-                                    .font(.pretendard(.regular, size: 14))
-                                    .foregroundStyle(Color.basicText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.pretendard(.regular, size: 14))
-                                    .foregroundStyle(Color.soft)
-                            }
-                            .background(Color.memoBackground)
-                            .onTapGesture {
-                                viewModel.appState.navigation.push(to: .changeNickname)
-                            }
-
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.pretendard(.regular, size: 14))
+                                .foregroundStyle(Color.soft)
+                        }
+                        .background(Color.memoBackground)
+                        .onTapGesture {
+                            navigation.push(to: .changeNickname)
                         }
                     }
                     .padding(.vertical, 13)
@@ -90,12 +90,12 @@ struct AccountSettingView: View {
                             
                             Spacer()
                             
-                            Text(viewModel.appState.user.userEmail ?? "")
+                            Text(appState.user?.email ?? "")
                                 .font(.pretendard(.regular, size: 12))
                                 .foregroundStyle(Color.grayText)
                         }
                         
-                        if !viewModel.appState.user.isSocial {
+                        if !(appState.user?.isSocial ?? true) {
                             HStack {
                                 Text("비밀번호 변경")
                                     .font(.pretendard(.regular, size: 14))
@@ -109,7 +109,7 @@ struct AccountSettingView: View {
                             }
                             .background(Color.memoBackground)
                             .onTapGesture {
-                                viewModel.appState.navigation.push(to: .changePassword)
+                                navigation.push(to: .changePassword)
                             }
                         }
                     }
@@ -163,9 +163,9 @@ struct AccountSettingView: View {
             
         }
         .onAppear {
-            Task {
-                await viewModel.getUserInfo()
-            }
+//            Task {
+//                await viewModel.getUserInfo()
+//            }
         }
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $showWithdrawalSheet) {

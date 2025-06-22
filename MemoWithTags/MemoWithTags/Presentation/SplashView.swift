@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Factory
 
 struct SplashView: View {
-    @ObservedObject var viewModel: ViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.appState) private var appState: AppState
     
     var body: some View {
         ZStack {
@@ -17,27 +19,20 @@ struct SplashView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            viewModel.checkLogin()
+            checkLogin()
         }
     }
-}
-
-extension SplashView {
-    @MainActor
-    final class ViewModel: BaseViewModel, ObservableObject {
-        func checkLogin() {
-            Task {
-                guard let _ = KeyChainManager.shared.readAccessToken(),
-                      let _ = KeyChainManager.shared.readRefreshToken() else {
-                    appState.user.isLoggedIn = false
-                    appState.navigation.reset()
-                    appState.navigation.push(to: .login)
-                    return
-                }
-                appState.user.isLoggedIn = true
-                appState.navigation.reset()
-                appState.navigation.push(to: .main)
+    
+    func checkLogin() {
+        Task {
+            guard let _ = KeyChainManager.shared.readAccessToken(),
+                  let _ = KeyChainManager.shared.readRefreshToken() else {
+                navigation.reset()
+                navigation.push(to: .login)
+                return
             }
+            navigation.reset()
+            navigation.push(to: .main)
         }
     }
 }
