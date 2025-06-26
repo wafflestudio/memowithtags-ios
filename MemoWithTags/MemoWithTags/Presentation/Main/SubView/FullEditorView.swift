@@ -6,9 +6,11 @@
 //
 import SwiftUI
 import Flow
+import Factory
 
-struct MemoEditorView: View {
-    @ObservedObject var viewModel: MainViewModel
+struct FullEditorView: View {
+    @InjectedObservable(\.editorViewModel) private var viewModel: EditorViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
 
     @StateObject var keyboardManager = KeyboardManager()
     
@@ -25,7 +27,7 @@ struct MemoEditorView: View {
                     .onTapGesture {
                         Task {
                             await viewModel.submit()
-                            viewModel.appState.navigation.pop()
+                            navigation.pop()
                         }
                     }
                 

@@ -7,9 +7,14 @@
 
 import SwiftUI
 import Flow
+import Factory
 
-struct EditingMemoView: View {
-    @ObservedObject var viewModel: MainViewModel
+struct EditorView: View {
+    @InjectedObservable(\.editorViewModel) private var viewModel: EditorViewModel
+    
+    @State private var text: String = ""
+    @State private var tagIDs: [Int] = []
+    
     @State private var memoEditingTask: Task<Void, Never>? = nil
     @State private var isKeyboardVisible: Bool = false
     
@@ -20,10 +25,10 @@ struct EditingMemoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             //MARK: - 메모글 쓰는 곳
-            DynamicHeightTextEditor(text: $viewModel.editorContent)
+            TextEditor(text: $text)
                 .overlay (
                     Group {
-                        if viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty {
+                        if text.isEmpty && tagIDs.isEmpty {
                             Image(systemName: "square.and.pencil")
                                 .font(.system(size: 20))
                                 .foregroundColor(Color.vivid)
@@ -39,18 +44,18 @@ struct EditingMemoView: View {
                 )
             
             //MARK: - 메모에 넣은 태그들
-            if !viewModel.editorTagIds.isEmpty {
+            if !tagIDs.isEmpty {
                 HFlow {
                     ForEach(viewModel.getTags(from: viewModel.editorTagIds), id: \.id) { tag in
-                        TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-                            removeTagFromSelectedTags(tag.id)
+                        TagView(tag: tag, xmark: true) {
+                            tagIDs.removeAll{ $0 == tag.id }
                         }
                     }
                 }
             }
             
             //MARK: - editor 아래 버튼들
-            if !(viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty) {
+            if !(text.isEmpty && tagIDs.isEmpty) {
                 HStack(spacing: 0) {
                     switch viewModel.editorState {
                     case .create: // create 모드일 때
@@ -140,52 +145,13 @@ struct EditingMemoView: View {
                 }
             }
         }
-        .padding(.vertical, viewModel.editorContent.isEmpty && viewModel.editorTagIds.isEmpty ? 6 : 12)
+        .padding(.vertical, 6)
         .padding(.horizontal, 17)
         .background(Color.editorBackground)
         .cornerRadius(14)
         .padding(.horizontal, 7)
         .padding(.bottom, 8)
         .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
-        .overlay(recommendingOverlay, alignment: .topTrailing)
-        .onAppear {
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) { _ in
-                isKeyboardVisible = true
-            }
-            
-            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification, object: nil, queue: .main) { _ in
-                isKeyboardVisible = false
-            }
-        }
-        .onDisappear {
-            NotificationCenter.default.removeObserver(self)
-        }
-        // 나중에 content로도 recommend를 할 때 사용한다.
-        /*
-         .onChange(of: viewModel.editorContent) {
-         // 실행하고 있는 recommendingTask를 종료
-         memoEditingTask?.cancel()
-         
-         // 새로운 recommendingTask 생성
-         memoEditingTask = Task {
-         do {
-         try await Task.sleep(nanoseconds: 500_000_000) // 0.5초 debounce
-         await viewModel.recommendMemos()
-         } catch {
-         // 취소된 경우 아무 작업도 하지 않아도 된다.
-         }
-         }
-         }
-         */
-        .onChange(of: viewModel.editorTagIds) {
-            // 실행하고 있는 recommendingTask를 종료
-            memoEditingTask?.cancel()
-            
-            // 새로운 recommendingTask 생성
-            memoEditingTask = Task {
-                await viewModel.recommendMemos()
-            }
-        }
         .alert("수정 취소", isPresented: $showCancelAlert) {
             Button("확인", role: .destructive) {
                 viewModel.editorState = .create
@@ -199,103 +165,99 @@ struct EditingMemoView: View {
         }
     }
     
-    private func removeTagFromSelectedTags(_ tagId: Int) {
-        viewModel.editorTagIds.removeAll{ $0 == tagId }
-    }
+//    private func promptAnimation(togle: Bool) {
+//        animationWorkItem?.cancel()
+//
+//        let workItem = DispatchWorkItem {
+//            withAnimation(.spring) {
+//                showRecommendingPrompt = togle
+//            }
+//        }
+//
+//        animationWorkItem = workItem
+//        DispatchQueue.main.asyncAfter(deadline: togle ? .now() : .now() + 3 , execute: workItem)
+//    }
     
-    private func promptAnimation(togle: Bool) {
-        animationWorkItem?.cancel()
-
-        let workItem = DispatchWorkItem {
-            withAnimation(.spring) {
-                showRecommendingPrompt = togle
-            }
-        }
-
-        animationWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: togle ? .now() : .now() + 3 , execute: workItem)
-    }
-    
-    private var recommendingPrompt: some View {
-        HStack {
-            if (showRecommendingPrompt) {
-                Text("\(viewModel.recommendingMemoIds.count)개의 메모를 추천합니다.")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(Color.vivid.opacity(showRecommendingPrompt ? 1 : 0))
-                    .padding(.leading, 10)
-                    .padding(.trailing, 5)
-                    .onAppear {
-                        promptAnimation(togle: false)
-                    }
-            }
-            
-            Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(Color.vivid)
-                .padding(.vertical, 7)
-                .padding(.horizontal, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.memoBackground)
-                )
-        }
-        .background(Color.background)
-        .clipShape(
-            RoundedRectangle(cornerRadius: 20)
-        )
-        .onAppear {
-            promptAnimation(togle: true)
-        }
-        .onDisappear {
-            animationWorkItem?.cancel()
-            showRecommendingPrompt = false
-        }
-    }
-    
-    private var recommendingOverlay: some View {
-        Group {
-            if !viewModel.recommendingMemoIds.isEmpty {
-                HStack(spacing: 8) {
-                    recommendingPrompt
-                    
-                    HStack(spacing: 10) {
-                        Image(systemName: "chevron.up")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(Color.vivid)
-                            .frame(width: 27, height: 27)
-                            .background(Color.memoBackground)
-                            .clipShape(
-                                Circle()
-                            )
-                            .onTapGesture {
-                                if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
-                                    viewModel.highlightingMemoIndex += 1
-                                }
-                            }
-                        
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 14, weight: .regular))
-                            .foregroundStyle(Color.vivid)
-                            .frame(width: 27, height: 27)
-                            .background(Color.memoBackground)
-                            .clipShape(
-                                Circle()
-                            )
-                            .onTapGesture {
-                                if viewModel.highlightingMemoIndex > -1 {
-                                    viewModel.highlightingMemoIndex -= 1
-                                }
-                            }
-                    }
-                    .background(Color.background)
-                    .clipShape(
-                        RoundedRectangle(cornerRadius: 20)
-                    )
-                }
-            }
-        }
-        .offset(x: -11, y: -35)
-        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
-    }
+//    private var recommendingPrompt: some View {
+//        HStack {
+//            if (showRecommendingPrompt) {
+//                Text("\(viewModel.recommendingMemoIds.count)개의 메모를 추천합니다.")
+//                    .font(.system(size: 11, weight: .medium))
+//                    .foregroundStyle(Color.vivid.opacity(showRecommendingPrompt ? 1 : 0))
+//                    .padding(.leading, 10)
+//                    .padding(.trailing, 5)
+//                    .onAppear {
+//                        promptAnimation(togle: false)
+//                    }
+//            }
+//            
+//            Text("\(viewModel.highlightingMemoIndex == -1 ? "-" : String(viewModel.highlightingMemoIndex + 1)) / \(viewModel.recommendingMemoIds.count)")
+//                .font(.system(size: 11, weight: .medium))
+//                .foregroundStyle(Color.vivid)
+//                .padding(.vertical, 7)
+//                .padding(.horizontal, 10)
+//                .background(
+//                    RoundedRectangle(cornerRadius: 20)
+//                        .fill(Color.memoBackground)
+//                )
+//        }
+//        .background(Color.background)
+//        .clipShape(
+//            RoundedRectangle(cornerRadius: 20)
+//        )
+//        .onAppear {
+//            promptAnimation(togle: true)
+//        }
+//        .onDisappear {
+//            animationWorkItem?.cancel()
+//            showRecommendingPrompt = false
+//        }
+//    }
+//    
+//    private var recommendingOverlay: some View {
+//        Group {
+//            if !viewModel.recommendingMemoIds.isEmpty {
+//                HStack(spacing: 8) {
+//                    recommendingPrompt
+//                    
+//                    HStack(spacing: 10) {
+//                        Image(systemName: "chevron.up")
+//                            .font(.system(size: 14, weight: .regular))
+//                            .foregroundStyle(Color.vivid)
+//                            .frame(width: 27, height: 27)
+//                            .background(Color.memoBackground)
+//                            .clipShape(
+//                                Circle()
+//                            )
+//                            .onTapGesture {
+//                                if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
+//                                    viewModel.highlightingMemoIndex += 1
+//                                }
+//                            }
+//                        
+//                        Image(systemName: "chevron.down")
+//                            .font(.system(size: 14, weight: .regular))
+//                            .foregroundStyle(Color.vivid)
+//                            .frame(width: 27, height: 27)
+//                            .background(Color.memoBackground)
+//                            .clipShape(
+//                                Circle()
+//                            )
+//                            .onTapGesture {
+//                                if viewModel.highlightingMemoIndex > -1 {
+//                                    viewModel.highlightingMemoIndex -= 1
+//                                }
+//                            }
+//                    }
+//                    .background(Color.background)
+//                    .clipShape(
+//                        RoundedRectangle(cornerRadius: 20)
+//                    )
+//                }
+//            }
+//        }
+//        .offset(x: -11, y: -35)
+//        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
+//    }
 }
 

@@ -7,11 +7,14 @@
 
 import SwiftUI
 import Flow
+import Factory
 
 struct SearchView: View {
-    @ObservedObject var viewModel: MainViewModel
+    @InjectedObservable(\.searchViewModel) private var viewModel: SearchViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
-    // Timer task for debouncing
+    @State private var searchText: String = ""
+    @State private var searchTags: [Tag] = []
     @State private var searchTask: Task<Void, Never>? = nil
     
     var body: some View {
@@ -30,21 +33,21 @@ struct SearchView: View {
                         .padding(.horizontal, 8)
                         .contentShape(Rectangle()) // 터치 영역을 더 넓게 설정
                         .onTapGesture {
-                            viewModel.appState.navigation.pop()
+                            navigation.pop()
                         }
                     
                     //MARK: - 검색 창
                     HStack {
-                        ForEach(viewModel.getTags(from: viewModel.searchBarSelectedTagIds), id: \.id) { tag in
+                        ForEach(searchTags, id: \.id) { tag in
                             TagView(viewModel: viewModel, tag: tag, addXmark: true) {
                                 removeTagFromSelectedTags(tag.id)
                             }
                         }
                         
-                        TextField("텍스트와 태그로 메모 검색", text: $viewModel.searchBarText)
+                        TextField("텍스트와 태그로 메모 검색", text: $searchText)
                             .font(.pretendard(.regular, size: 15))
                             .foregroundStyle(Color.basicText)
-                            .onChange(of: viewModel.searchBarText) {
+                            .onChange(of: searchText) {
                                 // 실행하고 있는 searchTask를 종료
                                 searchTask?.cancel()
                                 

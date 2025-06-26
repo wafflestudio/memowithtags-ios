@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Factory
 
-struct EditingTagListView: View {
-    @ObservedObject var viewModel: MainViewModel
+struct TagEditorView: View {
+    @InjectedObservable(\.editorViewModel) private var viewModel: EditorViewModel
     
     @State private var searchText: String = ""
     @State private var randomColor: Color.TagColor = Color.TagColor.allCases.randomElement()!
@@ -38,10 +39,21 @@ struct EditingTagListView: View {
                 HStack(alignment: .center, spacing: 8) {
                     // "Create Tag" TagView
                     if canCreateTag() {
-                        CreateTagView(
-                            searchText: $searchText,
-                            randomColor: $randomColor
-                        )
+                        HStack(alignment: .center, spacing: 4) {
+                            Text(searchText)
+                                .font(.pretendard(.regular, size: 14))
+                                .foregroundColor(Color.tagText)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(randomColor.color)
+                                .cornerRadius(4)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                            
+                            Text("만들기")
+                                .font(.pretendard(.regular, size: 14))
+                                .foregroundStyle(Color.basicText)
+                        }
                         .onTapGesture {
                             Task {
                                 await viewModel.createTag(name: searchText, color: randomColor)
@@ -51,9 +63,8 @@ struct EditingTagListView: View {
                         }
                     }
                     
-                    ForEach(filterTags(), id: \.id) { tag in
-                        TagView(viewModel: viewModel, tag: tag) {
-                            viewModel.editorTagIds.append(tag.id)
+                    ForEach(viewModel.tags, id: \.id) { tag in
+                        TagView(tag: tag) {
                             searchText = ""
                         }
                     }
@@ -64,15 +75,6 @@ struct EditingTagListView: View {
         .padding(.horizontal, 10)
         .onAppear {
             generateRandomHexColor()
-        }
-    }
-    
-    // Function to filter tags based on search text
-    private func filterTags() -> [Tag] {
-        if searchText.isEmpty {
-            return viewModel.recommendTags()
-        } else {
-            return viewModel.recommendTags().filter { $0.name.lowercased().contains(searchText.lowercased()) }
         }
     }
     

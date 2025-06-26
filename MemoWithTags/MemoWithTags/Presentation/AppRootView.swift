@@ -15,7 +15,7 @@ struct AppRootView: View {
     var body: some View {
         //MARK: - 네비게이션
         NavigationStack(path: $navigation.path) {
-            SplashView(viewModel: .init(container: container))
+            SplashView()
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .root:

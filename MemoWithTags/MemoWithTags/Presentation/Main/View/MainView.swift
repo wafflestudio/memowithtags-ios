@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Factory
 
 struct MainView: View {
-    @ObservedObject var viewModel: MainViewModel
+    @InjectedObservable(\.mainViewModel) private var viewModel: MainViewModel
+    @InjectedObservable(\.navigation) private var navigation: Navigation
     
     @StateObject private var keyboardManager = KeyboardManager()
     
@@ -31,7 +33,7 @@ struct MainView: View {
         }
         .onAppear {
             Task {
-                await viewModel.initMemo()
+                await viewModel.initialize()
             }
         }
         .toolbar {
@@ -53,14 +55,14 @@ struct MainView: View {
                         .font(.system(size: 15))
                         .foregroundStyle(Color.basicText)
                         .onTapGesture {
-                            viewModel.appState.navigation.push(to: .search)
+                            navigation.push(to: .search)
                         }
                     
                     Image(systemName: "list.bullet")
                         .font(.system(size: 15))
                         .foregroundStyle(Color.basicText)
                         .onTapGesture {
-                            viewModel.appState.navigation.push(to: .settings)
+                            navigation.push(to: .settings)
                         }
                 }
             }

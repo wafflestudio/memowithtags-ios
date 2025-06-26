@@ -31,10 +31,6 @@ final class MainViewModel {
         appState.memos
     }
     
-    var tags: [Tag] {
-        appState.tags
-    }
-    
     //MARK: - 메모 페이지 별로 가져오기
     func fetchMemos() async {
         guard !isLoading else { return }
@@ -99,6 +95,32 @@ final class MainViewModel {
         }
         
         isLoading = false
+    }
+    
+    //MARK: - editor에서 submit 했을 때 작동
+    func submit() async {
+        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedContent.isEmpty else { return }
+
+        switch editorState {
+        case .create:
+            await createMemo(content: trimmedContent, tagIds: editorTagIds, locked: false)
+            self.memos = []
+            self.mainCurrentPage = 0
+            self.mainTotalPages = 1
+            await fetchMemos()
+
+        case .update(let target):
+            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
+        }
+
+        // Reset the input fields
+        editorState = .create
+        editorContent = ""
+        editorTagIds = []
+        recommendingMemoIds = []
+        highlightingMemoIndex = -1
+        hideKeyboard()
     }
     
     //MARK: - 메모 삭제
@@ -219,7 +241,6 @@ final class MainViewModel {
         switch result {
         case .success(let tag):
             appState.tags.append(tag)
-//            self.editorTagIds.append(tag.id)
         case .failure(let error):
             alert.alert(error: error)
         }
@@ -255,12 +276,9 @@ final class MainViewModel {
         case .success:
             appState.tags.removeAll { $0.id == tagId }
 
-            for index in memos.indices {
+            for index in appState.memos.indices {
                 appState.memos[index].tagIds.removeAll { $0 == tagId }
             }
-//            for index in searchedMemos.indices {
-//                self.searchedMemos[index].tagIds.removeAll { $0 == tagId }
-//            }
         case .failure(let error):
             alert.alert(error: error)
         }

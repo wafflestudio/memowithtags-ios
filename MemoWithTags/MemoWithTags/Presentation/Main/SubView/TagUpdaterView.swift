@@ -6,17 +6,17 @@
 //
 
 import SwiftUI
+import Factory
 
-struct UpdateTagView: View {
+struct TagUpdaterView: View {
+    @InjectedObservable(\.editorViewModel) private var viewModel: EditorViewModel
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: MainViewModel
-
+    
     let tag: Tag
     @State private var updatedName: String
     @State private var selectedColor: Color.TagColor
 
-    init(viewModel: MainViewModel, tag: Tag) {
-        self.viewModel = viewModel
+    init(tag: Tag) {
         self.tag = tag
         updatedName = tag.name
         selectedColor = tag.color

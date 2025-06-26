@@ -6,14 +6,16 @@
 //
 
 import SwiftUI
+import Factory
 
 struct TagView: View {
-    @ObservedObject var viewModel: MainViewModel
+    @InjectedObservable(\.tagViewModel) private var viewModel: TagViewModel
+
     @State private var isUpdating: Bool = false
     @State private var isMenuVisible = false
     
     var tag: Tag
-    var addXmark: Bool = false
+    var xmark: Bool = false
     var onTap: (() -> Void)?
     
     var body: some View {
@@ -35,7 +37,7 @@ struct TagView: View {
                     .background(Color.placeholder)
                     .clipShape(Circle())
                     .offset(x: 5, y: -5)
-                    .opacity(addXmark ? 1 : 0), alignment: .topTrailing)
+                    .opacity(xmark ? 1 : 0), alignment: .topTrailing)
             .onTapGesture {
                 onTap?()
             }
@@ -63,7 +65,7 @@ struct TagView: View {
             .sheet(isPresented: $isUpdating, onDismiss: {
                 isUpdating = false
             }) {
-                UpdateTagView(viewModel: viewModel, tag: tag)
+                TagEditorView(tag: tag)
             }
     }
 }
