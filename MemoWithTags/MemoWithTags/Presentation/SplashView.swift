@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct SplashView: View {
-    @InjectedObservable(\.navigation) private var navigation: Navigation
-    @InjectedObservable(\.appState) private var appState: AppState
+    @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.appState) private var appState
     
     var body: some View {
         ZStack {

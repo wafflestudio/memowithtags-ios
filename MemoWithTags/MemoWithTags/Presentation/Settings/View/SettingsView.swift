@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct SettingsView: View {
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.navigationState) private var navigation
     
     @State private var showingOpenSourceLicense = false
     @State private var showingServiceTerm = false

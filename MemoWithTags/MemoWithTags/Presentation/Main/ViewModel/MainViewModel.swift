@@ -12,13 +12,13 @@ import Factory
 @MainActor
 @Observable
 final class MainViewModel {
-    @ObservationIgnored @Injected(\.memoService) private var memoService: MemoService
-    @ObservationIgnored @Injected(\.tagService) private var tagService: TagService
-    @ObservationIgnored @Injected(\.userService) private var userService: UserService
+    @ObservationIgnored @Injected(\.memoService) private var memoService
+    @ObservationIgnored @Injected(\.tagService) private var tagService
+    @ObservationIgnored @Injected(\.userService) private var userService
     
-    @Injected(\.appState) private var appState: AppState
-    @Injected(\.navigation) private var navigation: Navigation
-    @Injected(\.alert) private var alert: Alert
+    @ObservationIgnored @Injected(\.appState) private var appState
+    @ObservationIgnored @Injected(\.navigationState) private var navigation
+    @ObservationIgnored @Injected(\.alertState) private var alert
     
     var isLoading: Bool = false
     var currentPage: Int = 0 // 로드된 페이지 중 가장 높은 페이지 (최초 값: 0)
@@ -97,31 +97,6 @@ final class MainViewModel {
         isLoading = false
     }
     
-    //MARK: - editor에서 submit 했을 때 작동
-    func submit() async {
-        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedContent.isEmpty else { return }
-
-        switch editorState {
-        case .create:
-            await createMemo(content: trimmedContent, tagIds: editorTagIds, locked: false)
-            self.memos = []
-            self.mainCurrentPage = 0
-            self.mainTotalPages = 1
-            await fetchMemos()
-
-        case .update(let target):
-            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
-        }
-
-        // Reset the input fields
-        editorState = .create
-        editorContent = ""
-        editorTagIds = []
-        recommendingMemoIds = []
-        highlightingMemoIndex = -1
-        hideKeyboard()
-    }
     
     //MARK: - 메모 삭제
     func deleteMemo(memoId: Int) async {
@@ -366,13 +341,6 @@ final class MainViewModel {
 //    func recommendTags() -> [Tag] {
 //        tags.filter { !editorTagIds.contains($0.id) }
 //    }
-    
-    //MARK: - tag id --> tag 맵핑하는 함수
-    func getTags(from tagIds: [Int]) -> [Tag] {
-        return tagIds.compactMap { id in
-            tags.first { $0.id == id }
-        }
-    }
 }
 
 extension Container {

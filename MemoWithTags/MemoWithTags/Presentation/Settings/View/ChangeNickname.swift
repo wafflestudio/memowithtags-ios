@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct ChangeNicknameView: View {
-    @InjectedObservable(\.settingViewModel) private var viewModel: SettingViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.settingViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
 
     @State private var nickname: String = ""
     

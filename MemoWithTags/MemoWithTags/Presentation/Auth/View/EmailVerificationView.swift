@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct EmailVerificationView: View {
-    @InjectedObservable(\.emailVerificationViewModel) private var viewModel: EmailVerificationViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.emailVerificationViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
     
     let email: String
     

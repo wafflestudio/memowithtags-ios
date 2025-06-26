@@ -11,9 +11,9 @@ import Factory
 @MainActor
 @Observable
 final class NicknameSettingViewModel {
-    @ObservationIgnored @Injected(\.userService) private var userService: UserService
-    @Injected(\.navigation) private var navigation: Navigation
-    @Injected(\.alert) private var alert: Alert
+    @ObservationIgnored @Injected(\.userService) private var userService
+    @ObservationIgnored @Injected(\.navigationState) private var navigation
+    @ObservationIgnored @Injected(\.alertState) private var alert
     
     var isLoading = false
     

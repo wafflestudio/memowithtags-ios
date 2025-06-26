@@ -12,12 +12,12 @@ import Factory
 @MainActor
 @Observable
 final class SettingViewModel {
-    @ObservationIgnored @Injected(\.userService) private var userService: UserService
-    @ObservationIgnored @Injected(\.authService) private var authService: AuthService
+    @ObservationIgnored @Injected(\.userService) private var userService
+    @ObservationIgnored @Injected(\.authService) private var authService
     
-    @Injected(\.appState) private var appState: AppState
-    @Injected(\.navigation) private var navigation: Navigation
-    @Injected(\.alert) private var alert: Alert
+    @ObservationIgnored @Injected(\.appState) private var appState
+    @ObservationIgnored @Injected(\.navigationState) private var navigation
+    @ObservationIgnored @Injected(\.alertState) private var alert
     
     var isLoading: Bool = false
     

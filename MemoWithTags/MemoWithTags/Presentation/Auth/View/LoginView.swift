@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct LoginView: View {
-    @InjectedObservable(\.loginViewModel) private var viewModel: LoginViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.loginViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
     
     @State private var email: String = ""
     @State private var password: String = ""

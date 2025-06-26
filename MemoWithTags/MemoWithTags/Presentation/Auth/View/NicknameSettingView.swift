@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct NicknameSettingView: View {
-    @InjectedObservable(\.nicknameSettingViewModel) private var viewModel: NicknameSettingViewModel
+    @InjectedObservable(\.nicknameSettingViewModel) private var viewModel
     
     @State private var nickname: String = ""
     

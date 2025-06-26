@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct EmailEnterView: View {
-    @InjectedObservable(\.emailEnterViewModel) private var viewModel: EmailEnterViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.emailEnterViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
     
     @State private var email: String = ""
     

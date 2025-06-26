@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct SignupSuccessView: View {
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.navigationState) private var navigation
     
     var body: some View {
         ZStack {

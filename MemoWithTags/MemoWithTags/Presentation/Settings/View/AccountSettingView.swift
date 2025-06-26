@@ -9,9 +9,9 @@ import SwiftUI
 import Factory
 
 struct AccountSettingView: View {
-    @InjectedObservable(\.settingViewModel) private var viewModel: SettingViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
-    @InjectedObservable(\.appState) private var appState: AppState
+    @InjectedObservable(\.settingViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.appState) private var appState
     
     @State private var showWithdrawalSheet = false
     @State private var email = ""

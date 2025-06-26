@@ -9,31 +9,18 @@ import SwiftUI
 import Factory
 
 struct MainView: View {
-    @InjectedObservable(\.mainViewModel) private var viewModel: MainViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.mainViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
     
     @StateObject private var keyboardManager = KeyboardManager()
     
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                //MARK: - 메모 리스트
-                MemoListView(viewModel: viewModel)
-                
-                //MARK: - 메모 에디터
-                EditingMemoView(viewModel: viewModel)
-                
-                //MARK: - 태그 에디터
-                if keyboardManager.currentHeight > 0 {
-                    EditingTagListView(viewModel: viewModel)
-                }
-            }
         }
         .onAppear {
             Task {
-                await viewModel.initialize()
+//                await viewModel.initialize()
             }
         }
         .toolbar {

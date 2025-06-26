@@ -12,10 +12,10 @@ import Factory
 @MainActor
 @Observable
 final class SearchViewModel {
-    @ObservationIgnored @Injected(\.memoService) private var memoService: MemoService
-    @Injected(\.appState) private var appState: AppState
-    @Injected(\.navigation) private var navigation: Navigation
-    @Injected(\.alert) private var alert: Alert
+    @ObservationIgnored @Injected(\.memoService) private var memoService
+    @ObservationIgnored @Injected(\.appState) private var appState
+    @ObservationIgnored @Injected(\.navigationState) private var navigation
+    @ObservationIgnored @Injected(\.alertState) private var alert
     
     var isLoading: Bool = false
     

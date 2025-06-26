@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct ResetPasswordView: View {
-    @InjectedObservable(\.resetPasswordViewModel) var viewModel: ResetPasswordViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.resetPasswordViewModel) var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
     
     let email: String
     @State private var password: String = ""

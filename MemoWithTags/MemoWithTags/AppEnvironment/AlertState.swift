@@ -10,7 +10,7 @@ import Factory
 
 @MainActor
 @Observable
-final class Alert {
+final class AlertState {
     var showAlert: Bool = false
     var error: Error? = nil
     
@@ -22,7 +22,7 @@ final class Alert {
 
 extension Container {
     @MainActor
-    var alert: Factory<Alert> {
-        self { @MainActor in Alert() }.singleton
+    var alertState: Factory<AlertState> {
+        self { @MainActor in AlertState() }.singleton
     }
 }

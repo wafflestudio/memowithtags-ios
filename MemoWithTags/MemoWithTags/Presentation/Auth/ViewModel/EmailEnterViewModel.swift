@@ -11,9 +11,9 @@ import Factory
 @MainActor
 @Observable
 final class EmailEnterViewModel {
-    @ObservationIgnored @Injected(\.authService) private var authService: AuthService
-    @Injected(\.navigation) private var navigation: Navigation
-    @Injected(\.alert) private var alert: Alert
+    @ObservationIgnored @Injected(\.authService) private var authService
+    @ObservationIgnored @Injected(\.navigationState) private var navigation
+    @ObservationIgnored @Injected(\.alertState) private var alert
     
     var isLoading = false
     

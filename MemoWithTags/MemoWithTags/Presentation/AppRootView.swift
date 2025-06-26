@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct AppRootView: View {
-    @InjectedObservable(\.navigation) private var navigation: Navigation
-    @InjectedObservable(\.alert) private var alert: Alert
+    @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.alertState) private var alert
     
     var body: some View {
         //MARK: - 네비게이션
@@ -24,9 +24,6 @@ struct AppRootView: View {
                         MainView()
                     case .search:
                         SearchView()
-                    case .memoEditor:
-                        MemoEditorView()
-                        
                     //로그인
                     case .login:
                         LoginView()
@@ -57,46 +54,46 @@ struct AppRootView: View {
                     }
                 }
         }
-        //MARK: - context menu
-        .overlay {            
-            if container.appState.system.showContextMenu {
-                ZStack {
-                    Color.black.opacity(0.2)
-                        .ignoresSafeArea()
-                        
-                    BackdropBlurView(radius: 6)
-                    
-                    let anchorX = container.appState.system.previewAnchor!.x
-                    let anchorY = container.appState.system.previewAnchor!.y
-                    let isTopHalf = anchorY <= UIScreen.main.bounds.height / 2
-        
-                    GeometryReader { proxy in
-                        VStack(spacing: 15) {
-                            ContextMenu(menuItems: container.appState.system.menuItems) {
-                                container.appState.system.showContextMenu = false
-                            }
-                            .opacity(isTopHalf ? 0 : 1)
-                            
-                            Preview(type: container.appState.system.previewType!)
-                            
-                            ContextMenu(menuItems: container.appState.system.menuItems) {
-                                container.appState.system.showContextMenu = false
-                            }
-                            .opacity(isTopHalf ? 1 : 0)
-                        }
-                        .position(x: anchorX, y: anchorY)
-                    }
-                    
-                }
-                .onAppear {
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }
-                .ignoresSafeArea()
-                .onTapGesture {
-                    container.appState.system.showContextMenu = false
-                }
-            }
-        }
+//        //MARK: - context menu
+//        .overlay {            
+//            if container.appState.system.showContextMenu {
+//                ZStack {
+//                    Color.black.opacity(0.2)
+//                        .ignoresSafeArea()
+//                        
+//                    BackdropBlurView(radius: 6)
+//                    
+//                    let anchorX = container.appState.system.previewAnchor!.x
+//                    let anchorY = container.appState.system.previewAnchor!.y
+//                    let isTopHalf = anchorY <= UIScreen.main.bounds.height / 2
+//        
+//                    GeometryReader { proxy in
+//                        VStack(spacing: 15) {
+//                            ContextMenu(menuItems: container.appState.system.menuItems) {
+//                                container.appState.system.showContextMenu = false
+//                            }
+//                            .opacity(isTopHalf ? 0 : 1)
+//                            
+//                            Preview(type: container.appState.system.previewType!)
+//                            
+//                            ContextMenu(menuItems: container.appState.system.menuItems) {
+//                                container.appState.system.showContextMenu = false
+//                            }
+//                            .opacity(isTopHalf ? 1 : 0)
+//                        }
+//                        .position(x: anchorX, y: anchorY)
+//                    }
+//                    
+//                }
+//                .onAppear {
+//                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+//                }
+//                .ignoresSafeArea()
+//                .onTapGesture {
+//                    container.appState.system.showContextMenu = false
+//                }
+//            }
+//        }
         //MARK: - 외부 링크에서 접근 (소셜 로그인)
 //        .onOpenURL { url in
 //            Task {

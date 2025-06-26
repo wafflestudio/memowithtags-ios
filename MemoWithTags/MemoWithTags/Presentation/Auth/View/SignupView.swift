@@ -9,8 +9,8 @@ import SwiftUI
 import Factory
 
 struct SignupView: View {
-    @InjectedObservable(\.signupViewModel) private var viewModel: SignupViewModel
-    @InjectedObservable(\.navigation) private var navigation: Navigation
+    @InjectedObservable(\.signupViewModel) private var viewModel
+    @InjectedObservable(\.navigationState) private var navigation
     
     let email: String
     @State private var nickname: String = ""

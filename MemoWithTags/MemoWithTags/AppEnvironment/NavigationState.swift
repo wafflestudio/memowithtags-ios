@@ -13,7 +13,7 @@ enum Route: Hashable {
     case root
     case main
     case search
-    case memoEditor
+//    case memoEditor
     
     //MARK: - 로그인
     case login
@@ -40,7 +40,7 @@ enum Route: Hashable {
 
 @MainActor
 @Observable
-final class Navigation {
+final class NavigationState {
     var path = NavigationPath()
     var explicitStack: [Route] = []
     
@@ -74,8 +74,8 @@ final class Navigation {
 
 extension Container {
     @MainActor
-    var navigation: Factory<Navigation> {
-        self { @MainActor in Navigation() }.singleton
+    var navigationState: Factory<NavigationState> {
+        self { @MainActor in NavigationState() }.singleton
     }
 }
 
