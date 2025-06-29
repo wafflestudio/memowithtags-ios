@@ -82,7 +82,7 @@ struct SearchView: View {
                 //MARK: - 태그 검색 결과
                 if !viewModel.searchedTagIds.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Tags")
+                        Text("태그")
                             .font(.pretendard(.medium, size: 12))
                             .foregroundStyle(Color.grayText)
                             .padding(.horizontal, 14)
@@ -105,7 +105,7 @@ struct SearchView: View {
                 //MARK: - 메모 검색 결과
                 if !viewModel.searchedMemos.isEmpty {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Memos")
+                        Text("메모")
                             .font(.pretendard(.medium, size: 12))
                             .foregroundStyle(Color.grayText)
                             .padding(.horizontal, 26)
