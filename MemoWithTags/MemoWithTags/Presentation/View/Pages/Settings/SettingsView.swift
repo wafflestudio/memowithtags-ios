@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct SettingsView: View {
     @ObservedObject var viewModel: MainViewModel
@@ -135,6 +136,36 @@ struct SettingsView: View {
                         showingPrivacyPolicy = true
                     }
 
+                    // MARK: - 피드백 안내
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("피드백")
+                                .font(.pretendard(.medium, size: 14))
+                                .foregroundStyle(Color.basicText)
+                            
+                            Spacer()
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("버그 신고나 새로운 기능 제안이 있으시면")
+                                .font(.pretendard(.regular, size: 12))
+                                .foregroundStyle(Color.grayText)
+                            
+                            CopyableText(text: "memowithtags@gmail.com")
+                                .font(.pretendard(.medium, size: 12))
+                                .foregroundColor(Color.redText)
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            Text("으로 연락주세요!")
+                                .font(.pretendard(.regular, size: 12))
+                                .foregroundStyle(Color.grayText)
+                        }
+                        .padding(.leading, 6)
+                    }
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 17)
+                    .background(Color.memoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 }
 
@@ -161,5 +192,69 @@ struct SettingsView: View {
                 content: Documents.privacyPolicy
             )
         }
+    }
+}
+
+// MARK: - CopyableText - 일단은 이렇게 복잡하게 구현했는데, 나중에는 "개발자 괴롭히기" 버튼을 누르면 아예 새로운 창에서 사용자가 피드백을 보낼 수 있게 하자.
+struct CopyableText: UIViewRepresentable {
+    let text: String
+    
+    func makeUIView(context: Context) -> UILabel {
+        let label = CopyableLabel()
+        label.text = text
+        label.isUserInteractionEnabled = true
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.numberOfLines = 1
+        label.setContentHuggingPriority(.required, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        return label
+    }
+    
+    func updateUIView(_ uiView: UILabel, context: Context) {
+        uiView.text = text
+    }
+    
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UILabel, context: Context) -> CGSize? {
+        return uiView.sizeThatFits(CGSize(width: proposal.width ?? .infinity, height: .infinity))
+    }
+}
+
+class CopyableLabel: UILabel {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupLabel()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupLabel()
+    }
+    
+    private func setupLabel() {
+        isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func handleTap() {
+        becomeFirstResponder()
+        
+        let menuController = UIMenuController.shared
+        if !menuController.isMenuVisible {
+            menuController.showMenu(from: self, rect: bounds)
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:))
+    }
+    
+    override func copy(_ sender: Any?) {
+        UIPasteboard.general.string = text
+        UIMenuController.shared.hideMenu()
     }
 }
