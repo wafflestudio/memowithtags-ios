@@ -57,8 +57,10 @@ struct AppRootView: View {
                         EmailVerificationView(viewModel: emailVerificationViewModel, email: email)
                     case .signup(let email):
                         SignupView(viewModel: signupViewModel, email: email)
-                    case .signupSuccess, .resetPasswordSuccess:
+                    case .signupSuccess:
                         SignupSuccessView(viewModel: .init(container: container))
+                    case .resetPasswordSuccess:
+                        ResetPasswordSuccessView(viewModel: .init(container: container))
                     case .nicknameSetting:
                         NicknameSettingView(viewModel: .init(container: container))
                     case .resetPassword(let email):
