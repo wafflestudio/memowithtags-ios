@@ -13,7 +13,7 @@ enum Route: Hashable {
     case root
     case main
     case search
-//    case memoEditor
+    case fullEditor(id: Int)
     
     //MARK: - 로그인
     case login
@@ -43,6 +43,7 @@ enum Route: Hashable {
 final class NavigationState {
     var path = NavigationPath()
     var explicitStack: [Route] = []
+    var namespace: Namespace.ID!
     
     var current: Route {
         return explicitStack.last ?? .root
@@ -63,12 +64,9 @@ final class NavigationState {
     }
     
     func reset() {
-        if !path.isEmpty {
-            path.removeLast(path.count)
-        }
-        if !explicitStack.isEmpty {
-            explicitStack.removeLast(explicitStack.count)
-        }
+        Container.shared.mainViewModel.reset()
+        path = NavigationPath()
+        explicitStack = []
     }
 }
 

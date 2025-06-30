@@ -39,6 +39,7 @@ final class LoginViewModel {
 
         switch result {
         case .success:
+            navigation.reset()
             navigation.push(to: .main)
         case .failure(let error):
             alert.alert(error: error)

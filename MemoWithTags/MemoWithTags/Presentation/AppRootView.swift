@@ -12,10 +12,13 @@ struct AppRootView: View {
     @InjectedObservable(\.navigationState) private var navigation
     @InjectedObservable(\.alertState) private var alert
     
+    @Namespace private var namespace
+    
     var body: some View {
         //MARK: - 네비게이션
         NavigationStack(path: $navigation.path) {
             SplashView()
+                .onAppear { navigation.namespace = namespace }
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .root:
@@ -24,6 +27,10 @@ struct AppRootView: View {
                         MainView()
                     case .search:
                         SearchView()
+                    case .fullEditor(let id):
+                        FullEditorView()
+                            .navigationTransition(.zoom(sourceID: id, in: namespace))
+                    
                     //로그인
                     case .login:
                         LoginView()

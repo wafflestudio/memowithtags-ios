@@ -1,55 +1,51 @@
-//import SwiftUI
-//
-//struct MemoListView: View {
-//    @ObservedObject var viewModel: MainViewModel
-//    
-//    var body: some View {
-//        ScrollViewReader { proxy in
-//            ScrollView {
-//                LazyVStack(alignment: .leading, spacing: 12) {
-//                    
-//                    ForEach(viewModel.memos) { memo in
-//                        let isHighlighted: Bool = {
-//                            if viewModel.scrollTarget >= 0 {
-//                                return viewModel.scrollTarget == memo.id
-//                            }
-//                            return false
-//                        }()
-//                        
-//                        MemoView(memo: memo, viewModel: viewModel)
-//                            .id(memo.id)
+import SwiftUI
+import Factory
+
+struct MemoListView: View {
+    @InjectedObservable(\.mainViewModel) private var viewModel
+    
+    var body: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 12) {
+                    Color.clear
+                        .frame(height: 8)
+                        .id("bottom")
+                    
+                    ForEach(viewModel.memos) { memo in
+                        MemoView(memo: memo)
+                            .id(memo.id)
 //                            .scaleEffect(isHighlighted ? 1.04 : 1.0)
 //                            .shadow(color: isHighlighted ? Color.shadow : .clear, radius: 3)
 //                            .animation(.easeInOut(duration: 0.3), value: isHighlighted)
-//                            .rotationEffect(.degrees(180))
-//                    }
-//                    
-//                    // ProgressView: 스크롤 맨 위(화면 상단, 코드 상에서는 아래쪽)에 도달하면 다음 페이지를 불러옴 (fetchMemos())
-//                    HStack {
-//                        Spacer()
-//                        ProgressView()
-//                        Spacer()
-//                    }
-//                    .opacity(viewModel.isLoading ? 1 : 0)
-//                    .onAppear {
-//                        Task {
-//                            await viewModel.fetchMemos()
-//                        }
-//                    }
-//                }
-//                .padding(.top, 20) // 화면 하단, 코드 상으로는 top에 패딩
-//            }
-//            .rotationEffect(.degrees(180))
-//            .scrollIndicators(.hidden)
-//            // scrollTarget 값이 바뀔 때, 해당 memoId를 보여주기 위해 (필요하다면 fetch 후) 스크롤
+                            .rotationEffect(.degrees(180))
+                    }
+                    
+                    Color.clear
+                        .frame(height: 8)
+                        .onAppear {
+                            Task {
+                                if viewModel.memos.count > 0 {
+                                    await viewModel.fetchMemos()
+                                }
+                            }
+                        }
+                }
+            }
+            .rotationEffect(.degrees(180))
+            .scrollIndicators(.hidden)
+            .onChange(of: viewModel.scrollTrigger) {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    if viewModel.scrollTarget == -1 {
+                        proxy.scrollTo("bottom", anchor: .bottom)
+                    } else {
+                        proxy.scrollTo(viewModel.scrollTarget, anchor: .top)
+                    }
+                }
+            }
 //            .onChange(of: viewModel.scrollTarget) {
 //                Task {
 //                    if viewModel.scrollTarget == -1 {
-//                        if let firstMemo = viewModel.memos.first {
-//                            withAnimation {
-//                                proxy.scrollTo(firstMemo.id, anchor: .center)
-//                            }
-//                        }
 //                    } else {
 //                        if viewModel.memos.contains(where: { $0.id == viewModel.scrollTarget }) {
 //                            // scrollTarget이 이미 memos에 있다면 바로 스크롤
@@ -79,6 +75,6 @@
 //                    viewModel.scrollTarget = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
 //                }
 //            }
-//        }
-//    }
-//}
+        }
+    }
+}

@@ -20,26 +20,47 @@ final class MainViewModel {
     @ObservationIgnored @Injected(\.navigationState) private var navigation
     @ObservationIgnored @Injected(\.alertState) private var alert
     
-    var isLoading: Bool = false
-    var currentPage: Int = 0 // 로드된 페이지 중 가장 높은 페이지 (최초 값: 0)
-    var totalPages: Int = 1
-    var scrollTarget: Int = -1 // scroll할 memoId. (-1는 default 값으로, -1이 되면 가장 아래로 scroll된다.)
-    var recommendingMemoIds: [Int] = []
-    var highlightingMemoIndex: Int = -1
+    //main
+    var memos: [Memo] = []
+    var tags: [Tag] { appState.tags }
     
-    var memos: [Memo] {
-        appState.memos
+    private var mainCurrentPage: Int = 0
+    private var mainTotalPages: Int = 1
+    
+    private var mainLoading: Bool = false
+    
+    var editContent: String = ""
+    var editTagList: [TagID] = []
+    var editState: EditState = .creating
+    enum EditState {
+        case creating
+        case updating(memo: Memo)
     }
+    
+    //search
+    var searchedMemos: [Memo] = []
+    var searchedTags: [TagID] = []
+    
+    private var searchCurrentPage: Int = 0
+    private var searchTotalPages: Int = 1
+    
+    //task
+    private static var tempID: Int = -1
+    var scrollTrigger: Bool = false
+    var scrollTarget: Int = -1
+//    var recommendingMemoIds: [Int] = []
+//    var highlightingMemoIndex: Int = -1
     
     //MARK: - 메모 페이지 별로 가져오기
     func fetchMemos() async {
-        guard !isLoading else { return }
-        isLoading = true
-
-        let nextPage = currentPage + 1
+        guard !mainLoading else { return }
         
-        guard nextPage <= totalPages else {
-            isLoading = false
+        mainLoading = true
+        
+        let nextPage = mainCurrentPage + 1
+        
+        guard nextPage <= mainTotalPages else {
+            mainLoading = false
             return
         }
         
@@ -47,93 +68,97 @@ final class MainViewModel {
         
         switch result {
         case .success(let paginatedMemos):
-            appState.memos.append(contentsOf: paginatedMemos.memos)
-            currentPage = nextPage
-            totalPages = paginatedMemos.totalPages
+            memos.append(contentsOf: paginatedMemos.memos)
+            mainCurrentPage = nextPage
+            mainTotalPages = paginatedMemos.totalPages
+            mainLoading = false
             
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     //MARK: - 메모 생성
     func createMemo(content: String, tagIds: [Int], locked: Bool) async {
-        isLoading = true
+        let tempID = MainViewModel.tempID
+        let tempMemo = Memo(id: tempID,
+                             content: content,
+                             tagIds: tagIds,
+                             locked: locked,
+                             createdAt: Date(),
+                             updatedAt: Date(),
+                             state: .creating)
+        MainViewModel.tempID -= 1
+        memos.insert(tempMemo, at: 0)
         
         let result = await memoService.createMemo(content: content, tagIds: tagIds, locked: locked)
         
         switch result {
         case .success(let memo):
-            appState.memos.insert(memo, at: 0)
+            let mainPrefetched = await prefetchMainMemo()
+            
+            if mainPrefetched != nil && memos.contains(mainPrefetched!) {
+                memos.removeAll { $0.id == mainPrefetched!.id }
+            }
+            
+            if let index = memos.firstIndex(where: { $0.id == tempID }) {
+                memos[index] = memo
+            }
             
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     //MARK: - 메모 수정
     func updateMemo(memoId: Int, content: String, tagIds: [Int], locked: Bool) async {
-        isLoading = true
-        
         let result = await memoService.updateMemo(memoId: memoId, content: content, tagIds: tagIds, locked: locked)
         
         switch result {
         case .success(let memo):
-            if let index = appState.memos.firstIndex(where: { $0.id == memo.id }) {
-                appState.memos[index] = memo
+            if let index = memos.firstIndex(where: { $0.id == memo.id }) {
+                memos[index] = memo
             }
-//            if let index = self.searchedMemos.firstIndex(where: { $0.id == memo.id }) {
-//                self.searchedMemos[index] = memo
-//            }
+            if let index = searchedMemos.firstIndex(where: { $0.id == memo.id }) {
+                searchedMemos[index] = memo
+            }
             
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     
     //MARK: - 메모 삭제
     func deleteMemo(memoId: Int) async {
-        isLoading = true
-        
         let mainPrefetched = await prefetchMainMemo()
-//        let searchPrefetched = await prefetchSearchMemo()
+//        let searchPrefetched = await prefetchSearchedMemo()
         
         let result = await memoService.deleteMemo(memoId: memoId)
         
         switch result {
         case .success:
-            var beforeCount = appState.memos.count
-            appState.memos.removeAll { $0.id == memoId }
-            
-            if beforeCount != appState.memos.count && mainPrefetched != nil {
-                appState.memos.append(mainPrefetched!)
+            let beforeCount = memos.count
+            memos.removeAll { $0.id == memoId }
+            if beforeCount != memos.count && mainPrefetched != nil {
+                memos.append(mainPrefetched!)
             }
-
+ 
 //            beforeCount = searchedMemos.count
-//            self.searchedMemos.removeAll { $0.id == memoId }
+//            searchedMemos.removeAll { $0.id == memoId }
 //            if beforeCount != searchedMemos.count && searchPrefetched != nil{
-//                self.searchedMemos.append(searchPrefetched!)
+//                searchedMemos.append(searchPrefetched!)
 //            }
             
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
-    //MARK: - 삭제 시, 다음 페이지의 메모를 하나 미리 가져오기 위한 함수
     func prefetchMainMemo() async -> Memo? {
-        guard currentPage + 1 <= totalPages else { return nil }
+        guard mainCurrentPage + 1 <= mainTotalPages else { return nil }
         
-        let resultMain = await memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: currentPage + 1)
+        let resultMain = await memoService.searchMemos(content: nil, tagIds: nil, dateRange: nil, page: mainCurrentPage + 1)
         
         switch resultMain {
         case .success(let paginatedMemos):
@@ -144,8 +169,8 @@ final class MainViewModel {
             return nil
         }
     }
-    
-//    func prefetchSearchMemo() async -> Memo? {
+//    
+//    func prefetchSearchedMemo() async -> Memo? {
 //        let content = searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
 //        
 //        guard !content.isEmpty || !searchBarSelectedTagIds.isEmpty else { return nil }
@@ -191,10 +216,6 @@ final class MainViewModel {
     
     //MARK: - 태그 전부 가져오기
     func fetchTags() async {
-        guard !isLoading else { return }
-        
-        isLoading = true
-        
         let result = await tagService.fetchTag()
         
         switch result {
@@ -203,30 +224,23 @@ final class MainViewModel {
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     //MARK: - 태그 생성
     func createTag(name: String, color: Color.TagColor) async {
-        isLoading = true
-        
         let result = await tagService.createTag(name: name, color: color)
         
         switch result {
         case .success(let tag):
             appState.tags.append(tag)
+            
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     //MARK: - 태그 수정
     func updateTag(tagId: Int, name: String, color: Color.TagColor) async {
-        isLoading = true
-        
         let result = await tagService.updateTag(tagId: tagId, name: name, color: color)
         
         switch result {
@@ -237,36 +251,64 @@ final class MainViewModel {
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     //MARK: - 태그 삭제
     func deleteTag(tagId: Int) async {
-        isLoading = true
-        
         let result = await tagService.deleteTag(tagId: tagId)
         
         switch result {
         case .success:
             appState.tags.removeAll { $0.id == tagId }
 
-            for index in appState.memos.indices {
-                appState.memos[index].tagIds.removeAll { $0 == tagId }
+            for index in memos.indices {
+                memos[index].tagIds.removeAll { $0 == tagId }
             }
         case .failure(let error):
             alert.alert(error: error)
         }
+    }
+    
+    func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
+        let nextPage = searchCurrentPage + 1
         
-        isLoading = false
+        guard nextPage <= searchTotalPages else {
+            return
+        }
+        
+        let result = await memoService.searchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: nextPage)
+        
+        switch result {
+        case .success(let paginatedMemos):
+            searchedMemos.append(contentsOf: paginatedMemos.memos)
+            searchCurrentPage = nextPage
+            searchTotalPages = paginatedMemos.totalPages
+            
+        case .failure(let error):
+            alert.alert(error: error)
+        }
+    }
+    
+    //MARK: - 새로운 검색어, 태그에 대한 검색 수행
+    func search(text: String, tagIds: [Int]) async {
+        searchedMemos = []
+        searchedTags = []
+        searchCurrentPage = 0
+        searchTotalPages = 1
+        
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if !trimmedText.isEmpty || !tagIds.isEmpty {
+            await searchMemos(content: trimmedText, tagIds: tagIds)
+            
+            searchedTags = appState.tags.filter { tag in
+                tag.name.lowercased().contains(trimmedText.lowercased()) && !tagIds.contains(tag.id)
+            }.map(\.id)
+        }
     }
     
     //MARK: - 유저 정보 가져오는 함수
     func getUser() async {
-        guard !isLoading else { return }
-        
-        isLoading = true
-        
         let result = await userService.getUser()
         
         switch result {
@@ -276,8 +318,6 @@ final class MainViewModel {
         case .failure(let error):
             alert.alert(error: error)
         }
-        
-        isLoading = false
     }
     
     //MARK: - 초기화 함수
@@ -288,9 +328,9 @@ final class MainViewModel {
         if appState.tags.isEmpty {
             await fetchTags()
         }
-        if appState.memos.isEmpty {
-            currentPage = 0
-            totalPages = 1
+        if memos.isEmpty {
+            mainCurrentPage = 0
+            mainTotalPages = 1
             await fetchMemos()
         }
     }
@@ -333,19 +373,19 @@ final class MainViewModel {
 //        }
     }
     
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    func scrollTo(memoID: Int?) {
+        scrollTrigger.toggle()
+        if memoID == nil {
+            scrollTarget = -1
+        } else {
+            scrollTarget = memoID!
+        }
     }
-    
-    //MARK: - 태그 추천 해주는 함수(editor에 들어간 것들 뺴고)
-//    func recommendTags() -> [Tag] {
-//        tags.filter { !editorTagIds.contains($0.id) }
-//    }
 }
 
 extension Container {
     @MainActor
     var mainViewModel: Factory<MainViewModel> {
-        self { @MainActor in MainViewModel() }.singleton
+        self { @MainActor in MainViewModel() }.cached
     }
 }

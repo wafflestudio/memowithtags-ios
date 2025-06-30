@@ -10,7 +10,7 @@ import Flow
 import Factory
 
 struct SearchView: View {
-    @InjectedObservable(\.searchViewModel) private var viewModel
+    @InjectedObservable(\.mainViewModel) private var viewModel
     @InjectedObservable(\.navigationState) private var navigation
     
     @State private var searchText: String = ""
@@ -74,13 +74,13 @@ struct SearchView: View {
                 .padding(.bottom, 14)
                 
                 //MARK: - 로딩 아이콘
-                if viewModel.isLoading {
-                    VStack {
-                        ProgressView()
-                    }
-                    .padding(.vertical, 14)
-                    .frame(maxWidth: .infinity)
-                }
+//                if viewModel.isLoading {
+//                    VStack {
+//                        ProgressView()
+//                    }
+//                    .padding(.vertical, 14)
+//                    .frame(maxWidth: .infinity)
+//                }
                 
 //                //MARK: - 태그 검색 결과
 //                if !viewModel.searchedTagIds.isEmpty {

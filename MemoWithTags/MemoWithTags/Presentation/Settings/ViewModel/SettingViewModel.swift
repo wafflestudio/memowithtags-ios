@@ -31,7 +31,7 @@ final class SettingViewModel {
         
         switch result {
         case .success:
-            appState.user = nil
+            appState.initialize()
             
             navigation.reset()
             navigation.push(to: .root)
@@ -52,7 +52,7 @@ final class SettingViewModel {
         
         switch result {
         case .success:
-            appState.user = nil
+            appState.initialize()
             
             navigation.reset()
             navigation.push(to: .root)
@@ -130,6 +130,6 @@ final class SettingViewModel {
 extension Container {
     @MainActor
     var settingViewModel: Factory<SettingViewModel> {
-        self { @MainActor in SettingViewModel() }.singleton
+        self { @MainActor in SettingViewModel() }.cached
     }
 }

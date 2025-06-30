@@ -17,10 +17,19 @@ struct MainView: View {
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
+            
+            VStack {
+                MemoListView()
+                    .padding(.horizontal, 12)
+                
+                Spacer()
+                
+                EditorView()
+            }
         }
         .onAppear {
             Task {
-//                await viewModel.initialize()
+                await viewModel.initialize()
             }
         }
         .toolbar {
