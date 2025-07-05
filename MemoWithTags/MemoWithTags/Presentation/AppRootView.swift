@@ -12,6 +12,10 @@ struct AppRootView: View {
     @InjectedObservable(\.navigationState) private var navigation
     @InjectedObservable(\.alertState) private var alert
     
+    @InjectedObservable(\.contextMenuAction) private var contextMenuAction
+    
+    @State private var showContextMenu: Bool = false
+    
     @Namespace private var namespace
     
     var body: some View {
@@ -61,46 +65,49 @@ struct AppRootView: View {
                     }
                 }
         }
-//        //MARK: - context menu
-//        .overlay {            
-//            if container.appState.system.showContextMenu {
-//                ZStack {
-//                    Color.black.opacity(0.2)
-//                        .ignoresSafeArea()
-//                        
-//                    BackdropBlurView(radius: 6)
-//                    
-//                    let anchorX = container.appState.system.previewAnchor!.x
-//                    let anchorY = container.appState.system.previewAnchor!.y
-//                    let isTopHalf = anchorY <= UIScreen.main.bounds.height / 2
-//        
-//                    GeometryReader { proxy in
-//                        VStack(spacing: 15) {
-//                            ContextMenu(menuItems: container.appState.system.menuItems) {
-//                                container.appState.system.showContextMenu = false
-//                            }
-//                            .opacity(isTopHalf ? 0 : 1)
-//                            
-//                            Preview(type: container.appState.system.previewType!)
-//                            
-//                            ContextMenu(menuItems: container.appState.system.menuItems) {
-//                                container.appState.system.showContextMenu = false
-//                            }
-//                            .opacity(isTopHalf ? 1 : 0)
-//                        }
-//                        .position(x: anchorX, y: anchorY)
-//                    }
-//                    
-//                }
-//                .onAppear {
-//                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//                }
-//                .ignoresSafeArea()
-//                .onTapGesture {
-//                    container.appState.system.showContextMenu = false
-//                }
-//            }
-//        }
+        //MARK: - Context Menu
+        .onChange(of: contextMenuAction.signal) {
+            showContextMenu = true
+        }
+        .overlay {
+            if showContextMenu, let contextMenu = contextMenuAction.pop(){
+                ZStack {
+                    Color.black.opacity(0.1)
+                        .ignoresSafeArea()
+                        
+                    BackdropBlurView(radius: 10)
+                    
+                    let anchorX = contextMenu.position.midX
+                    let anchorY = contextMenu.position.midY
+                    let isTopHalf = anchorY <= UIScreen.main.bounds.height / 2
+        
+                    GeometryReader { proxy in
+                        VStack(spacing: 15) {
+                            ContextMenuView(menuItems: contextMenu.menu, isTopHalf: isTopHalf) {
+                                showContextMenu = false
+                            }
+                            .opacity(isTopHalf ? 0 : 1)
+                            
+                            Preview(type: contextMenu.preview, position: contextMenu.position)
+                            
+                            ContextMenuView(menuItems: contextMenu.menu, isTopHalf: isTopHalf) {
+                                showContextMenu = false
+                            }
+                            .opacity(isTopHalf ? 1 : 0)
+                        }
+                        .position(x: anchorX, y: anchorY)
+                    }
+                    
+                }
+                .ignoresSafeArea()
+                .onAppear {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
+                .onTapGesture {
+                    showContextMenu = false
+                }
+            }
+        }
         //MARK: - 외부 링크에서 접근 (소셜 로그인)
 //        .onOpenURL { url in
 //            Task {

@@ -12,8 +12,6 @@ import Factory
 struct TagEditorView: View {
     @InjectedObservable(\.mainViewModel) private var viewModel
     
-    @Binding var selectList: [Int]
-    
     @State private var searchText: String = ""
     @State private var randomColor: Color.TagColor = Color.TagColor.allCases.randomElement()!
     
@@ -69,8 +67,8 @@ struct TagEditorView: View {
                     ForEach(viewModel.tags, id: \.id) { tag in
                         TagView(tag: tag) {
                             searchText = ""
-                            if !selectList.contains(tag.id) {
-                                selectList.append(tag.id)
+                            if !viewModel.editTagList.contains(tag.id) {
+                                viewModel.editTagList.append(tag.id)
                             }
                         }
                     }

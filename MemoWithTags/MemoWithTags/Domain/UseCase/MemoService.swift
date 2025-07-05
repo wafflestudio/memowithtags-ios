@@ -23,7 +23,6 @@ final class DefaultMemoService: MemoService {
     //MARK: - 메모 생성
     func createMemo(content: String, tagIds: [Int], locked: Bool) async -> Result<Memo, MemoError> {
         do {
-            try! await Task.sleep(nanoseconds: 3_000_000_000)
             let dto = try await memoRepository.createMemo(content: content, tagIds: tagIds, locked: locked)
             let memo = dto.toMemo()
             return .success(memo)

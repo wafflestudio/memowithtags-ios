@@ -15,16 +15,14 @@ struct EditorView: View {
     @InjectedObservable(\.navigationState) private var navigation
     
     @StateObject private var keyboard = KeyboardManager()
-    
-    @State private var content: String = ""
-    @State private var contentTagList: [TagID] = []
-    var editorEmpty: Bool { content.isEmpty && contentTagList.isEmpty }
+
+    var editorEmpty: Bool { viewModel.editContent.isEmpty && viewModel.editTagList.isEmpty }
         
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    PlainEditor(text: $content)
+                    PlainEditor(text: $viewModel.editContent)
                     
                     if editorEmpty {
                        Image(systemName: "square.and.pencil")
@@ -34,11 +32,11 @@ struct EditorView: View {
                     }
                 }
                 
-                if !contentTagList.isEmpty {
+                if !viewModel.editTagList.isEmpty {
                     HFlow {
-                        ForEach(contentTagList.toTags(from: viewModel.tags), id: \.id) { tag in
+                        ForEach(viewModel.editTagList.toTags(from: viewModel.tags), id: \.id) { tag in
                             TagView(tag: tag, xmark: true) {
-                                contentTagList.removeAll { $0 == tag.id }
+                                viewModel.editTagList.removeAll { $0 == tag.id }
                             }
                         }
                     }
@@ -61,11 +59,11 @@ struct EditorView: View {
                             .frame(width: 25, height: 27, alignment: .top)
                             .onTapGesture {
                                 Task {
-                                    let tempContent = content
-                                    let tempTagList = contentTagList
+                                    let tempContent = viewModel.editContent
+                                    let tempTagList = viewModel.editTagList
                                     hideKeyboard()
-                                    content = ""
-                                    contentTagList = []
+                                    viewModel.editContent = ""
+                                    viewModel.editTagList = []
                                     viewModel.scrollTo(memoID: nil)
                                     await viewModel.createMemo(content: tempContent, tagIds: tempTagList, locked: false)
                                 }
@@ -81,8 +79,9 @@ struct EditorView: View {
             .shadow(color: Color.black.opacity(0.3), radius: 12, x: 0, y: 1.5)
             .padding(.horizontal, 7)
             .padding(.bottom, 8)
+            
             if keyboard.currentHeight > 0 {
-                TagEditorView(selectList: $contentTagList)
+                TagEditorView()
             }
         }
     }

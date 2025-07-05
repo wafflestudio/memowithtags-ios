@@ -97,7 +97,7 @@ struct FullEditorView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             if keyboard.currentHeight > 0 {
-                TagEditorView(selectList: $viewModel.editTagList)
+                TagEditorView()
             }
         }
         .background(Color.memoBackground)

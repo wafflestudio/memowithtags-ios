@@ -5,44 +5,82 @@ struct MemoListView: View {
     @InjectedObservable(\.mainViewModel) private var viewModel
     
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 12) {
-                    Color.clear
-                        .frame(height: 8)
-                        .id("bottom")
-                    
-                    ForEach(viewModel.memos) { memo in
-                        MemoView(memo: memo)
-                            .id(memo.id)
-//                            .scaleEffect(isHighlighted ? 1.04 : 1.0)
-//                            .shadow(color: isHighlighted ? Color.shadow : .clear, radius: 3)
-//                            .animation(.easeInOut(duration: 0.3), value: isHighlighted)
-                            .rotationEffect(.degrees(180))
-                    }
-                    
-                    Color.clear
-                        .frame(height: 8)
-                        .onAppear {
-                            Task {
-                                if viewModel.memos.count > 0 {
-                                    await viewModel.fetchMemos()
-                                }
-                            }
+        List {
+            ForEach(viewModel.memos) { memo in
+                MemoView(memo: memo)
+                    .id(memo.id)
+                    .padding(.vertical, 6)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .rotationEffect(.degrees(180))
+                    .padding(.horizontal, 12)
+                    .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: -2)
+            }
+            
+            Color.clear
+                .frame(height: 8)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .onAppear {
+                    Task {
+                        if viewModel.memos.count > 0 {
+                            await viewModel.fetchMemos()
                         }
-                }
-            }
-            .rotationEffect(.degrees(180))
-            .scrollIndicators(.hidden)
-            .onChange(of: viewModel.scrollTrigger) {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    if viewModel.scrollTarget == -1 {
-                        proxy.scrollTo("bottom", anchor: .bottom)
-                    } else {
-                        proxy.scrollTo(viewModel.scrollTarget, anchor: .top)
                     }
                 }
-            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.clear)
+        .rotationEffect(.degrees(180))
+        .scrollIndicators(.hidden)
+    }
+}
+
+//struct MemoListView: View {
+//    @InjectedObservable(\.mainViewModel) private var viewModel
+//    
+//    var body: some View {
+//        ScrollViewReader { proxy in
+//            ScrollView {
+//                LazyVStack(alignment: .leading, spacing: 12) {
+//                    Color.clear
+//                        .frame(height: 8)
+//                        .id("bottom")
+//                    
+//                    ForEach(viewModel.memos) { memo in
+//                        MemoView(memo: memo)
+//                            .id(memo.id)
+////                            .scaleEffect(isHighlighted ? 1.04 : 1.0)
+////                            .shadow(color: isHighlighted ? Color.shadow : .clear, radius: 3)
+////                            .animation(.easeInOut(duration: 0.3), value: isHighlighted)
+//                            .rotationEffect(.degrees(180))
+//                    }
+//                    
+//                    Color.clear
+//                        .frame(height: 8)
+//                        .onAppear {
+//                            Task {
+//                                if viewModel.memos.count > 0 {
+//                                    await viewModel.fetchMemos()
+//                                }
+//                            }
+//                        }
+//                }
+//            }
+//            .rotationEffect(.degrees(180))
+//            .scrollIndicators(.hidden)
+//            .onChange(of: viewModel.scrollTrigger) {
+//                withAnimation(.easeInOut(duration: 0.2)) {
+//                    if viewModel.scrollTarget == -1 {
+//                        proxy.scrollTo("bottom", anchor: .bottom)
+//                    } else {
+//                        proxy.scrollTo(viewModel.scrollTarget, anchor: .top)
+//                    }
+//                }
+//            }
 //            .onChange(of: viewModel.scrollTarget) {
 //                Task {
 //                    if viewModel.scrollTarget == -1 {
@@ -75,6 +113,6 @@ struct MemoListView: View {
 //                    viewModel.scrollTarget = viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex]
 //                }
 //            }
-        }
-    }
-}
+//        }
+//    }
+//}

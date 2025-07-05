@@ -16,8 +16,11 @@ struct MemoView: View {
     @InjectedObservable(\.appState) private var appState
     @InjectedObservable(\.navigationState) private var navigation
     
-    @State private var isExpanded: Bool = false
+    let maxHeight: CGFloat = 100
+    
     @State private var isAppear: Bool = false
+    @State private var isExpanded: Bool = false
+
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -26,10 +29,27 @@ struct MemoView: View {
                 .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.basicText)
                 .lineSpacing(3)
-                .lineLimit(isExpanded ? nil : 3)
                 .blur(radius: memo.locked && !appState.isBioAuthenticated ? 6 : 0)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
-            
+                .mask(
+                    VStack(spacing: 0) {
+                        // 위쪽은 그대로 보이고
+                        Rectangle()
+                            .fill(Color.black)
+                            .frame(height: isExpanded ? nil : maxHeight - 40)
+                        
+                        // 아래쪽은 점점 사라짐
+                        if !isExpanded {
+                            LinearGradient(
+                                gradient: Gradient(colors: [Color.black, .clear]),
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                            .frame(height: 40)
+                        }
+                    }
+                )
+                .frame(maxHeight: isExpanded ? nil : maxHeight)
             
             if !memo.tagIds.isEmpty {
                 HFlow {
@@ -72,14 +92,6 @@ struct MemoView: View {
                     .padding(.horizontal, 13)
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
-//                        viewModel.clearSearch()
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                            viewModel.searchBarText = memo.content
-//                            // 현재 뷰가 search가 아닌 경우에만 searchPage로 이동
-//                            if viewModel.appState.navigation.current != .search {
-//                                viewModel.appState.navigation.push(to: .search)
-//                            }
-//                        }
 
                     }
                     
@@ -97,12 +109,9 @@ struct MemoView: View {
                     .padding(.horizontal, 13)
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
-//                        viewModel.editorState = .update(target: memo)
-//                        viewModel.editorContent = memo.content
-//                        viewModel.editorTagIds = memo.tagIds
-//                        if viewModel.appState.navigation.current != .main {
-//                            viewModel.appState.navigation.pop()
-//                        }
+                        viewModel.editContent = memo.content
+                        viewModel.editTagList = memo.tagIds
+                        viewModel.editState = .updating(memo: memo)
                     }
                     
                     // 접기 버튼
@@ -113,9 +122,7 @@ struct MemoView: View {
                         .background(Color.background)
                         .clipShape(Circle())
                         .onTapGesture {
-                            withAnimation(.default) {
-                                isExpanded = false
-                            }
+                            isExpanded = false
                         }
                 }
                 .padding(.top, 10)
@@ -125,61 +132,48 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
-        .scaleEffect(x: isAppear ? 1 : 0, y: isAppear ? 1 : 0, anchor: .bottomTrailing)
         .redacted(reason: memo.state == .creating ? .placeholder : [])
         .matchedTransitionSource(id: memo.id, in: navigation.namespace)
-        .onAppear {
-            if memo.state == .creating {
-                withAnimation(.easeInOut.delay(0.2)) {
-                    isAppear = true
-                }
-            } else {
-                isAppear = true
-            }
-        }
         .onTapGesture {
             onTappingMemo()
         }
-//        //MARK: - context menu
-//        .customContextMenu(
-//            appState: viewModel.appState,
-//            type: .memo(memo: memo, tags: viewModel.getTags(from: memo.tagIds)),
-//            menuItems: [
-//                .init(title: viewModel.appState.navigation.current == .main ? "메모 내용 복사" : "이 메모를 메인 화면에서 보기",
-//                      icon: viewModel.appState.navigation.current == .main ? "document.on.document.fill" : "text.viewfinder") {
-//                          Task {
-//                              if viewModel.appState.navigation.current == .main {
-//                                  UIPasteboard.general.string = memo.content
-//                              } else {
-//                                  viewModel.appState.navigation.pop()
-//                                  viewModel.scrollTarget = memo.id
-//                              }
-//                          }
-//                      },
-//                .init(title: memo.locked ? "잠금 해제" : "메모 잠금", icon: memo.locked ? "lock.open.fill" : "lock.fill") {
-//                    Task {
-//                        if viewModel.appState.user.isBioAuthenticated {
-//                            await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-//                        } else {
-//                            let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
-//                            if authenticated {
-//                                await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
-//                                withAnimation(.spring) {
-//                                    viewModel.appState.user.isBioAuthenticated = true
-//                                }
-//                            }
-//                        }
-//                    }
-//                },
-//                .init(title: "메모 삭제", icon: "trash", type: .delete) {
-//                    Task {
-//                        await viewModel.deleteMemo(memoId: memo.id)
-//                    }
-//                }
-//            ]
-//        )
-//        .padding(.horizontal, 12)
+        //MARK: - context menu
+        .customContextMenu(
+            preview: .memo(memo: memo), [
+                .init(icon: navigation.current == .main ? "document.on.document.fill" : "text.viewfinder",
+                      title: navigation.current == .main ? "메모 내용 복사" : "이 메모를 메인 화면에서 보기") {
+                    Task {
+                      if navigation.current == .main {
+                          UIPasteboard.general.string = memo.content
+                      } else {
+                          navigation.pop()
+//                          viewModel.scrollTarget = memo.id
+                      }
+                    }
+                },
+                .init(icon: memo.locked ? "lock.open.fill" : "lock.fill",
+                      title: memo.locked ? "잠금 해제" : "메모 잠금") {
+                    Task {
+                        if appState.isBioAuthenticated {
+                            await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                        } else {
+                            let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "메모를 잠그거나 잠금 해제하려면 인증이 필요합니다.")
+                            if authenticated {
+                                await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)
+                                withAnimation(.spring) {
+                                    appState.isBioAuthenticated = true
+                                }
+                            }
+                        }
+                    }
+                },
+                .init(icon: "trash", title: "메모 삭제", type: .delete) {
+                    Task {
+                        await viewModel.deleteMemo(memoId: memo.id)
+                    }
+                }
+            ]
+        )
     }
     
     //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
@@ -196,10 +190,11 @@ struct MemoView: View {
                 }
             }
         } else if !isExpanded {
-            withAnimation(.default) {
-                isExpanded = true
-            }
+            isExpanded = true
         } else {
+//            viewModel.editContent = memo.content
+//            viewModel.editTagList = memo.tagIds
+//            viewModel.editState = .updating(memo: memo)
             navigation.push(to: .fullEditor(id: memo.id))
         }
     }
