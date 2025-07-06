@@ -12,17 +12,13 @@ import Factory
 struct SearchView: View {
     @InjectedObservable(\.mainViewModel) private var viewModel
     @InjectedObservable(\.navigationState) private var navigation
-    
-    @State private var searchText: String = ""
-    @State private var searchTags: [Tag] = []
-    @State private var searchTask: Task<Void, Never>? = nil
+    @InjectedObservable(\.appState) private var appState
     
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 0) {
-                //MARK: - 맨 위 바
                 HStack(spacing: 2) {
                     //MARK: - 뒤로가기 버튼
                     Image(systemName: "chevron.left")
@@ -38,27 +34,14 @@ struct SearchView: View {
                     
                     //MARK: - 검색 창
                     HStack {
-//                        ForEach(searchTags, id: \.id) { tag in
-//                            TagView(viewModel: viewModel, tag: tag, addXmark: true) {
-//                                removeTagFromSelectedTags(tag.id)
-//                            }
-//                        }
+                        ForEach(viewModel.searchContentTags.toTags(from: appState.tags), id: \.id) { tag in
+                            TagView(tag: tag, xmark: true) {
+                            }
+                        }
                         
-                        TextField("텍스트와 태그로 메모 검색", text: $searchText)
+                        TextField("텍스트와 태그로 메모 검색", text: $viewModel.searchContent)
                             .font(.pretendard(.regular, size: 15))
                             .foregroundStyle(Color.basicText)
-                            .onChange(of: searchText) {
-//                                // 실행하고 있는 searchTask를 종료
-//                                searchTask?.cancel()
-//                                
-//                                // 새로운 searchTask 생성
-//                                searchTask = Task {
-//                                    // 0.5초 기다리기
-//                                    try? await Task.sleep(nanoseconds: 500_000_000)
-//                                    
-//                                    await viewModel.search()
-//                                }
-                            }
                             .onAppear {
                                 UITextField.appearance().clearButtonMode = .whileEditing
                             }
@@ -68,72 +51,96 @@ struct SearchView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.searchBarBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .onChange(of: viewModel.searchContent) {
+                        Task {
+                            await viewModel.search()
+                        }
+                    }
+                    .onChange(of: viewModel.searchContentTags) {
+                        Task {
+                            await viewModel.search()
+                        }
+                    }
                 }
                 .padding(.leading, 8) // 뒤로가기 버튼의 터치 영역을 넓히기 위해 leading padidng을 줄임
                 .padding(.trailing, 16)
                 .padding(.bottom, 14)
                 
                 //MARK: - 로딩 아이콘
-//                if viewModel.isLoading {
-//                    VStack {
-//                        ProgressView()
-//                    }
-//                    .padding(.vertical, 14)
-//                    .frame(maxWidth: .infinity)
-//                }
+                if viewModel.searchLoading {
+                    VStack {
+                        ProgressView()
+                    }
+                    .padding(.vertical, 20)
+                    .frame(maxWidth: .infinity)
+                } else if !viewModel.searchContent.isEmpty && viewModel.searchedMemos.isEmpty && viewModel.searchedTags.isEmpty {
+                    VStack {
+                        Text("검색결과가 없습니다.")
+                            .font(.pretendard(.medium, size: 14))
+                            .foregroundStyle(Color.placeholder)
+                    }
+                    .padding(.vertical, 20)
+                    .frame(maxWidth: .infinity)
+                }
                 
-//                //MARK: - 태그 검색 결과
-//                if !viewModel.searchedTagIds.isEmpty {
-//                    VStack(alignment: .leading, spacing: 10) {
-//                        Text("Tags")
-//                            .font(.pretendard(.medium, size: 12))
-//                            .foregroundStyle(Color.grayText)
-//                            .padding(.horizontal, 14)
-//
-//                        
-//                        HFlow {
-//                            ForEach(viewModel.getTags(from: viewModel.searchedTagIds), id: \.id) { tag in
-//                                TagView(viewModel: viewModel, tag: tag) {
-//                                    appendTagToSelectedTags(tag.id)
-//                                    viewModel.searchBarText = ""
-//                                }
-//                            }
-//                        }
-//                        .padding(.horizontal, 6)
-//                    }
-//                    .padding(.horizontal, 12)
-//                    .padding(.bottom, 20)
-//                }
-//                
-//                //MARK: - 메모 검색 결과
-//                if !viewModel.searchedMemos.isEmpty {
-//                    VStack(alignment: .leading, spacing: 10) {
-//                        Text("Memos")
-//                            .font(.pretendard(.medium, size: 12))
-//                            .foregroundStyle(Color.grayText)
-//                            .padding(.horizontal, 26)
-//                        
-//                        ScrollView {
-//                            LazyVStack(alignment: .leading, spacing: 12) {
-//                                ForEach(viewModel.searchedMemos, id: \.id) { memo in
-//                                    MemoView(memo: memo, viewModel: viewModel)
-//                                }
-//                                
-//                                HStack {
-//                                    Spacer()
-//                                    ProgressView()
-//                                        .opacity(viewModel.isLoading ? 1 : 0)
-//                                    Spacer()
-//                                }.onAppear {
-//                                    Task {
-//                                        await viewModel.searchMemos(content: viewModel.searchBarText, tagIds: viewModel.searchBarSelectedTagIds)
-//                                    }
-//                                }
-//                            }
-//                         }
-//                         .frame(maxWidth: .infinity)
-//                    }
-//                }
+                //MARK: - 태그 검색 결과
+                if !viewModel.searchLoading && !viewModel.searchedTags.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Tags")
+                            .font(.pretendard(.medium, size: 12))
+                            .foregroundStyle(Color.grayText)
+                            .padding(.horizontal, 14)
+
+                        
+                        HFlow {
+                            ForEach(viewModel.searchedTags.toTags(from: appState.tags), id: \.id) { tag in
+                                TagView(tag: tag) {
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 6)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 20)
+                }
+                
+                //MARK: - 메모 검색 결과
+                if !viewModel.searchLoading && !viewModel.searchedMemos.isEmpty {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Memos")
+                            .font(.pretendard(.medium, size: 12))
+                            .foregroundStyle(Color.grayText)
+                            .padding(.horizontal, 26)
+                    
+                        List {
+                            ForEach(viewModel.searchedMemos) { memo in
+                                MemoView(memo: memo)
+                                    .id(memo.id)
+                                    .padding(.vertical, 6)
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets())
+                                    .listRowBackground(Color.clear)
+                                    .padding(.horizontal, 12)
+                                    .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                            }
+                            
+                            Color.clear
+                                .frame(height: 8)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets())
+                                .listRowBackground(Color.clear)
+                                .onAppear {
+                                    Task {
+                                        await viewModel.searchMemos(content: viewModel.searchContent, tagIds: viewModel.searchContentTags)
+                                    }
+                                }
+                        }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.clear)
+                        .scrollIndicators(.hidden)
+                    }
+                }
                 
                 Spacer()
             }
@@ -141,17 +148,6 @@ struct SearchView: View {
         }
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
-        .onAppear {
-            Task {
-//                await viewModel.search()
-            }
-        }
-        .onDisappear {
-//            // memoEditor가 나타나는 경우를 제외하고 clearSearch() 호출
-//            if viewModel.appState.navigation.current != .memoEditor {
-//                viewModel.clearSearch()
-//            }
-        }
     }
 }
 

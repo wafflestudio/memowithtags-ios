@@ -46,6 +46,7 @@
 		DA30A57A2E0C4F2900C4C3C2 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30A5792E0C4F2700C4C3C2 /* Text.swift */; };
 		DA30A57C2E0C4F3200C4C3C2 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA30A57B2E0C4F2D00C4C3C2 /* Icon.swift */; };
 		DA31C3462E0337BA00DA62A3 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = DA31C3452E0337BA00DA62A3 /* Factory */; };
+		DA335AFD2E19978B0070617D /* BGAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA335AFC2E1997500070617D /* BGAnimation.swift */; };
 		DA3641CA2D396F350001EB20 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */; };
 		DA3641CC2D3971EC0001EB20 /* ResetPasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */; };
 		DA3C9E542D29072F00F28D07 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3C9E532D29072C00F28D07 /* MainView.swift */; };
@@ -62,6 +63,7 @@
 		DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */; };
 		DA40BABE2D468ED1002A5893 /* ChangeNickname.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */; };
 		DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E51B2D33941000C7C9F2 /* AppState.swift */; };
+		DA6DCC6A2E19722600834066 /* ReadPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6DCC692E19722200834066 /* ReadPosition.swift */; };
 		DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD612D831E7D00251412 /* InputFieldView.swift */; };
 		DA7AFD642D831E9800251412 /* SecureInputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */; };
 		DA7AFD672D83209600251412 /* SubmitButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD662D83209000251412 /* SubmitButtonView.swift */; };
@@ -113,6 +115,8 @@
 		DAE56E9C2D69E6570009548D /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE56E9B2D69E64E0009548D /* AuthService.swift */; };
 		DAE56E9E2D69E6690009548D /* MemoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE56E9D2D69E6640009548D /* MemoService.swift */; };
 		DAE56EA02D69E6730009548D /* TagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE56E9F2D69E66F0009548D /* TagService.swift */; };
+		DAE9361F2E1AC92400CE3570 /* TagSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE9361E2E1AC91900CE3570 /* TagSettingView.swift */; };
+		DAE936212E1AD00900CE3570 /* EditableTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE936202E1ACFFB00CE3570 /* EditableTagView.swift */; };
 		DAFFD2032D68DAF900C44EF1 /* EmailEnterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */; };
 		DAFFD2052D68E5B900C44EF1 /* EmailEnterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -155,6 +159,7 @@
 		DA2DA6642D2AF00D000C0495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA30A5792E0C4F2700C4C3C2 /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
 		DA30A57B2E0C4F2D00C4C3C2 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
+		DA335AFC2E1997500070617D /* BGAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BGAnimation.swift; sourceTree = "<group>"; };
 		DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
 		DA3641CB2D3971E30001EB20 /* ResetPasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewModel.swift; sourceTree = "<group>"; };
 		DA3C9E532D29072C00F28D07 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -171,6 +176,7 @@
 		DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNickname.swift; sourceTree = "<group>"; };
 		DA53E51B2D33941000C7C9F2 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		DA6DCC692E19722200834066 /* ReadPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPosition.swift; sourceTree = "<group>"; };
 		DA7AFD612D831E7D00251412 /* InputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldView.swift; sourceTree = "<group>"; };
 		DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputFieldView.swift; sourceTree = "<group>"; };
 		DA7AFD662D83209000251412 /* SubmitButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitButtonView.swift; sourceTree = "<group>"; };
@@ -223,6 +229,8 @@
 		DAE56E9B2D69E64E0009548D /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		DAE56E9D2D69E6640009548D /* MemoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoService.swift; sourceTree = "<group>"; };
 		DAE56E9F2D69E66F0009548D /* TagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagService.swift; sourceTree = "<group>"; };
+		DAE9361E2E1AC91900CE3570 /* TagSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSettingView.swift; sourceTree = "<group>"; };
+		DAE936202E1ACFFB00CE3570 /* EditableTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableTagView.swift; sourceTree = "<group>"; };
 		DAFFD2022D68DAC800C44EF1 /* EmailEnterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnterView.swift; sourceTree = "<group>"; };
 		DAFFD2042D68E5AF00C44EF1 /* EmailEnterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnterViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -249,6 +257,7 @@
 				DA7AFD652D831FE400251412 /* Input */,
 				558C3F482DDC84D300DEFC88 /* DocumentView.swift */,
 				556EF45E2D68B161001BE9B3 /* DesignTagView.swift */,
+				DAE936202E1ACFFB00CE3570 /* EditableTagView.swift */,
 			);
 			path = SubView;
 			sourceTree = "<group>";
@@ -334,6 +343,7 @@
 				DAFFD2012D68D93F00C44EF1 /* Auth */,
 				DAFFD2062D68F1B400C44EF1 /* Settings */,
 				556EF4662D68B161001BE9B3 /* SubView */,
+				DA6DCC682E1970F300834066 /* ViewExtension */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -406,6 +416,16 @@
 			path = AppEnvironment;
 			sourceTree = "<group>";
 		};
+		DA6DCC682E1970F300834066 /* ViewExtension */ = {
+			isa = PBXGroup;
+			children = (
+				DA6DCC692E19722200834066 /* ReadPosition.swift */,
+				DADDA9BB2D6D946800A8BE97 /* CustomContextMenu.swift */,
+				DA335AFC2E1997500070617D /* BGAnimation.swift */,
+			);
+			path = ViewExtension;
+			sourceTree = "<group>";
+		};
 		DA7AFD652D831FE400251412 /* Input */ = {
 			isa = PBXGroup;
 			children = (
@@ -422,7 +442,6 @@
 				DA1729102E17E50E007F673B /* Preview.swift */,
 				DA1729122E17E774007F673B /* ContextMenuView.swift */,
 				DA1729142E17E916007F673B /* BackDropBlurView.swift */,
-				DADDA9BB2D6D946800A8BE97 /* CustomContextMenu.swift */,
 			);
 			path = ContextMenu;
 			sourceTree = "<group>";
@@ -475,6 +494,7 @@
 			children = (
 				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
 				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
+				DAE9361E2E1AC91900CE3570 /* TagSettingView.swift */,
 				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
 				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
 			);
@@ -760,6 +780,7 @@
 				DADDA9BC2D6D947600A8BE97 /* CustomContextMenu.swift in Sources */,
 				556EF46D2D68B161001BE9B3 /* DesignTagView.swift in Sources */,
 				556EF46E2D68B161001BE9B3 /* TagEditorView.swift in Sources */,
+				DAE9361F2E1AC92400CE3570 /* TagSettingView.swift in Sources */,
 				556EF46F2D68B161001BE9B3 /* TagView.swift in Sources */,
 				DA30A57A2E0C4F2900C4C3C2 /* Text.swift in Sources */,
 				DA4018612D32D35C008500E2 /* MemoDto.swift in Sources */,
@@ -778,6 +799,7 @@
 				DA212CD52D42A13C005D1E15 /* FullEditorView.swift in Sources */,
 				DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */,
 				DAB782692D7220A400E6AE14 /* Font.swift in Sources */,
+				DAE936212E1AD00900CE3570 /* EditableTagView.swift in Sources */,
 				DAB375752E05B835009E4E2B /* NavigationState.swift in Sources */,
 				DAE504052D465E0C0089B7D0 /* NicknameSettingView.swift in Sources */,
 				DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */,
@@ -793,9 +815,11 @@
 				DABFE2702D28416000B314E2 /* LoginView.swift in Sources */,
 				DABFE28A2D286BDF00B314E2 /* EmailVerificationViewModel.swift in Sources */,
 				DA40186F2D32DCB8008500E2 /* DefaultMemoRepository.swift in Sources */,
+				DA335AFD2E19978B0070617D /* BGAnimation.swift in Sources */,
 				DABFE2752D28416000B314E2 /* LoginViewModel.swift in Sources */,
 				DA1729132E17E77F007F673B /* ContextMenuView.swift in Sources */,
 				DABFE2792D28416000B314E2 /* SignupViewModel.swift in Sources */,
+				DA6DCC6A2E19722600834066 /* ReadPosition.swift in Sources */,
 				DA0A4EB82D2B9F0A007E481D /* EmailVerificationView.swift in Sources */,
 				DAB375772E05B891009E4E2B /* AlertState.swift in Sources */,
 				DABFE27B2D28416000B314E2 /* CustomColor.swift in Sources */,

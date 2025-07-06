@@ -34,6 +34,7 @@ enum Route: Hashable {
     //MARK: - 세팅
     case settings
     case accountSetting
+    case tagSetting
     case changeNickname
     case changePassword
 }

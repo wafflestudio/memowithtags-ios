@@ -30,6 +30,7 @@ struct MainView: View {
             Task {
                 await viewModel.initialize()
             }
+            print(navigation.path.count)
         }
         .toolbar {
             //MARK: - 로고

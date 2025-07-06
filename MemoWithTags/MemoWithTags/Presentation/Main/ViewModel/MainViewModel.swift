@@ -38,11 +38,25 @@ final class MainViewModel {
     }
     
     //search
+    var searchLoading: Bool = false
+    private var searchTask: Task<Void, Never>?
+    
+    var searchContent: String = ""
+    var searchContentTags: [TagID] = []
     var searchedMemos: [Memo] = []
     var searchedTags: [TagID] = []
     
     private var searchCurrentPage: Int = 0
     private var searchTotalPages: Int = 1
+    
+    //Editor
+    var fullEditorContent: String = ""
+    var fullEditorTagList: [TagID] = []
+    var fullEditorState: EditorState = .creating
+    enum EditorState {
+        case creating
+        case updating(memo: Memo)
+    }
     
     //task
     private static var tempID: Int = -1
@@ -269,44 +283,6 @@ final class MainViewModel {
         }
     }
     
-    func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
-        let nextPage = searchCurrentPage + 1
-        
-        guard nextPage <= searchTotalPages else {
-            return
-        }
-        
-        let result = await memoService.searchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: nextPage)
-        
-        switch result {
-        case .success(let paginatedMemos):
-            searchedMemos.append(contentsOf: paginatedMemos.memos)
-            searchCurrentPage = nextPage
-            searchTotalPages = paginatedMemos.totalPages
-            
-        case .failure(let error):
-            alert.alert(error: error)
-        }
-    }
-    
-    //MARK: - 새로운 검색어, 태그에 대한 검색 수행
-    func search(text: String, tagIds: [Int]) async {
-        searchedMemos = []
-        searchedTags = []
-        searchCurrentPage = 0
-        searchTotalPages = 1
-        
-        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        if !trimmedText.isEmpty || !tagIds.isEmpty {
-            await searchMemos(content: trimmedText, tagIds: tagIds)
-            
-            searchedTags = appState.tags.filter { tag in
-                tag.name.lowercased().contains(trimmedText.lowercased()) && !tagIds.contains(tag.id)
-            }.map(\.id)
-        }
-    }
-    
     //MARK: - 유저 정보 가져오는 함수
     func getUser() async {
         let result = await userService.getUser()
@@ -332,6 +308,62 @@ final class MainViewModel {
             mainCurrentPage = 0
             mainTotalPages = 1
             await fetchMemos()
+        }
+    }
+    
+    //MARK: - 새로운 검색어, 태그에 대한 검색 수행
+    func search() async {
+        searchTask?.cancel()
+        searchTask = Task {
+            searchLoading = true
+            
+            defer {
+                if !Task.isCancelled {
+                    searchLoading = false
+                }
+            }
+            
+            do {
+                try Task.checkCancellation()
+                try await Task.sleep(for: .seconds(0.5))
+                
+                searchedMemos = []
+                searchedTags = []
+                searchCurrentPage = 0
+                searchTotalPages = 1
+                
+                let trimmedText = searchContent.trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                if !trimmedText.isEmpty || !searchContentTags.isEmpty {
+                    await searchMemos(content: trimmedText, tagIds: searchContentTags)
+                    
+                    searchedTags = appState.tags.filter { tag in
+                        tag.name.lowercased().contains(trimmedText.lowercased()) &&
+                        !searchContentTags.contains(tag.id)
+                    }.map(\.id)
+                }
+            } catch {
+            }
+        }
+    }
+    
+    func searchMemos(content: String? = nil, tagIds: [Int]? = nil, dateRange: ClosedRange<Date>? = nil) async {
+        let nextPage = searchCurrentPage + 1
+        
+        guard nextPage <= searchTotalPages else {
+            return
+        }
+        
+        let result = await memoService.searchMemos(content: content, tagIds: tagIds, dateRange: dateRange, page: nextPage)
+        
+        switch result {
+        case .success(let paginatedMemos):
+            searchedMemos.append(contentsOf: paginatedMemos.memos)
+            searchCurrentPage = nextPage
+            searchTotalPages = paginatedMemos.totalPages
+            
+        case .failure(let error):
+            alert.alert(error: error)
         }
     }
     
@@ -381,6 +413,9 @@ final class MainViewModel {
             scrollTarget = memoID!
         }
     }
+    
+    //MARK: - Task Debouncing
+    
 }
 
 extension Container {

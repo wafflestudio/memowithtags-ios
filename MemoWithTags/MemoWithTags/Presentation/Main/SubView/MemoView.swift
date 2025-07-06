@@ -17,10 +17,8 @@ struct MemoView: View {
     @InjectedObservable(\.navigationState) private var navigation
     
     let maxHeight: CGFloat = 100
-    
-    @State private var isAppear: Bool = false
-    @State private var isExpanded: Bool = false
 
+    @State private var isExpanded: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -36,7 +34,7 @@ struct MemoView: View {
                         // 위쪽은 그대로 보이고
                         Rectangle()
                             .fill(Color.black)
-                            .frame(height: isExpanded ? nil : maxHeight - 40)
+                            .frame(height: isExpanded ? nil : maxHeight - 30)
                         
                         // 아래쪽은 점점 사라짐
                         if !isExpanded {
@@ -45,12 +43,13 @@ struct MemoView: View {
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
-                            .frame(height: 40)
+                            .frame(height: 30)
                         }
                     }
                 )
                 .frame(maxHeight: isExpanded ? nil : maxHeight)
             
+            //MARK: - 태그
             if !memo.tagIds.isEmpty {
                 HFlow {
                     ForEach(memo.tagIds.toTags(from: viewModel.tags), id: \.id) { tag in
@@ -137,9 +136,9 @@ struct MemoView: View {
         .onTapGesture {
             onTappingMemo()
         }
-        //MARK: - context menu
         .customContextMenu(
-            preview: .memo(memo: memo), [
+            preview: .memo(memo: memo),
+            [
                 .init(icon: navigation.current == .main ? "document.on.document.fill" : "text.viewfinder",
                       title: navigation.current == .main ? "메모 내용 복사" : "이 메모를 메인 화면에서 보기") {
                     Task {
@@ -151,8 +150,7 @@ struct MemoView: View {
                       }
                     }
                 },
-                .init(icon: memo.locked ? "lock.open.fill" : "lock.fill",
-                      title: memo.locked ? "잠금 해제" : "메모 잠금") {
+                .init(icon: memo.locked ? "lock.open.fill" : "lock.fill", title: memo.locked ? "잠금 해제" : "메모 잠금") {
                     Task {
                         if appState.isBioAuthenticated {
                             await viewModel.updateMemo(memoId: memo.id, content: memo.content, tagIds: memo.tagIds, locked: !memo.locked)

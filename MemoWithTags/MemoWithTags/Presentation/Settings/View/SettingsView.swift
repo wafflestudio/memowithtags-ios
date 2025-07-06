@@ -59,6 +59,94 @@ struct SettingsView: View {
                     .onTapGesture {
                         navigation.push(to: .accountSetting)
                     }
+                    
+                    HStack {
+                        Text("태그 관리")
+                            .font(.pretendard(.medium, size: 14))
+                            .foregroundStyle(Color.basicText)
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.pretendard(.regular, size: 16))
+                            .foregroundStyle(Color.soft)
+                    }
+                    .padding(.vertical, 13)
+                    .padding(.horizontal, 17)
+                    .background(Color.memoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .onTapGesture {
+                        navigation.push(to: .tagSetting)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 20) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("글씨 크기")
+                                .font(.pretendard(.regular, size: 12))
+                                .foregroundStyle(Color.grayText)
+                                .padding(.horizontal, 6)
+                            
+                            HStack {
+                                Text("작게")
+                                    .font(.pretendard(.regular, size: 15))
+                                    .foregroundStyle(Color.basicText)
+                                
+                                Spacer()
+                            }
+                            .onTapGesture {
+                            }
+                            
+                            HStack {
+                                Text("적당히")
+                                    .font(.pretendard(.regular, size: 15))
+                                    .foregroundStyle(Color.basicText)
+                                
+                                Spacer()
+                            }
+                            .onTapGesture {
+                            }
+                            
+                            HStack {
+                                Text("크게")
+                                    .font(.pretendard(.regular, size: 15))
+                                    .foregroundStyle(Color.basicText)
+                                
+                                Spacer()
+                            }
+                            .onTapGesture {
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("메모 정렬 기준")
+                                .font(.pretendard(.regular, size: 12))
+                                .foregroundStyle(Color.grayText)
+                                .padding(.horizontal, 6)
+                            
+                            HStack {
+                                Text("만든 날짜")
+                                    .font(.pretendard(.regular, size: 15))
+                                    .foregroundStyle(Color.basicText)
+                                
+                                Spacer()
+                            }
+                            .onTapGesture {
+                            }
+                            
+                            HStack {
+                                Text("수정한 날짜")
+                                    .font(.pretendard(.regular, size: 15))
+                                    .foregroundStyle(Color.basicText)
+                                
+                                Spacer()
+                            }
+                            .onTapGesture {
+                            }
+                        }
+                    }
+                    .padding(.vertical, 16)
+                    .padding(.horizontal, 17)
+                    .background(Color.memoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     HStack {
                         Text("오픈소스 라이센스")

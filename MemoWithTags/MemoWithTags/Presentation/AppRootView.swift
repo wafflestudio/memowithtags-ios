@@ -58,6 +58,8 @@ struct AppRootView: View {
                         SettingsView()
                     case .accountSetting:
                         AccountSettingView()
+                    case .tagSetting:
+                        TagSettingView()
                     case .changePassword:
                         ChangePasswordView()
                     case .changeNickname:
@@ -97,7 +99,6 @@ struct AppRootView: View {
                         }
                         .position(x: anchorX, y: anchorY)
                     }
-                    
                 }
                 .ignoresSafeArea()
                 .onAppear {
