@@ -29,14 +29,6 @@ final class MainViewModel {
     
     private var mainLoading: Bool = false
     
-    var editContent: String = ""
-    var editTagList: [TagID] = []
-    var editState: EditState = .creating
-    enum EditState {
-        case creating
-        case updating(memo: Memo)
-    }
-    
     //search
     var searchLoading: Bool = false
     private var searchTask: Task<Void, Never>?
@@ -49,14 +41,12 @@ final class MainViewModel {
     private var searchCurrentPage: Int = 0
     private var searchTotalPages: Int = 1
     
-    //Editor
-    var fullEditorContent: String = ""
-    var fullEditorTagList: [TagID] = []
-    var fullEditorState: EditorState = .creating
-    enum EditorState {
-        case creating
-        case updating(memo: Memo)
-    }
+    //editor
+    var editContent: String = ""
+    var editTags: [TagID] = []
+    var editState: EditState = .create
+    var editLoading: Bool = false
+    private var editTask: Task<Void, Never>?
     
     //task
     private static var tempID: Int = -1
@@ -64,6 +54,8 @@ final class MainViewModel {
     var scrollTarget: Int = -1
 //    var recommendingMemoIds: [Int] = []
 //    var highlightingMemoIndex: Int = -1
+    
+    
     
     //MARK: - 메모 페이지 별로 가져오기
     func fetchMemos() async {
@@ -94,17 +86,6 @@ final class MainViewModel {
     
     //MARK: - 메모 생성
     func createMemo(content: String, tagIds: [Int], locked: Bool) async {
-        let tempID = MainViewModel.tempID
-        let tempMemo = Memo(id: tempID,
-                             content: content,
-                             tagIds: tagIds,
-                             locked: locked,
-                             createdAt: Date(),
-                             updatedAt: Date(),
-                             state: .creating)
-        MainViewModel.tempID -= 1
-        memos.insert(tempMemo, at: 0)
-        
         let result = await memoService.createMemo(content: content, tagIds: tagIds, locked: locked)
         
         switch result {
@@ -115,9 +96,7 @@ final class MainViewModel {
                 memos.removeAll { $0.id == mainPrefetched!.id }
             }
             
-            if let index = memos.firstIndex(where: { $0.id == tempID }) {
-                memos[index] = memo
-            }
+            memos.insert(memo, at: 0)
             
         case .failure(let error):
             alert.alert(error: error)
@@ -146,23 +125,23 @@ final class MainViewModel {
     //MARK: - 메모 삭제
     func deleteMemo(memoId: Int) async {
         let mainPrefetched = await prefetchMainMemo()
-//        let searchPrefetched = await prefetchSearchedMemo()
+        let searchPrefetched = await prefetchSearchedMemo()
         
         let result = await memoService.deleteMemo(memoId: memoId)
         
         switch result {
         case .success:
-            let beforeCount = memos.count
+            var beforeCount = memos.count
             memos.removeAll { $0.id == memoId }
             if beforeCount != memos.count && mainPrefetched != nil {
                 memos.append(mainPrefetched!)
             }
  
-//            beforeCount = searchedMemos.count
-//            searchedMemos.removeAll { $0.id == memoId }
-//            if beforeCount != searchedMemos.count && searchPrefetched != nil{
-//                searchedMemos.append(searchPrefetched!)
-//            }
+            beforeCount = searchedMemos.count
+            searchedMemos.removeAll { $0.id == memoId }
+            if beforeCount != searchedMemos.count && searchPrefetched != nil{
+                searchedMemos.append(searchPrefetched!)
+            }
             
         case .failure(let error):
             alert.alert(error: error)
@@ -183,23 +162,23 @@ final class MainViewModel {
             return nil
         }
     }
-//    
-//    func prefetchSearchedMemo() async -> Memo? {
-//        let content = searchBarText.trimmingCharacters(in: .whitespacesAndNewlines)
-//        
-//        guard !content.isEmpty || !searchBarSelectedTagIds.isEmpty else { return nil }
-//        guard searchCurrentPage + 1 <= searchTotalPages else { return nil }
-//        
-//        let resultSearch = await useCases.memoService.searchMemos(content: content, tagIds: searchBarSelectedTagIds, dateRange: nil, page: searchCurrentPage + 1)
-//        
-//        switch resultSearch {
-//        case .success(let paginatedMemos):
-//            return paginatedMemos.memos.first
-//        case .failure(let error):
-//            appState.system.alert(error: error)
-//            return nil
-//        }
-//    }
+    
+    func prefetchSearchedMemo() async -> Memo? {
+        let content = searchContent.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !content.isEmpty || !searchContentTags.isEmpty else { return nil }
+        guard searchCurrentPage + 1 <= searchTotalPages else { return nil }
+        
+        let resultSearch = await memoService.searchMemos(content: content, tagIds: searchContentTags, dateRange: nil, page: searchCurrentPage + 1)
+        
+        switch resultSearch {
+        case .success(let paginatedMemos):
+            return paginatedMemos.memos.first
+        case .failure(let error):
+            alert.alert(error: error)
+            return nil
+        }
+    }
     
     // MARK: - 추천 메모 ID 가져오기
 //    func recommendMemos() async {
@@ -369,6 +348,7 @@ final class MainViewModel {
     
     //MARK: - editor에서 submit 했을 때 작동
     func submit() async {
+//        editTask?.cancel()
 //        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
 //        guard !trimmedContent.isEmpty else { return }
 //        
@@ -393,16 +373,40 @@ final class MainViewModel {
 //        hideKeyboard()
     }
     
-    func save() async {
-//        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
-//        guard !trimmedContent.isEmpty else { return }
-//        
-//        switch editorState {
-//        case .update(let target):
-//            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
-//        default:
-//            break
-//        }
+    func saveMemo(content: String, tags: [TagID], editState: EditState, auto: Bool = false) async {
+        editTask?.cancel()
+        editTask = Task {
+            editLoading = true
+            
+            defer {
+                if !Task.isCancelled {
+                    editLoading = false
+                }
+            }
+            
+            do {
+                try Task.checkCancellation()
+                let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmedContent.isEmpty {
+                    if auto {
+                        try await Task.sleep(for: .seconds(3))
+                    } else {
+                        self.editContent = ""
+                        self.editTags = []
+                        self.editState = .create
+                        hideKeyboard()
+                    }
+                    switch editState {
+                    case .create:
+                        await createMemo(content: trimmedContent, tagIds: tags, locked: false)
+                    case .update(let target):
+                        await updateMemo(memoId: target.id, content: trimmedContent, tagIds: tags, locked: target.locked)
+                    }
+                }
+
+            } catch {
+            }
+        }
     }
     
     func scrollTo(memoID: Int?) {

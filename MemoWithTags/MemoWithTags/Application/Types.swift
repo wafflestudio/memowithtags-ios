@@ -12,3 +12,8 @@ extension Array where Element == TagID {
         tags.filter { self.contains($0.id) }
     }
 }
+
+enum EditState {
+    case create
+    case update(memo: Memo)
+}

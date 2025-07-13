@@ -13,7 +13,6 @@ enum Route: Hashable {
     case root
     case main
     case search
-    case fullEditor(id: Int)
     
     //MARK: - 로그인
     case login
@@ -35,6 +34,7 @@ enum Route: Hashable {
     case settings
     case accountSetting
     case tagSetting
+    case tagDetailedSetting(tag: Tag)
     case changeNickname
     case changePassword
 }
@@ -44,7 +44,6 @@ enum Route: Hashable {
 final class NavigationState {
     var path = NavigationPath()
     var explicitStack: [Route] = []
-    var namespace: Namespace.ID!
     
     var current: Route {
         return explicitStack.last ?? .root

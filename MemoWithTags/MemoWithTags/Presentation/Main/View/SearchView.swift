@@ -36,6 +36,7 @@ struct SearchView: View {
                     HStack {
                         ForEach(viewModel.searchContentTags.toTags(from: appState.tags), id: \.id) { tag in
                             TagView(tag: tag, xmark: true) {
+                                viewModel.searchContentTags.removeAll { $0 == tag.id }
                             }
                         }
                         
@@ -51,6 +52,11 @@ struct SearchView: View {
                     .frame(maxWidth: .infinity)
                     .background(Color.searchBarBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .onAppear {
+                        Task {
+                            await viewModel.search()
+                        }
+                    }
                     .onChange(of: viewModel.searchContent) {
                         Task {
                             await viewModel.search()
@@ -95,6 +101,7 @@ struct SearchView: View {
                         HFlow {
                             ForEach(viewModel.searchedTags.toTags(from: appState.tags), id: \.id) { tag in
                                 TagView(tag: tag) {
+                                    viewModel.searchContentTags.append(tag.id)
                                 }
                             }
                         }

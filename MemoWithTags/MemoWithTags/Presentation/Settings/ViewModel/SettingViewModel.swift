@@ -14,6 +14,7 @@ import Factory
 final class SettingViewModel {
     @ObservationIgnored @Injected(\.userService) private var userService
     @ObservationIgnored @Injected(\.authService) private var authService
+    @ObservationIgnored @Injected(\.tagService) private var tagService
     
     @ObservationIgnored @Injected(\.appState) private var appState
     @ObservationIgnored @Injected(\.navigationState) private var navigation
@@ -74,12 +75,25 @@ final class SettingViewModel {
         
         switch result {
         case .success:
+            await getUser()
             navigation.pop()
         case .failure(let error):
             alert.alert(error: error)
         }
         
         isLoading = false
+    }
+    
+    func getUser() async {
+        let result = await userService.getUser()
+        
+        switch result {
+        case .success(let user):
+            appState.user = user
+            
+        case .failure(let error):
+            alert.alert(error: error)
+        }
     }
     
     var isValidLength: Bool = false
@@ -124,6 +138,19 @@ final class SettingViewModel {
         }
         
         isLoading = false
+    }
+    
+    func updateTag(tagId: Int, name: String, color: Color.TagColor) async {
+        let result = await tagService.updateTag(tagId: tagId, name: name, color: color)
+        
+        switch result {
+        case .success(let tag):
+            if let index = appState.tags.firstIndex(where: { $0.id == tagId }) {
+                appState.tags[index] = tag
+            }
+        case .failure(let error):
+            alert.alert(error: error)
+        }
     }
 }
 

@@ -22,6 +22,8 @@ struct PlainEditor: View {
             .fixedSize(horizontal: false, vertical: true)
             .scrollContentBackground(.hidden)
             .background(Color.editorBackground)
+            .autocorrectionDisabled(true)
+            .textInputAutocapitalization(.never)
             .overlay (
                 Text(placeholder)
                     .font(.pretendard(.regular, size: 14))

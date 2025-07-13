@@ -13,6 +13,8 @@ struct AppRootView: View {
     @InjectedObservable(\.alertState) private var alert
     
     @InjectedObservable(\.contextMenuAction) private var contextMenuAction
+    @InjectedObservable(\.expandAction) private var expandAction
+    @InjectedObservable(\.tagUpdateAction) private var tagUpdateAction
     
     @State private var showContextMenu: Bool = false
     
@@ -22,7 +24,10 @@ struct AppRootView: View {
         //MARK: - 네비게이션
         NavigationStack(path: $navigation.path) {
             SplashView()
-                .onAppear { navigation.namespace = namespace }
+                .onAppear {
+                    contextMenuAction.namespace = namespace
+                    expandAction.namespace = namespace
+                }
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .root:
@@ -31,9 +36,6 @@ struct AppRootView: View {
                         MainView()
                     case .search:
                         SearchView()
-                    case .fullEditor(let id):
-                        FullEditorView()
-                            .navigationTransition(.zoom(sourceID: id, in: namespace))
                     
                     //로그인
                     case .login:
@@ -60,6 +62,8 @@ struct AppRootView: View {
                         AccountSettingView()
                     case .tagSetting:
                         TagSettingView()
+                    case let .tagDetailedSetting(tag):
+                        TagDetailedSettingView(tag: tag)
                     case .changePassword:
                         ChangePasswordView()
                     case .changeNickname:
@@ -72,7 +76,7 @@ struct AppRootView: View {
             showContextMenu = true
         }
         .overlay {
-            if showContextMenu, let contextMenu = contextMenuAction.pop(){
+            if showContextMenu, let contextMenu = contextMenuAction.pop() {
                 ZStack {
                     Color.black.opacity(0.1)
                         .ignoresSafeArea()
@@ -109,12 +113,26 @@ struct AppRootView: View {
                 }
             }
         }
-        //MARK: - 외부 링크에서 접근 (소셜 로그인)
-//        .onOpenURL { url in
-//            Task {
-//                await deepLinkHandler.handle(url: url)
-//            }
-//        }
+        .fullScreenCover(isPresented: $expandAction.signal) {
+            if let target = expandAction.pop() {
+                switch target.editState {
+                case .create:
+                    FullEditorView(initContent: target.content, initTags: target.tags, editState: target.editState)
+                        .navigationTransition(.zoom(sourceID: "editor", in: expandAction.namespace))
+                        .interactiveDismissDisabled()
+                case .update(let memo):
+                    FullEditorView(initContent: target.content, initTags: target.tags, editState: target.editState)
+                        .navigationTransition(.zoom(sourceID: memo.id, in: expandAction.namespace))
+                        .interactiveDismissDisabled()
+                }
+            }
+        }
+        .sheet(isPresented: $tagUpdateAction.signal) {
+            if let target = tagUpdateAction.pop() {
+                TagUpdaterView(tag: target.tag)
+                    .presentationDetents([.fraction(0.7)])
+            }
+        }
         //MARK: - alert
         .alert(isPresented: $alert.showAlert) {
             let error = alert.error
@@ -158,6 +176,12 @@ struct AppRootView: View {
                 )
             }
         }
+        //MARK: - 외부 링크에서 접근 (소셜 로그인)
+//        .onOpenURL { url in
+//            Task {
+//                await deepLinkHandler.handle(url: url)
+//            }
+//        }
     }
 }
 

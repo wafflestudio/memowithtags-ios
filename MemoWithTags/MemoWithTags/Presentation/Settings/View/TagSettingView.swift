@@ -107,7 +107,7 @@ struct TagSettingView: View {
                         HFlow {
                             ForEach(appState.tags, id: \.id) { tag in
                                 EditableTagView(tag: tag) {
-                                    
+                                    navigation.push(to: .tagDetailedSetting(tag: tag))
                                 }
                             }
                         }

@@ -11,6 +11,7 @@ import Factory
 struct ChangeNicknameView: View {
     @InjectedObservable(\.settingViewModel) private var viewModel
     @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.appState) private var appState
 
     @State private var nickname: String = ""
     
@@ -52,5 +53,8 @@ struct ChangeNicknameView: View {
         .padding(.bottom, 16)
         .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
+        .onAppear {
+            nickname = appState.user?.nickname ?? ""
+        }
     }
 }

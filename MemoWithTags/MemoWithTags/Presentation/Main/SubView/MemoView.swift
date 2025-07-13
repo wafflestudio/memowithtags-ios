@@ -15,9 +15,8 @@ struct MemoView: View {
     @InjectedObservable(\.mainViewModel) private var viewModel
     @InjectedObservable(\.appState) private var appState
     @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.expandAction) private var expandAction
     
-    let maxHeight: CGFloat = 100
-
     @State private var isExpanded: Bool = false
     
     var body: some View {
@@ -27,27 +26,9 @@ struct MemoView: View {
                 .font(.pretendard(.regular, size: 14))
                 .foregroundColor(Color.basicText)
                 .lineSpacing(3)
+                .lineLimit(isExpanded ? nil : 4)
                 .blur(radius: memo.locked && !appState.isBioAuthenticated ? 6 : 0)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
-                .mask(
-                    VStack(spacing: 0) {
-                        // 위쪽은 그대로 보이고
-                        Rectangle()
-                            .fill(Color.black)
-                            .frame(height: isExpanded ? nil : maxHeight - 30)
-                        
-                        // 아래쪽은 점점 사라짐
-                        if !isExpanded {
-                            LinearGradient(
-                                gradient: Gradient(colors: [Color.black, .clear]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                            .frame(height: 30)
-                        }
-                    }
-                )
-                .frame(maxHeight: isExpanded ? nil : maxHeight)
             
             //MARK: - 태그
             if !memo.tagIds.isEmpty {
@@ -91,7 +72,11 @@ struct MemoView: View {
                     .padding(.horizontal, 13)
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
-
+                        viewModel.searchContent = memo.content
+                        viewModel.searchContentTags = memo.tagIds
+                        if navigation.current != .search {
+                            navigation.push(to: .search)
+                        }
                     }
                     
                     HStack(spacing: 4) {
@@ -109,8 +94,11 @@ struct MemoView: View {
                     .overlay(RoundedRectangle(cornerRadius: 22).stroke(Color.basicBorder, lineWidth: 1))
                     .onTapGesture {
                         viewModel.editContent = memo.content
-                        viewModel.editTagList = memo.tagIds
-                        viewModel.editState = .updating(memo: memo)
+                        viewModel.editTags = memo.tagIds
+                        viewModel.editState = .update(memo: memo)
+                        if navigation.current == .search {
+                            navigation.pop()
+                        }
                     }
                     
                     // 접기 버튼
@@ -131,8 +119,9 @@ struct MemoView: View {
         .padding(.horizontal, 17)
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .redacted(reason: memo.state == .creating ? .placeholder : [])
-        .matchedTransitionSource(id: memo.id, in: navigation.namespace)
+        .matchedTransitionSource(id: memo.id, in: expandAction.namespace)
+        .onAppear {
+        }
         .onTapGesture {
             onTappingMemo()
         }
@@ -174,8 +163,8 @@ struct MemoView: View {
         )
     }
     
-    //MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
-    func onTappingMemo() {
+//    MARK: - 메모 터치했을 때 동작 (메모 잠금해제, 메모 펼치기, 메모 완전 확장)
+    private func onTappingMemo() {
         if memo.locked && !appState.isBioAuthenticated {
             Task {
                 let authenticated = await BioAuthenticationManager.shared.authenticateUser(reason: "잠긴 메모를 확인하려면 인증이 필요합니다.")
@@ -190,14 +179,11 @@ struct MemoView: View {
         } else if !isExpanded {
             isExpanded = true
         } else {
-//            viewModel.editContent = memo.content
-//            viewModel.editTagList = memo.tagIds
-//            viewModel.editState = .updating(memo: memo)
-            navigation.push(to: .fullEditor(id: memo.id))
+            expandAction.push(.init(content: memo.content, tags: memo.tagIds, editState: .update(memo: memo)))
         }
     }
     
-    func dateFormat(date: Date) -> String {
+    private func dateFormat(date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"

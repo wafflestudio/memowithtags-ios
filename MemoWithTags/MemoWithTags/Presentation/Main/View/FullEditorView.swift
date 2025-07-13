@@ -9,14 +9,19 @@ import Flow
 import Factory
 
 struct FullEditorView: View {
+    let initContent: String
+    let initTags: [TagID]
+    let editState: EditState
+    
     @InjectedObservable(\.mainViewModel) private var viewModel: MainViewModel
     @InjectedObservable(\.navigationState) private var navigation
 
     @StateObject private var keyboard = KeyboardManager()
+    @Environment(\.dismiss) var dismiss
     
-    @State private var lastSavedContent: String = ""
-    @State private var debounceWorkItem: DispatchWorkItem?
-    
+    @State private var content: String = ""
+    @State private var tags: [TagID] = []
+
     var body: some View {
         VStack(spacing: 0) {
             //MARK: - 상단 바
@@ -26,8 +31,9 @@ struct FullEditorView: View {
                     .foregroundStyle(Color.soft)
                     .onTapGesture {
                         Task {
-                            await viewModel.submit()
-                            navigation.pop()
+                            dismiss()
+                            hideKeyboard()
+                            await viewModel.saveMemo(content: content, tags: tags, editState: editState)
                         }
                     }
                 
@@ -39,14 +45,14 @@ struct FullEditorView: View {
             Divider()
             
             //MARK: - 메모 에디터
-            TextEditor(text: $viewModel.editContent)
+            TextEditor(text: $content)
                 .font(.pretendard(.regular, size: 16))
                 .foregroundStyle(Color.basicText)
                 .lineSpacing(3)
                 .scrollContentBackground(.hidden)
                 .background(Color.memoBackground)
                 .overlay(Group { // placeholder
-                    if viewModel.editContent.isEmpty {
+                    if content.isEmpty {
                         Text("메모를 작성해보세요.")
                             .font(.pretendard(.regular, size: 16))
                             .foregroundStyle(Color.placeholder)
@@ -55,20 +61,20 @@ struct FullEditorView: View {
                 }, alignment: .topLeading)
                 .padding(.vertical, 6)
                 .padding(.horizontal, 12)
-            
+
             Spacer()
             
             //MARK: - 날짜, 잠금 상태 표시
             HStack {
-                switch viewModel.editState {
-                case .creating:
+                switch editState {
+                case .create:
                     Text(dateFormat(date: Date()))
                         .font(.pretendard(.medium, size: 13))
                         .foregroundStyle(Color.grayText)
                         .padding(.vertical, 3)
                     
-                case let .updating(target):
-                    Text(dateFormat(date: target.createdAt))
+                case let .update(memo):
+                    Text(dateFormat(date: memo.createdAt))
                         .font(.pretendard(.medium, size: 13))
                         .foregroundStyle(Color.grayText)
                         .padding(.vertical, 3)
@@ -76,7 +82,7 @@ struct FullEditorView: View {
                     Image(systemName: "lock.fill")
                         .font(.system(size: 13))
                         .foregroundColor(Color.grayText)
-                        .opacity(target.locked ? 1 : 0)
+                        .opacity(memo.locked ? 1 : 0)
                 }
                 
                 Spacer()
@@ -86,9 +92,9 @@ struct FullEditorView: View {
             
             //MARK: - 메모 내 태그들
             HFlow {
-                ForEach(viewModel.editTagList.toTags(from: viewModel.tags), id: \.id) { tag in
+                ForEach(tags.toTags(from: viewModel.tags), id: \.id) { tag in
                     TagView(tag: tag, xmark: true) {
-                        viewModel.editTagList.removeAll { $0 == tag.id }
+                        tags.removeAll { $0 == tag.id }
                     }
                 }
             }
@@ -97,19 +103,24 @@ struct FullEditorView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             if keyboard.currentHeight > 0 {
-                TagEditorView()
+                TagEditorView(selectedTags: $tags)
             }
         }
         .background(Color.memoBackground)
         .navigationBarBackButtonHidden()
+        .onChange(of: content) {
+            Task {
+                await viewModel.saveMemo(content: content, tags: tags, editState: editState, auto: true)
+            }
+        }
+        .onChange(of: tags) {
+            Task {
+                await viewModel.saveMemo(content: content, tags: tags, editState: editState, auto: true)
+            }
+        }
         .onAppear {
-            lastSavedContent = viewModel.editContent
-        }
-        .onChange(of: viewModel.editContent) {
-            debounceAutoSave()
-        }
-        .onDisappear {
-            debounceWorkItem?.cancel()
+            self.content = initContent
+            self.tags = initTags
         }
     }
     
@@ -118,25 +129,5 @@ struct FullEditorView: View {
         dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
         dateFormatter.dateFormat = "yyyy년 MM월 dd일"
         return dateFormatter.string(from: date)
-    }
-    
-    private func debounceAutoSave() {
-        debounceWorkItem?.cancel()
-
-        let workItem = DispatchWorkItem {
-            Task {
-                await saveChanges()
-            }
-        }
-
-        debounceWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: workItem)
-    }
-    
-    private func saveChanges() async {
-        guard viewModel.editContent != lastSavedContent else { return }
-
-        await viewModel.save()
-        lastSavedContent = viewModel.editContent
     }
 }

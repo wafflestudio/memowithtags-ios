@@ -14,8 +14,8 @@ struct TagView: View {
     var onTap: (() -> Void)?
     
     @InjectedObservable(\.mainViewModel) private var viewModel
-    @State private var isUpdating: Bool = false
-
+    @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.tagUpdateAction) private var tagUpdateAction
     
     var body: some View {
         Text(tag.name)
@@ -43,14 +43,13 @@ struct TagView: View {
             .customContextMenu(
                 preview: .tag(tag: tag), [
                     .init(icon: "pencil", title: "태그 수정") {
-                        isUpdating = true
+                        tagUpdateAction.push(.init(tag: tag))
                     },
                     .init(icon: "magnifyingglass", title: "태그로 검색") {
-//                        viewModel.clearSearch()
-//                        viewModel.searchBarSelectedTagIds.append(tag.id)
-//                        if viewModel.appState.navigation.current != .search {
-//                            viewModel.appState.navigation.push(to: .search)
-//                        }
+                        viewModel.searchContentTags = [tag.id]
+                        if navigation.current != .search {
+                            navigation.push(to: .search)
+                        }
                     },
                     .init( icon: "trash", title: "태그 삭제", type: .delete) {
                         Task {
@@ -59,10 +58,5 @@ struct TagView: View {
                     }
                 ]
             )
-            .sheet(isPresented: $isUpdating, onDismiss: {
-                isUpdating = false
-            }) {
-//                TagEditorView(tag: tag)
-            }
     }
 }

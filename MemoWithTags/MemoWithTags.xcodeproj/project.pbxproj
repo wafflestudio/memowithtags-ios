@@ -88,6 +88,7 @@
 		DAB782772D72244100E6AE14 /* Pretendard-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826C2D72244100E6AE14 /* Pretendard-ExtraLight.otf */; };
 		DAB782782D72244100E6AE14 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB782712D72244100E6AE14 /* Pretendard-Thin.otf */; };
 		DAB782792D72244100E6AE14 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DAB7826B2D72244100E6AE14 /* Pretendard-ExtraBold.otf */; };
+		DAB833BE2E23D5C8005DEEE9 /* TagDetailedSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB833BD2E23D5BB005DEEE9 /* TagDetailedSettingView.swift */; };
 		DABFA2FD2E0693CD0018E0C3 /* SettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFA2FC2E0693C70018E0C3 /* SettingViewModel.swift */; };
 		DABFE2542D28416000B314E2 /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE21A2D28416000B314E2 /* Auth.swift */; };
 		DABFE2582D28416000B314E2 /* NetworkConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABFE2212D28416000B314E2 /* NetworkConfiguration.swift */; };
@@ -202,6 +203,7 @@
 		DAB7826F2D72244100E6AE14 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		DAB782702D72244100E6AE14 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
 		DAB782712D72244100E6AE14 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Thin.otf"; sourceTree = "<group>"; };
+		DAB833BD2E23D5BB005DEEE9 /* TagDetailedSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagDetailedSettingView.swift; sourceTree = "<group>"; };
 		DABFA2FC2E0693C70018E0C3 /* SettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewModel.swift; sourceTree = "<group>"; };
 		DABFE21A2D28416000B314E2 /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		DABFE21F2D28416000B314E2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -289,9 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				DA09BE772E0DA98800255F0B /* EditorView.swift */,
-				DA212CD42D42A136005D1E15 /* FullEditorView.swift */,
 				556EF4622D68B161001BE9B3 /* TagEditorView.swift */,
-				556EF4652D68B161001BE9B3 /* TagUpdaterView.swift */,
 				556EF45D2D68B161001BE9B3 /* TagView.swift */,
 				556EF45F2D68B161001BE9B3 /* MemoView.swift */,
 				556EF4602D68B161001BE9B3 /* MemoListView.swift */,
@@ -495,6 +495,7 @@
 				55E610BF2D2A65C400E452A8 /* SettingsView.swift */,
 				DAD470B72D467EAC00A3DFC3 /* AccountSettingView.swift */,
 				DAE9361E2E1AC91900CE3570 /* TagSettingView.swift */,
+				DAB833BD2E23D5BB005DEEE9 /* TagDetailedSettingView.swift */,
 				DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */,
 				DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */,
 			);
@@ -574,6 +575,8 @@
 			children = (
 				DA3C9E532D29072C00F28D07 /* MainView.swift */,
 				55E610BD2D2A65B200E452A8 /* SearchView.swift */,
+				DA212CD42D42A136005D1E15 /* FullEditorView.swift */,
+				556EF4652D68B161001BE9B3 /* TagUpdaterView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -768,6 +771,7 @@
 				DA40185D2D32D161008500E2 /* AuthDto.swift in Sources */,
 				55E610BE2D2A65B200E452A8 /* SearchView.swift in Sources */,
 				DA888AF72D2FA73300525291 /* SplashView.swift in Sources */,
+				DAB833BE2E23D5C8005DEEE9 /* TagDetailedSettingView.swift in Sources */,
 				DA8886C72D6A1BCC00ED6C1A /* SocialLoginService.swift in Sources */,
 				DABFE2842D284E7200B314E2 /* TagRouter.swift in Sources */,
 				55E610C02D2A65C400E452A8 /* SettingsView.swift in Sources */,

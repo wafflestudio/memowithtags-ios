@@ -12,11 +12,20 @@ import Factory
 struct TagEditorView: View {
     @InjectedObservable(\.mainViewModel) private var viewModel
     
+    @Binding var selectedTags: [TagID]
     @State private var searchText: String = ""
     @State private var randomColor: Color.TagColor = Color.TagColor.allCases.randomElement()!
     
+    private var filteredTags: [Tag] {
+        if searchText.isEmpty {
+            return viewModel.tags.filter { !selectedTags.contains($0.id) }
+        } else {
+            return viewModel.tags.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+        }
+    }
+    
     //animation
-    @State private var isAppear: Bool = false
+    @State private var isAppeared: Bool = false
     
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
@@ -64,11 +73,10 @@ struct TagEditorView: View {
                         }
                     }
                     
-                    ForEach(viewModel.tags, id: \.id) { tag in
+                    ForEach(filteredTags, id: \.id) { tag in
                         TagView(tag: tag) {
-                            searchText = ""
-                            if !viewModel.editTagList.contains(tag.id) {
-                                viewModel.editTagList.append(tag.id)
+                            if !selectedTags.contains(tag.id) {
+                                selectedTags.append(tag.id)
                             }
                         }
                     }
@@ -77,17 +85,17 @@ struct TagEditorView: View {
         }
         .padding(.vertical, 7)
         .padding(.horizontal, 10)
-        .opacity(isAppear ? 1 : 0)
-        .animation(.smooth(duration: 0.5).delay(0.3), value: isAppear)
+        .opacity(isAppeared ? 1 : 0)
+        .animation(.smooth(duration: 0.5).delay(0.3), value: isAppeared)
         .onAppear {
             generateRandomHexColor()
-            isAppear = true
+            isAppeared = true
         }
         .onDisappear {
-            isAppear = false
+            isAppeared = false
         }
     }
-    
+
     // Determine if a new tag can be created
     private func canCreateTag() -> Bool {
         let trimmedText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
