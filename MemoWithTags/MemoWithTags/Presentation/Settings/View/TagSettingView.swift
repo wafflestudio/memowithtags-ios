@@ -14,8 +14,6 @@ struct TagSettingView: View {
     @InjectedObservable(\.navigationState) private var navigation
     @InjectedObservable(\.appState) private var appState
     
-    @State private var isOn: Bool = false
-    
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.background.ignoresSafeArea()
@@ -56,8 +54,14 @@ struct TagSettingView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
+                                    .opacity(appState.tagOrdering == .alphabetical ? 1 : 0)
                             }
                             .onTapGesture {
+                                viewModel.sortTag(by: .alphabetical)
                             }
                             
                             HStack {
@@ -66,8 +70,14 @@ struct TagSettingView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
+                                    .opacity(appState.tagOrdering == .color ? 1 : 0)
                             }
                             .onTapGesture {
+                                viewModel.sortTag(by: .color)
                             }
                             
                             HStack {
@@ -76,20 +86,29 @@ struct TagSettingView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
+                                    .opacity(appState.tagOrdering == .dateAdded ? 1 : 0)
                             }
                             .onTapGesture {
+                                viewModel.sortTag(by: .dateAdded)
                             }
                         }
                         
                         Divider()
                         
                         HStack {
-                            Toggle(isOn: $isOn) {
+                            Toggle(isOn: $appState.isOnMemoTagSorting) {
                                 Text("메모 내 태그에도 적용")
                                     .font(.pretendard(.regular, size: 15))
                                     .foregroundStyle(Color.basicText)
                             }
                             .tint(Color.TagColor.Red.color)
+                            .onChange(of: appState.isOnMemoTagSorting) {
+                                viewModel.togleMemoTagSorting()
+                            }
                         }
 
                     }
@@ -105,8 +124,8 @@ struct TagSettingView: View {
                             .padding(.horizontal, 6)
                         
                         HFlow {
-                            ForEach(appState.tags, id: \.id) { tag in
-                                EditableTagView(tag: tag) {
+                            ForEach(appState.sortedTags, id: \.id) { tag in
+                                EditableTagView(tag: tag, star: appState.favoriteTags.contains(tag.id)) {
                                     navigation.push(to: .tagDetailedSetting(tag: tag))
                                 }
                             }
@@ -122,8 +141,6 @@ struct TagSettingView: View {
             }
             .padding(.horizontal, 12)
             
-        }
-        .onAppear {
         }
         .navigationBarBackButtonHidden(true)
     }

@@ -36,7 +36,7 @@ final class DefaultTagServerice: TagService {
             let dto = try await tagRepository.fetchTags()
             let tags = dto.map{ $0.toTag() }
             return .success(tags)
-        } catch let error{
+        } catch let error {
             return .failure(.from(baseError: error as! BaseError))
         }
     }

@@ -64,7 +64,6 @@ final class NavigationState {
     }
     
     func reset() {
-        Container.shared.mainViewModel.reset()
         path = NavigationPath()
         explicitStack = []
     }

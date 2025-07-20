@@ -22,12 +22,18 @@ final class MainViewModel {
     
     //main
     var memos: [Memo] = []
-    var tags: [Tag] { appState.tags }
+    func tags(for tagIds: [TagID]) -> [Tag] { appState.tags(for: tagIds) }
     
     private var mainCurrentPage: Int = 0
     private var mainTotalPages: Int = 1
     
     private var mainLoading: Bool = false
+    
+    var scrollTrigger: Bool = false
+    var scrollTarget: Int = -1
+    
+    var recommendingMemoIds: [Int] = []
+    var highlightingMemoIndex: Int = -1
     
     //search
     var searchLoading: Bool = false
@@ -47,13 +53,6 @@ final class MainViewModel {
     var editState: EditState = .create
     var editLoading: Bool = false
     private var editTask: Task<Void, Never>?
-    
-    //task
-    private static var tempID: Int = -1
-    var scrollTrigger: Bool = false
-    var scrollTarget: Int = -1
-//    var recommendingMemoIds: [Int] = []
-//    var highlightingMemoIndex: Int = -1
     
     
     
@@ -148,6 +147,7 @@ final class MainViewModel {
         }
     }
     
+    // MARK: - 페이지네이션 관련 조정 함수들
     func prefetchMainMemo() async -> Memo? {
         guard mainCurrentPage + 1 <= mainTotalPages else { return nil }
         
@@ -181,39 +181,23 @@ final class MainViewModel {
     }
     
     // MARK: - 추천 메모 ID 가져오기
-//    func recommendMemos() async {
-//        self.recommendingMemoIds = []
-//        self.highlightingMemoIndex = -1
-//        if editorTagIds.isEmpty { return }
-//        
-//        guard !isLoading else { return }
-//        
-//        isLoading = true
-//        
-//        let result = await memoService.recommendMemos(content: self.editorContent, tagIds: self.editorTagIds)
-//        
-//        switch result {
-//        case .success(let recommendedMemoIds):
-//            var ids = recommendedMemoIds.memoIds
-//            // .update 상태인 경우, 업데이트 대상 memo id는 recommendedMemoIds에서 제외
-//            if case let .update(target) = editorState {
-//                ids.removeAll { $0 == target.id }
-//            }
-//            self.recommendingMemoIds = ids
-//        case .failure(let error):
-//            alert.alert(error: error)
-//        }
-//        
-//        isLoading = false
-//    }
-    
-    //MARK: - 태그 전부 가져오기
-    func fetchTags() async {
-        let result = await tagService.fetchTag()
+    func recommendMemos() async {
+        self.recommendingMemoIds = []
+        self.highlightingMemoIndex = -1
+        self.scrollTarget = -1
+        
+        if editTags.isEmpty { return }
+        
+        let result = await memoService.recommendMemos(content: editContent, tagIds: editTags)
         
         switch result {
-        case .success(let tags):
-            appState.tags = tags
+        case .success(let recommendedMemoIds):
+            var ids = recommendedMemoIds.memoIds
+            // .update 상태인 경우, 업데이트 대상 memo id는 recommendedMemoIds에서 제외
+            if case let .update(target) = editState {
+                ids.removeAll { $0 == target.id }
+            }
+            self.recommendingMemoIds = ids
         case .failure(let error):
             alert.alert(error: error)
         }
@@ -259,34 +243,6 @@ final class MainViewModel {
             }
         case .failure(let error):
             alert.alert(error: error)
-        }
-    }
-    
-    //MARK: - 유저 정보 가져오는 함수
-    func getUser() async {
-        let result = await userService.getUser()
-        
-        switch result {
-        case .success(let user):
-            appState.user = user
-            
-        case .failure(let error):
-            alert.alert(error: error)
-        }
-    }
-    
-    //MARK: - 초기화 함수
-    func initialize() async {
-        if appState.user == nil {
-            await getUser()
-        }
-        if appState.tags.isEmpty {
-            await fetchTags()
-        }
-        if memos.isEmpty {
-            mainCurrentPage = 0
-            mainTotalPages = 1
-            await fetchMemos()
         }
     }
     
@@ -347,32 +303,6 @@ final class MainViewModel {
     }
     
     //MARK: - editor에서 submit 했을 때 작동
-    func submit() async {
-//        editTask?.cancel()
-//        let trimmedContent = editorContent.trimmingCharacters(in: .whitespacesAndNewlines)
-//        guard !trimmedContent.isEmpty else { return }
-//        
-//        switch editorState {
-//        case .create:
-//            await createMemo(content: trimmedContent, tagIds: editorTagIds, locked: false)
-//            self.memos = []
-//            self.mainCurrentPage = 0
-//            self.mainTotalPages = 1
-//            await fetchMemos()
-//            
-//        case .update(let target):
-//            await updateMemo(memoId: target.id, content: trimmedContent, tagIds: editorTagIds, locked: target.locked)
-//        }
-//        
-//        // Reset the input fields
-//        editorState = .create
-//        editorContent = ""
-//        editorTagIds = []
-//        recommendingMemoIds = []
-//        highlightingMemoIndex = -1
-//        hideKeyboard()
-    }
-    
     func saveMemo(content: String, tags: [TagID], editState: EditState, auto: Bool = false) async {
         editTask?.cancel()
         editTask = Task {
@@ -389,7 +319,7 @@ final class MainViewModel {
                 let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
                 if !trimmedContent.isEmpty {
                     if auto {
-                        try await Task.sleep(for: .seconds(3))
+                        try await Task.sleep(for: .seconds(2))
                     } else {
                         self.editContent = ""
                         self.editTags = []
@@ -417,9 +347,11 @@ final class MainViewModel {
             scrollTarget = memoID!
         }
     }
-    
-    //MARK: - Task Debouncing
-    
+}
+
+enum EditState {
+    case create
+    case update(memo: Memo)
 }
 
 extension Container {

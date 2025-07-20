@@ -193,3 +193,31 @@ extension Color {
         }
     }
 }
+
+extension Color.TagColor {
+    var sortOrder: Int {
+        switch self {
+        case .Red: return 0
+        case .Red2: return 1
+        case .Red3: return 2
+        case .Yellow: return 3
+        case .Yellow2: return 4
+        case .Yellow3: return 5
+        case .Green: return 6
+        case .Green2: return 7
+        case .Green3: return 8
+        case .Mint: return 9
+        case .Mint2: return 10
+        case .Mint3: return 11
+        case .Blue: return 12
+        case .Blue2: return 13
+        case .Blue3: return 14
+        case .Purple: return 15
+        case .Purple2: return 16
+        case .Purple3: return 17
+        case .Pink: return 18
+        case .Pink2: return 19
+        case .Pink3: return 20
+        }
+    }
+}

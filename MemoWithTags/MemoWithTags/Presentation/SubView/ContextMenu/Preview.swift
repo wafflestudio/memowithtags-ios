@@ -49,7 +49,7 @@ struct MemoPreview: View {
             
             if !memo.tagIds.isEmpty {
                 HFlow {
-                    ForEach(memo.tagIds.toTags(from: appState.tags), id: \.id) { tag in
+                    ForEach(appState.tags(for: memo.tagIds), id: \.id) { tag in
                         Text(tag.name)
                             .font(.pretendard(.regular, size: 13))
                             .foregroundColor(Color.tagText)
@@ -61,7 +61,7 @@ struct MemoPreview: View {
                             .truncationMode(.tail)
                     }
                 }
-                .padding(.top, 6)
+                .padding(.vertical, 6)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             
@@ -79,7 +79,6 @@ struct MemoPreview: View {
                 
                 Spacer()
             }
-            
             
         }
         .padding(.vertical, 15)

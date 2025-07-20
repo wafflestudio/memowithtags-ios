@@ -34,7 +34,7 @@ struct SearchView: View {
                     
                     //MARK: - 검색 창
                     HStack {
-                        ForEach(viewModel.searchContentTags.toTags(from: appState.tags), id: \.id) { tag in
+                        ForEach(viewModel.tags(for: viewModel.searchContentTags), id: \.id) { tag in
                             TagView(tag: tag, xmark: true) {
                                 viewModel.searchContentTags.removeAll { $0 == tag.id }
                             }
@@ -99,7 +99,7 @@ struct SearchView: View {
 
                         
                         HFlow {
-                            ForEach(viewModel.searchedTags.toTags(from: appState.tags), id: \.id) { tag in
+                            ForEach(viewModel.tags(for: viewModel.searchedTags), id: \.id) { tag in
                                 TagView(tag: tag) {
                                     viewModel.searchContentTags.append(tag.id)
                                 }
@@ -118,34 +118,25 @@ struct SearchView: View {
                             .font(.pretendard(.medium, size: 12))
                             .foregroundStyle(Color.grayText)
                             .padding(.horizontal, 26)
-                    
-                        List {
-                            ForEach(viewModel.searchedMemos) { memo in
-                                MemoView(memo: memo)
-                                    .id(memo.id)
-                                    .padding(.vertical, 6)
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets())
-                                    .listRowBackground(Color.clear)
-                                    .padding(.horizontal, 12)
-                                    .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
-                            }
-                            
-                            Color.clear
-                                .frame(height: 8)
-                                .listRowSeparator(.hidden)
-                                .listRowInsets(EdgeInsets())
-                                .listRowBackground(Color.clear)
-                                .onAppear {
-                                    Task {
-                                        await viewModel.searchMemos(content: viewModel.searchContent, tagIds: viewModel.searchContentTags)
-                                    }
+                        
+                        ScrollView {
+                            LazyVStack(alignment: .leading, spacing: 12) {
+                                ForEach(viewModel.searchedMemos) { memo in
+                                    MemoView(memo: memo)
+                                        .id(memo.id)
+                                        .padding(.horizontal, 12)
+                                        .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
                                 }
+                                
+                                Color.clear
+                                    .frame(height: 8)
+                                    .onAppear {
+                                        Task {
+                                            await viewModel.searchMemos(content: viewModel.searchContent, tagIds: viewModel.searchContentTags)
+                                        }
+                                    }
+                            }
                         }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .background(Color.clear)
-                        .scrollIndicators(.hidden)
                     }
                 }
                 

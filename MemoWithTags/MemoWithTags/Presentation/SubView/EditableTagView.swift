@@ -9,14 +9,17 @@ import SwiftUI
 
 struct EditableTagView: View {
     let tag: Tag
+    let star: Bool
     let onTap: (() -> Void)?
     
     var body: some View {
         HStack(spacing: 2) {
-            Image(.starFilledIcon)
-                .resizable()
-                .frame(width: 9, height: 9)
-                .foregroundStyle(Color.basicText)
+            if star {
+                Image(.starFilledIcon)
+                    .resizable()
+                    .frame(width: 9, height: 9)
+                    .foregroundStyle(Color.basicText)
+            }
             
             Text(tag.name)
                 .font(.pretendard(.regular, size: 13))

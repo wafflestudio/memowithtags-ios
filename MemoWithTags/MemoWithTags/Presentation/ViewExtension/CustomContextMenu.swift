@@ -20,7 +20,8 @@ extension View {
 }
 
 struct CustomContextMenu: ViewModifier {
-    @InjectedObservable(\.contextMenuAction) private var action
+    @InjectedObservable(\.contextMenuAction) private var contextMenuAction
+    @InjectedObservable(\.expandAction) private var expandAction
     
     let preview: PreviewType
     let menu: [MenuElement]
@@ -30,7 +31,9 @@ struct CustomContextMenu: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onLongPressGesture {
-                action.push(.init(position: position, preview: preview, menu: menu))
+                if !expandAction.signal {
+                    contextMenuAction.push(.init(position: position, preview: preview, menu: menu))
+                }
             }
             .readPosition { pos in
                 position = pos

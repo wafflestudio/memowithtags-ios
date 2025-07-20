@@ -11,6 +11,7 @@ import Factory
 
 struct TagEditorView: View {
     @InjectedObservable(\.mainViewModel) private var viewModel
+    @InjectedObservable(\.appState) private var appState
     
     @Binding var selectedTags: [TagID]
     @State private var searchText: String = ""
@@ -18,9 +19,9 @@ struct TagEditorView: View {
     
     private var filteredTags: [Tag] {
         if searchText.isEmpty {
-            return viewModel.tags.filter { !selectedTags.contains($0.id) }
+            return appState.sortedTags.filter { !selectedTags.contains($0.id) }
         } else {
-            return viewModel.tags.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+            return appState.sortedTags.filter { $0.name.lowercased().contains(searchText.lowercased()) }
         }
     }
     
@@ -99,7 +100,7 @@ struct TagEditorView: View {
     // Determine if a new tag can be created
     private func canCreateTag() -> Bool {
         let trimmedText = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !trimmedText.isEmpty && !viewModel.tags.contains { $0.name.lowercased() == trimmedText.lowercased() }
+        return !trimmedText.isEmpty && !appState.tags.contains { $0.name.lowercased() == trimmedText.lowercased() }
     }
     
     // Generate a random HEX color string from TagColor enum

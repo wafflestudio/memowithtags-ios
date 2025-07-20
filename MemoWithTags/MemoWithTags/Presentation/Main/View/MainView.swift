@@ -26,12 +26,6 @@ struct MainView: View {
                 EditorView()
             }
         }
-        .onAppear {
-            Task {
-                await viewModel.initialize()
-            }
-            print(navigation.path.count)
-        }
         .toolbar {
             //MARK: - 로고
             ToolbarItem(placement: .topBarLeading) {

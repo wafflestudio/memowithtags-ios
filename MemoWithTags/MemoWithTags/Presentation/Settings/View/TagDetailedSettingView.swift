@@ -105,7 +105,26 @@ struct TagDetailedSettingView: View {
                                 .foregroundStyle(Color.grayText)
                                 .padding(.horizontal, 6)
                             
-                            InputFieldView(text: $updatedName, placeholder: "태그명", showCount: true, showAlert: updatedName.count > 16)
+                            ZStack(alignment: .topTrailing) {
+                                InputFieldView(text: $updatedName, placeholder: "태그명", showCount: true, showAlert: updatedName.count > 16)
+                                
+                                HStack(spacing: 14) {
+                                    Rectangle()
+                                        .foregroundColor(Color.placeholder)
+                                        .frame(width: 0.3, height: 32)
+                                    
+                                    Image(appState.favoriteTags.contains(tag.id) ? .starFilledIcon : .starIcon)
+                                        .resizable()
+                                        .frame(width: 18, height: 18)
+
+                                }
+                                .padding(.top, 10)
+                                .padding(.trailing, 16)
+                                .onTapGesture {
+                                    viewModel.togleFavoriteTag(tagId: tag.id)
+                                }
+                            }
+
                         }
                         
                         VStack(alignment: .leading, spacing: 16) {
@@ -142,8 +161,6 @@ struct TagDetailedSettingView: View {
             }
             .padding(.horizontal, 12)
             
-        }
-        .onAppear {
         }
         .navigationBarBackButtonHidden(true)
     }

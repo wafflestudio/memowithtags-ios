@@ -15,6 +15,7 @@ final class SettingViewModel {
     @ObservationIgnored @Injected(\.userService) private var userService
     @ObservationIgnored @Injected(\.authService) private var authService
     @ObservationIgnored @Injected(\.tagService) private var tagService
+    @ObservationIgnored @Injected(\.settingService) private var settingService
     
     @ObservationIgnored @Injected(\.appState) private var appState
     @ObservationIgnored @Injected(\.navigationState) private var navigation
@@ -32,10 +33,7 @@ final class SettingViewModel {
         
         switch result {
         case .success:
-            appState.initialize()
-            
             navigation.reset()
-            navigation.push(to: .root)
         case .failure(let error):
             alert.alert(error: error)
         }
@@ -53,11 +51,7 @@ final class SettingViewModel {
         
         switch result {
         case .success:
-            appState.initialize()
-            
             navigation.reset()
-            navigation.push(to: .root)
-            
         case .failure(let error):
             alert.alert(error: error)
         }
@@ -96,11 +90,10 @@ final class SettingViewModel {
         }
     }
     
+    //MARK: - 비밀번호 변경
     var isValidLength: Bool = false
     var isValidPasswordFormat: Bool = false
     
-    //MARK: - 비밀번호 변경
-    ///정규식으로 비밀번호 형식 검사
     func checkPasswordValidity(password: String) {
         let containsUppercase = password.range(of: "[A-Z]", options: .regularExpression) != nil
         let containsLowercase = password.range(of: "[a-z]", options: .regularExpression) != nil
@@ -140,6 +133,7 @@ final class SettingViewModel {
         isLoading = false
     }
     
+    //MARK: - 태그 수정
     func updateTag(tagId: Int, name: String, color: Color.TagColor) async {
         let result = await tagService.updateTag(tagId: tagId, name: name, color: color)
         
@@ -149,6 +143,46 @@ final class SettingViewModel {
                 appState.tags[index] = tag
             }
         case .failure(let error):
+            alert.alert(error: error)
+        }
+    }
+    
+    //MARK: - 태그 정렬
+    func sortTag(by order: TagOrdering) {
+        do {
+            appState.tagOrdering = order
+            if let user = appState.user {
+                try settingService.sortTag(by: order, userId: user.userNumber)
+            }
+
+        } catch {
+            alert.alert(error: error)
+        }
+    }
+    
+    func togleMemoTagSorting() {
+        do {
+            if let user = appState.user {
+                try settingService.togleMemoTagSorting(appState.isOnMemoTagSorting, userId: user.userNumber)
+            }
+
+        } catch {
+            alert.alert(error: error)
+        }
+    }
+    
+    func togleFavoriteTag(tagId: Int) {
+        do {
+            if let user = appState.user {
+                if appState.favoriteTags.contains(tagId) {
+                    appState.favoriteTags.removeAll { $0 == tagId }
+                    try settingService.removeFavoriteTag(with: tagId, userId: user.userNumber)
+                } else {
+                    appState.favoriteTags.append(tagId)
+                    try settingService.addFavoriteTag(with: tagId, userId: user.userNumber)
+                }
+            }
+        } catch {
             alert.alert(error: error)
         }
     }

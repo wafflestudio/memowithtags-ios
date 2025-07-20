@@ -38,6 +38,13 @@ struct FullEditorView: View {
                     }
                 
                 Spacer()
+                
+                if viewModel.editLoading {
+                    Text("저장 중..")
+                        .font(.pretendard(.regular, size: 12))
+                        .foregroundStyle(Color.grayText)
+                        .padding(.horizontal, 6)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -92,7 +99,7 @@ struct FullEditorView: View {
             
             //MARK: - 메모 내 태그들
             HFlow {
-                ForEach(tags.toTags(from: viewModel.tags), id: \.id) { tag in
+                ForEach(viewModel.tags(for: tags), id: \.id) { tag in
                     TagView(tag: tag, xmark: true) {
                         tags.removeAll { $0 == tag.id }
                     }

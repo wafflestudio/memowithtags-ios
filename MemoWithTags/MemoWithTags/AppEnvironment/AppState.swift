@@ -13,13 +13,50 @@ import Factory
 final class AppState {
     var user: User?
     var tags: [Tag] = []
-    
     var isBioAuthenticated: Bool = false
+    var tagOrdering: TagOrdering = .dateAdded
+    var isOnMemoTagSorting: Bool = false
+    var favoriteTags: [TagID] = []
     
     func initialize() {
+        Container.shared.mainViewModel.reset()
         user = nil
         tags = []
         isBioAuthenticated = false
+        tagOrdering = .dateAdded
+        isOnMemoTagSorting = false
+        favoriteTags = []
+    }
+}
+
+extension AppState {
+    private func sortTags(_ tags: [Tag]) -> [Tag] {
+        switch tagOrdering {
+        case .alphabetical:
+            return tags.sorted { $0.name.localizedCompare($1.name) == .orderedAscending }
+        case .dateAdded:
+            return tags
+        case .color:
+            return tags.sorted { $0.color.sortOrder < $1.color.sortOrder }
+        }
+    }
+    
+    var sortedTags: [Tag] {
+        let favoriteSet = Set(favoriteTags)
+        let favorites = tags.filter { favoriteSet.contains($0.id) }
+        let nonFavorites = tags.filter { !favoriteSet.contains($0.id) }
+        
+        return sortTags(favorites) + sortTags(nonFavorites)
+    }
+    
+    func tags(for ids: [TagID]) -> [Tag] {
+        if isOnMemoTagSorting {
+            let idSet = Set(ids)
+            return sortedTags.filter { idSet.contains($0.id) }
+        } else {
+            let tagDict = Dictionary(uniqueKeysWithValues: tags.map { ($0.id, $0) })
+            return ids.compactMap { tagDict[$0] }
+        }
     }
 }
 

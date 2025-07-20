@@ -16,8 +16,7 @@ struct TagUpdaterView: View {
     
     @State private var updatedName: String
     @State private var selectedColor: Color.TagColor
-
-    @State private var isAppeared: Bool = false
+    
     @State private var isLoading: Bool  = false
     
     private let tagColors: [Color.TagColor] = [
@@ -44,12 +43,6 @@ struct TagUpdaterView: View {
                 .padding(.vertical, 8)
                 .background(selectedColor.color)
                 .cornerRadius(12)
-                .rotation3DEffect(.degrees(isAppeared ? 0 : -180), axis: (x: 1, y: 0, z: 0))
-                .onAppear {
-                    withAnimation(.spring(duration: 1, bounce: 0.3)) {
-                        isAppeared = true
-                    }
-                }
             
             
             VStack(alignment: .leading, spacing: 16) {

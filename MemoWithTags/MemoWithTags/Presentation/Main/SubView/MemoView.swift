@@ -33,7 +33,7 @@ struct MemoView: View {
             //MARK: - 태그
             if !memo.tagIds.isEmpty {
                 HFlow {
-                    ForEach(memo.tagIds.toTags(from: viewModel.tags), id: \.id) { tag in
+                    ForEach(viewModel.tags(for: memo.tagIds) , id: \.id) { tag in
                         TagView(tag: tag) {
                             onTappingMemo()
                         }
@@ -109,7 +109,9 @@ struct MemoView: View {
                         .background(Color.background)
                         .clipShape(Circle())
                         .onTapGesture {
-                            isExpanded = false
+                            withAnimation(.default) {
+                                isExpanded = false
+                            }
                         }
                 }
                 .padding(.top, 10)
@@ -120,8 +122,6 @@ struct MemoView: View {
         .background(Color.memoBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .matchedTransitionSource(id: memo.id, in: expandAction.namespace)
-        .onAppear {
-        }
         .onTapGesture {
             onTappingMemo()
         }
@@ -177,7 +177,9 @@ struct MemoView: View {
                 }
             }
         } else if !isExpanded {
-            isExpanded = true
+            withAnimation(.default) {
+                isExpanded = true
+            }
         } else {
             expandAction.push(.init(content: memo.content, tags: memo.tagIds, editState: .update(memo: memo)))
         }
