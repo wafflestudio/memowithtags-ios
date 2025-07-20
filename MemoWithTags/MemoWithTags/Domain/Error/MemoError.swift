@@ -14,11 +14,14 @@ enum MemoError: CustomError {
     case serverError
     case invalidOrder
     case unknown
+    case cancelled
     
     var type: ErrorType {
         switch self {
         case .unsureUser:
             return .relogin
+        case .cancelled:
+            return .ignore
         default:
             return .normal
         }
@@ -31,6 +34,7 @@ enum MemoError: CustomError {
         case .MEMO_NOT_FOUND: return .nonExistingMemo
         case .TAG_NOT_FOUND: return .nonExistingTag
         case .CONNECT_FAILED: return .serverError
+        case .CANCELLED: return .cancelled
         default: return .unknown
         }
     }
@@ -46,6 +50,7 @@ extension MemoError: LocalizedError {
         case .serverError: return "서버 오류가 발생했습니다."
         case .invalidOrder: return "잘못된 순서입니다."
         case .unknown: return "알 수 없는 오류가 발생했습니다."
+        case .cancelled: return "서버 통신이 취소되었습니다."
         }
     }
 }

@@ -98,7 +98,9 @@ final class MainViewModel {
             memos.insert(memo, at: 0)
             
         case .failure(let error):
-            alert.alert(error: error)
+            if error.type != .ignore {
+                alert.alert(error: error)
+            }
         }
     }
     
@@ -116,7 +118,9 @@ final class MainViewModel {
             }
             
         case .failure(let error):
-            alert.alert(error: error)
+            if error.type != .ignore {
+                alert.alert(error: error)
+            }
         }
     }
     
@@ -298,7 +302,9 @@ final class MainViewModel {
             searchTotalPages = paginatedMemos.totalPages
             
         case .failure(let error):
-            alert.alert(error: error)
+            if error.type != .ignore {
+                alert.alert(error: error)
+            }
         }
     }
     

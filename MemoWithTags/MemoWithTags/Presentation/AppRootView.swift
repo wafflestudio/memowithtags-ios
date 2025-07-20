@@ -140,6 +140,7 @@ struct AppRootView: View {
             let error = alert.error
             
             if let customError = error as? CustomError {
+                
                 switch customError.type {
                 case .relogin:
                     return Alert(
@@ -154,7 +155,7 @@ struct AppRootView: View {
                         })
                     )
                     
-                case .normal:
+                case .normal, .ignore:
                     return Alert(
                         title: Text("오류"),
                         message: Text(customError.localizedDescription),
