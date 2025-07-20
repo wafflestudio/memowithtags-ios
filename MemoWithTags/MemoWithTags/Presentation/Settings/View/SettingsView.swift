@@ -148,59 +148,37 @@ struct SettingsView: View {
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                    HStack {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("오픈소스 라이센스")
-                            .font(.pretendard(.medium, size: 14))
-                            .foregroundStyle(Color.basicText)
-                        Spacer()
-                        
-                        Image(systemName: "chevron.right")
-                            .font(.pretendard(.regular, size: 16))
+                            .font(.pretendard(.regular, size: 14))
+                            .underline()
                             .foregroundStyle(Color.soft)
-                    }
-                    .padding(.vertical, 13)
-                    .padding(.horizontal, 17)
-                    .background(Color.memoBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .onTapGesture {
-                        showingOpenSourceLicense = true
-                    }
-
-                    HStack {
+                            .onTapGesture {
+                                showingOpenSourceLicense = true
+                            }
+                        
                         Text("이용약관")
-                            .font(.pretendard(.medium, size: 14))
-                            .foregroundStyle(Color.basicText)
-                        Spacer()
-                        
-                        Image(systemName: "chevron.right")
-                            .font(.pretendard(.regular, size: 16))
+                            .font(.pretendard(.regular, size: 14))
+                            .underline()
                             .foregroundStyle(Color.soft)
-                    }
-                    .padding(.vertical, 13)
-                    .padding(.horizontal, 17)
-                    .background(Color.memoBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .onTapGesture {
-                        showingServiceTerm = true
-                    }
-
-                    HStack {
+                            .onTapGesture {
+                                showingServiceTerm = true
+                            }
+                        
                         Text("개인정보처리방침")
-                            .font(.pretendard(.medium, size: 14))
-                            .foregroundStyle(Color.basicText)
-                        Spacer()
-                        
-                        Image(systemName: "chevron.right")
-                            .font(.pretendard(.regular, size: 16))
+                            .font(.pretendard(.regular, size: 14))
+                            .underline()
                             .foregroundStyle(Color.soft)
+                            .onTapGesture {
+                                showingPrivacyPolicy = true
+                            }
+                        
                     }
-                    .padding(.vertical, 13)
+                    .padding(.vertical, 16)
                     .padding(.horizontal, 17)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.memoBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 14))
-                    .onTapGesture {
-                        showingPrivacyPolicy = true
-                    }
                 }
 
             }
