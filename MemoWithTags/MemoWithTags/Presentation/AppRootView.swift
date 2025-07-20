@@ -48,12 +48,14 @@ struct AppRootView: View {
                         EmailVerificationView(email: email)
                     case .signup(let email):
                         SignupView(email: email)
-                    case .signupSuccess, .resetPasswordSuccess:
+                    case .signupSuccess:
                         SignupSuccessView()
                     case .nicknameSetting:
                         NicknameSettingView()
                     case .resetPassword(let email):
                         ResetPasswordView(email: email)
+                    case .resetPasswordSuccess:
+                        ResetPasswordSuccessView()
                       
                     //세팅
                     case .settings:

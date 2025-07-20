@@ -59,6 +59,7 @@
 		DA40BABC2D468EAA002A5893 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */; };
 		DA40BABE2D468ED1002A5893 /* ChangeNickname.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */; };
 		DA53E51C2D33941400C7C9F2 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA53E51B2D33941000C7C9F2 /* AppState.swift */; };
+		DA57E0E12E2D6858007DE61E /* ResetPasswordSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA57E0E02E2D684D007DE61E /* ResetPasswordSuccess.swift */; };
 		DA6DCC6A2E19722600834066 /* ReadPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6DCC692E19722200834066 /* ReadPosition.swift */; };
 		DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD612D831E7D00251412 /* InputFieldView.swift */; };
 		DA7AFD642D831E9800251412 /* SecureInputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */; };
@@ -173,6 +174,7 @@
 		DA40BABB2D468EAA002A5893 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		DA40BABD2D468EC3002A5893 /* ChangeNickname.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNickname.swift; sourceTree = "<group>"; };
 		DA53E51B2D33941000C7C9F2 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		DA57E0E02E2D684D007DE61E /* ResetPasswordSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordSuccess.swift; sourceTree = "<group>"; };
 		DA6DCC692E19722200834066 /* ReadPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadPosition.swift; sourceTree = "<group>"; };
 		DA7AFD612D831E7D00251412 /* InputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputFieldView.swift; sourceTree = "<group>"; };
 		DA7AFD632D831E8F00251412 /* SecureInputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputFieldView.swift; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 				DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */,
 				DAE504042D465DF90089B7D0 /* NicknameSettingView.swift */,
 				DA3641C92D396F2D0001EB20 /* ResetPasswordView.swift */,
+				DA57E0E02E2D684D007DE61E /* ResetPasswordSuccess.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -799,6 +802,7 @@
 				DAB3757D2E05C796009E4E2B /* NicknameSettingViewModel.swift in Sources */,
 				DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */,
 				DA8886C52D6A1AA000ED6C1A /* UserService.swift in Sources */,
+				DA57E0E12E2D6858007DE61E /* ResetPasswordSuccess.swift in Sources */,
 				DA7AFD622D831E8A00251412 /* InputFieldView.swift in Sources */,
 				556EF4572D68ACC1001BE9B3 /* Memo.swift in Sources */,
 				556EF4582D68ACC1001BE9B3 /* Tag.swift in Sources */,
