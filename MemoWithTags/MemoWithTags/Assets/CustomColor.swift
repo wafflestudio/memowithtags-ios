@@ -168,19 +168,24 @@ extension Color {
         case Red = "#FF9C9C"
         case Red2 = "#FFBDBD"
         case Red3 = "#FFE3DA"
-        case Yellow = "#FFF0B8"
-        case Yellow2 = "#FFF56F"
-        case Green = "#D4FDCB"
+        case Yellow = "#FFF56F"
+        case Yellow2 = "#FFF0B8"
+        case Yellow3 = "#FEFFB8"
+        case Green = "#A5F8A1"
         case Green2 = "#DCF794"
-        case Green3 = "#92EDA1"
-        case Mint = "#CCFFF7"
+        case Green3 = "#D4FDCB"
+        case Mint = "#8AEBF6"
         case Mint2 = "#A6F7EA"
-        case Blue = "#D2E8FE"
+        case Mint3 = "#CCFFF7"
+        case Blue = "#A2B4F2"
         case Blue2 = "#B3D9FF"
-        case Purple = "#EEDEFE"
+        case Blue3 = "#D2E8FE"
+        case Purple = "#E5A6F0"
         case Purple2 = "#DEBDFF"
-        case Pink = "#FFBDDE"
-        case Pink2 = "#FFD9EC"
+        case Purple3 = "#EEDEFE"
+        case Pink = "#FA9BD1"
+        case Pink2 = "#FFBDDE"
+        case Pink3 = "#FFD9EC"
         
         var color: Color {
             let base = UIColor(hex: self.rawValue)
@@ -188,3 +193,32 @@ extension Color {
         }
     }
 }
+
+extension Color.TagColor {
+    var sortOrder: Int {
+        switch self {
+        case .Red: return 0
+        case .Red2: return 1
+        case .Red3: return 2
+        case .Yellow: return 3
+        case .Yellow2: return 4
+        case .Yellow3: return 5
+        case .Green: return 6
+        case .Green2: return 7
+        case .Green3: return 8
+        case .Mint: return 9
+        case .Mint2: return 10
+        case .Mint3: return 11
+        case .Blue: return 12
+        case .Blue2: return 13
+        case .Blue3: return 14
+        case .Purple: return 15
+        case .Purple2: return 16
+        case .Purple3: return 17
+        case .Pink: return 18
+        case .Pink2: return 19
+        case .Pink3: return 20
+        }
+    }
+}
+
