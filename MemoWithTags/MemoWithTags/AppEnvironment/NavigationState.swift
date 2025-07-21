@@ -1,17 +1,18 @@
 //
-//  Untitled.swift
+//  Navigation.swift
 //  MemoWithTags
 //
-//  Created by 최진모 on 1/9/25.
+//  Created by 최진모 on 6/21/25.
 //
 
+import Foundation
 import SwiftUI
+import Factory
 
 enum Route: Hashable {
     case root
     case main
     case search
-    case memoEditor
     
     //MARK: - 로그인
     case login
@@ -32,18 +33,18 @@ enum Route: Hashable {
     //MARK: - 세팅
     case settings
     case accountSetting
+    case tagSetting
+    case tagDetailedSetting(tag: Tag)
     case changeNickname
     case changePassword
 }
 
 @MainActor
-final class NavigationState: ObservableObject {
-    @Published var path = NavigationPath()
-    // path는 push, pop, count 기능만 지원한다
-    // 따라서 현재 Page가 어떤 Page인지 알기 위해 explicit한 stack이 필요하다.
+@Observable
+final class NavigationState {
+    var path = NavigationPath()
     var explicitStack: [Route] = []
     
-    // 현재 활성화된 Route를 반환하는 계산 프로퍼티
     var current: Route {
         return explicitStack.last ?? .root
     }
@@ -57,11 +58,21 @@ final class NavigationState: ObservableObject {
         if !path.isEmpty {
             path.removeLast()
         }
-        explicitStack.removeLast()
+        if !explicitStack.isEmpty {
+            explicitStack.removeLast()
+        }
     }
     
     func reset() {
-        path.removeLast(path.count)
-        explicitStack.removeLast(explicitStack.count)
+        path = NavigationPath()
+        explicitStack = []
     }
 }
+
+extension Container {
+    @MainActor
+    var navigationState: Factory<NavigationState> {
+        self { @MainActor in NavigationState() }.singleton
+    }
+}
+
