@@ -10,11 +10,7 @@ import Factory
 
 struct SettingsView: View {
     @InjectedObservable(\.navigationState) private var navigation
-    
-    @State private var showingOpenSourceLicense = false
-    @State private var showingServiceTerm = false
-    @State private var showingPrivacyPolicy = false
-    
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.background.ignoresSafeArea()
@@ -149,30 +145,27 @@ struct SettingsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("오픈소스 라이센스")
-                            .font(.pretendard(.regular, size: 14))
-                            .underline()
-                            .foregroundStyle(Color.soft)
-                            .onTapGesture {
-                                showingOpenSourceLicense = true
-                            }
-                        
-                        Text("이용약관")
-                            .font(.pretendard(.regular, size: 14))
-                            .underline()
-                            .foregroundStyle(Color.soft)
-                            .onTapGesture {
-                                showingServiceTerm = true
-                            }
-                        
-                        Text("개인정보처리방침")
-                            .font(.pretendard(.regular, size: 14))
-                            .underline()
-                            .foregroundStyle(Color.soft)
-                            .onTapGesture {
-                                showingPrivacyPolicy = true
-                            }
-                        
+                        Link(destination: URL(string: "https://wafflestudio.github.io/memowithtags-ios/opensource-license.html")!) {
+                            Text("오픈소스 라이센스")
+                                .font(.pretendard(.regular, size: 14))
+                                .underline()
+                                .foregroundStyle(Color.soft)
+                        }
+
+                        Link(destination: URL(string: "https://wafflestudio.github.io/memowithtags-ios/service-term.html")!) {
+                            Text("이용약관")
+                                .font(.pretendard(.regular, size: 14))
+                                .underline()
+                                .foregroundStyle(Color.soft)
+                        }
+
+                        Link(destination: URL(string: "https://wafflestudio.github.io/memowithtags-ios/privacy-policy.html")!) {
+                            Text("개인정보처리방침")
+                                .font(.pretendard(.regular, size: 14))
+                                .underline()
+                                .foregroundStyle(Color.soft)
+                        }
+
                     }
                     .padding(.vertical, 16)
                     .padding(.horizontal, 17)
@@ -186,23 +179,5 @@ struct SettingsView: View {
             
         }
         .navigationBarBackButtonHidden(true)
-        .sheet(isPresented: $showingOpenSourceLicense) {
-            DocumentView(
-                title: "오픈소스 라이센스",
-                content: Documents.openSourceLicense
-            )
-        }
-        .sheet(isPresented: $showingServiceTerm) {
-            DocumentView(
-                title: "이용약관",
-                content: Documents.serviceTerm
-            )
-        }
-        .sheet(isPresented: $showingPrivacyPolicy) {
-            DocumentView(
-                title: "개인정보처리방침",
-                content: Documents.privacyPolicy
-            )
-        }
     }
 }
