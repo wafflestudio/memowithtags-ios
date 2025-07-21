@@ -33,6 +33,9 @@
 		DA0A4EBA2D2BC544007E481D /* SignupSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */; };
 		DA0DE63C2D43BD290006668A /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0DE63B2D43BD290006668A /* KeyboardManager.swift */; };
 		DA19AD2A2E2E5DF600059CF7 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = DA19AD292E2E5DF600059CF7 /* Factory */; };
+		DA19AD2D2E2E637400059CF7 /* LocalRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19AD2C2E2E633200059CF7 /* LocalRepository.swift */; };
+		DA19AD2F2E2E643900059CF7 /* LocalError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19AD2E2E2E643400059CF7 /* LocalError.swift */; };
+		DA19AD312E2E648100059CF7 /* DefaultLocalRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19AD302E2E647600059CF7 /* DefaultLocalRepository.swift */; };
 		DA19C4E92D3FF9AF00ACDC00 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19C4E82D3FF9A200ACDC00 /* DeepLinkHandler.swift */; };
 		DA212CD52D42A13C005D1E15 /* MemoEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA212CD42D42A136005D1E15 /* MemoEditorView.swift */; };
 		DA2DA6632D2A9492000C0495 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2DA6622D2A9487000C0495 /* SignupView.swift */; };
@@ -133,6 +136,9 @@
 		DA0A4EB72D2B9EF8007E481D /* EmailVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationView.swift; sourceTree = "<group>"; };
 		DA0A4EB92D2BC536007E481D /* SignupSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSuccessView.swift; sourceTree = "<group>"; };
 		DA0DE63B2D43BD290006668A /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
+		DA19AD2C2E2E633200059CF7 /* LocalRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalRepository.swift; sourceTree = "<group>"; };
+		DA19AD2E2E2E643400059CF7 /* LocalError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalError.swift; sourceTree = "<group>"; };
+		DA19AD302E2E647600059CF7 /* DefaultLocalRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLocalRepository.swift; sourceTree = "<group>"; };
 		DA19C4E82D3FF9A200ACDC00 /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
 		DA212CD42D42A136005D1E15 /* MemoEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoEditorView.swift; sourceTree = "<group>"; };
 		DA2DA6622D2A9487000C0495 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
@@ -330,6 +336,7 @@
 				DA8886CC2D6A310400ED6C1A /* SocialLoginError.swift */,
 				DA8886CE2D6A317300ED6C1A /* MemoError.swift */,
 				DA4018662D32D543008500E2 /* TagError.swift */,
+				DA19AD2E2E2E643400059CF7 /* LocalError.swift */,
 			);
 			path = Error;
 			sourceTree = "<group>";
@@ -341,6 +348,7 @@
 				DABFE2272D28416000B314E2 /* AuthRepository.swift */,
 				556EF4592D68ACF0001BE9B3 /* MemoRepository.swift */,
 				556EF45A2D68ACF0001BE9B3 /* TagRepository.swift */,
+				DA19AD2C2E2E633200059CF7 /* LocalRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -436,6 +444,7 @@
 				DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */,
 				DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */,
 				DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */,
+				DA19AD302E2E647600059CF7 /* DefaultLocalRepository.swift */,
 			);
 			path = Repository;
 			sourceTree = "<group>";
@@ -679,6 +688,7 @@
 				DABFE2842D284E7200B314E2 /* TagRouter.swift in Sources */,
 				55E610C02D2A65C400E452A8 /* SettingsView.swift in Sources */,
 				DA8886CB2D6A2EE400ED6C1A /* UserError.swift in Sources */,
+				DA19AD312E2E648100059CF7 /* DefaultLocalRepository.swift in Sources */,
 				DABFE25E2D28416000B314E2 /* KeyChainManager.swift in Sources */,
 				556EF4672D68B161001BE9B3 /* UpdateTagView.swift in Sources */,
 				55D572032E11314C00A95201 /* ResetPasswordSuccessView.swift in Sources */,
@@ -688,7 +698,9 @@
 				556EF46A2D68B161001BE9B3 /* EditingMemoView.swift in Sources */,
 				556EF46B2D68B161001BE9B3 /* CreateTagView.swift in Sources */,
 				556EF46C2D68B161001BE9B3 /* MemoListView.swift in Sources */,
+				DA19AD2F2E2E643900059CF7 /* LocalError.swift in Sources */,
 				DADDA9BC2D6D947600A8BE97 /* CustomContextMenu.swift in Sources */,
+				DA19AD2D2E2E637400059CF7 /* LocalRepository.swift in Sources */,
 				556EF46D2D68B161001BE9B3 /* DesignTagView.swift in Sources */,
 				556EF46E2D68B161001BE9B3 /* EditingTagListView.swift in Sources */,
 				556EF46F2D68B161001BE9B3 /* TagView.swift in Sources */,
