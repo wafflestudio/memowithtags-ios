@@ -240,6 +240,14 @@
 			path = SubView;
 			sourceTree = "<group>";
 		};
+		DA19AD2B2E2E5E4900059CF7 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				DABFE24F2D28416000B314E2 /* CustomColor.swift */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 		DA3C9E572D291BBF00F28D07 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -254,8 +262,10 @@
 		DA4018522D32AA07008500E2 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				DABFE2232D28416000B314E2 /* Network */,
 				DABFE22C2D28416000B314E2 /* Repository */,
+				DABFE2232D28416000B314E2 /* Network */,
+				DABFE2262D28416000B314E2 /* Router */,
+				DA40185B2D32D054008500E2 /* Dto */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -423,8 +433,6 @@
 		DABFE22C2D28416000B314E2 /* Repository */ = {
 			isa = PBXGroup;
 			children = (
-				DA40185B2D32D054008500E2 /* Dto */,
-				DABFE2262D28416000B314E2 /* Router */,
 				DA40186A2D32DC2E008500E2 /* DefaultAuthRepository.swift */,
 				DA40186E2D32DCB8008500E2 /* DefaultMemoRepository.swift */,
 				DA4018702D32DD02008500E2 /* DefaultTagRepository.swift */,
@@ -488,12 +496,12 @@
 			isa = PBXGroup;
 			children = (
 				DAF485482D721B4100421D2F /* Font */,
+				DA19AD2B2E2E5E4900059CF7 /* Assets */,
 				DA4018522D32AA07008500E2 /* Data */,
 				DA4018532D32AA11008500E2 /* Domain */,
 				DA4018542D32AA19008500E2 /* Presentation */,
 				DA3C9E572D291BBF00F28D07 /* Application */,
 				DA53E51A2D3393EE00C7C9F2 /* AppEnvironment */,
-				DABFE24F2D28416000B314E2 /* CustomColor.swift */,
 				DABFE24D2D28416000B314E2 /* Assets.xcassets */,
 				DA2DA6642D2AF00D000C0495 /* Info.plist */,
 				DABFE2202D28416000B314E2 /* Preview Content */,

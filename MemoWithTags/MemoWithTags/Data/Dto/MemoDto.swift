@@ -52,3 +52,4 @@ struct RecommendMemoResponseDto: Decodable {
         return RecommendedMemoIds(memoIds: memoIds)
     }
 }
+

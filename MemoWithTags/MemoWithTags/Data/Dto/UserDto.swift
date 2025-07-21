@@ -17,3 +17,4 @@ struct UserDto: Codable {
         return User(id: id, userNumber: userNumber, email: email, nickname: nickname, isSocial: isSocial)
     }
 }
+

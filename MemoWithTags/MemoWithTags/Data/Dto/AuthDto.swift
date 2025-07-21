@@ -24,3 +24,4 @@ struct SocialAuthDto: Decodable {
         return SocialAuth(accessToken: accessToken, refreshToken: refreshToken, isNewUser: isNewUser)
     }
 }
+
