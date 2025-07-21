@@ -73,6 +73,7 @@
 		DA19ADAC2E2E685B00059CF7 /* AlertState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA62E2E685B00059CF7 /* AlertState.swift */; };
 		DA19ADAD2E2E685B00059CF7 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA72E2E685B00059CF7 /* DeepLinkHandler.swift */; };
 		DA19ADAE2E2E685B00059CF7 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA42E2E685B00059CF7 /* AppState.swift */; };
+		DA19ADB02E2E69B400059CF7 /* SettingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADAF2E2E69AF00059CF7 /* SettingService.swift */; };
 		DA2F3EDA2D313050006F156E /* Flow in Frameworks */ = {isa = PBXBuildFile; productRef = DA2F3ED92D313050006F156E /* Flow */; };
 		DA3C9E562D290D1500F28D07 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3C9E552D290D0E00F28D07 /* AppRootView.swift */; };
 		DA40185A2D32C7FC008500E2 /* BaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4018592D32C7D3008500E2 /* BaseError.swift */; };
@@ -187,6 +188,7 @@
 		DA19ADA62E2E685B00059CF7 /* AlertState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertState.swift; sourceTree = "<group>"; };
 		DA19ADA72E2E685B00059CF7 /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
 		DA19ADA82E2E685B00059CF7 /* Documents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Documents.swift; sourceTree = "<group>"; };
+		DA19ADAF2E2E69AF00059CF7 /* SettingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingService.swift; sourceTree = "<group>"; };
 		DA2DA6642D2AF00D000C0495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA3C9E552D290D0E00F28D07 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
 		DA4018592D32C7D3008500E2 /* BaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseError.swift; sourceTree = "<group>"; };
@@ -604,6 +606,7 @@
 				DA8886C42D6A1A9100ED6C1A /* UserService.swift */,
 				DAE56E9D2D69E6640009548D /* MemoService.swift */,
 				DAE56E9F2D69E66F0009548D /* TagService.swift */,
+				DA19ADAF2E2E69AF00059CF7 /* SettingService.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -789,6 +792,7 @@
 				DA19ADA12E2E675900059CF7 /* ReadPosition.swift in Sources */,
 				DA19ADA22E2E675900059CF7 /* CustomContextMenu.swift in Sources */,
 				DA19AD2F2E2E643900059CF7 /* LocalError.swift in Sources */,
+				DA19ADB02E2E69B400059CF7 /* SettingService.swift in Sources */,
 				DA19AD2D2E2E637400059CF7 /* LocalRepository.swift in Sources */,
 				DA19AD432E2E664800059CF7 /* MainView.swift in Sources */,
 				DA19AD442E2E664800059CF7 /* SearchView.swift in Sources */,
