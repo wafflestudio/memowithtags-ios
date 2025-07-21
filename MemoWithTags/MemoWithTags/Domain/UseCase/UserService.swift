@@ -6,25 +6,18 @@
 //
 
 import Foundation
+import Factory
 
 protocol UserService {
-    ///유저 정보 가져오기
     func getUser() async -> Result<User, GetUserError>
-    ///닉네임 변경
     func changeNickname(nickname: String) async -> Result<Void, ChangeNicknameError>
-    ///비밀번호 변경
     func changePassword(currentPassword: String, newPassword: String) async -> Result<Void, ChangePasswordError>
-    ///회원 탈퇴
     func withdrawal(email: String) async -> Result<Void, WithdrawalError>
 }
 
 final class DefaultUserService: UserService {
-    private let authRepository: AuthRepository
-    
-    init(authRepository: AuthRepository) {
-        self.authRepository = authRepository
-    }
-    
+    @Injected(\.authRepository) private var authRepository: AuthRepository
+
     //MARK: - 유저 정보 가져오기
     func getUser() async -> Result<User, GetUserError> {
         do {
@@ -69,3 +62,10 @@ final class DefaultUserService: UserService {
         }
     }
 }
+
+extension Container {
+    var userService: Factory<UserService> {
+        self { DefaultUserService() }.singleton
+    }
+}
+

@@ -69,5 +69,6 @@ enum ErrorCode: String {
     case CANT_DECODE = "CANT_DECODE"
     case CANT_DECODE_ERROR = "CANT_DECODE_ERROR"
     case CONNECT_FAILED = "CONNECT_FAILED"
+    case CANCELLED = "CANCEllED"
     case UNKNOWN_ERROR = "UNKNOWN_ERROR"
 }

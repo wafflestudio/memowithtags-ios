@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Factory
 
 protocol TagService {
     func createTag(name: String, color: Color.TagColor) async -> Result<Tag, TagError>
@@ -16,12 +17,8 @@ protocol TagService {
 
 
 final class DefaultTagServerice: TagService {
-    private let tagRepository: TagRepository
+    @Injected(\.tagRepository) private var tagRepository: TagRepository
 
-    init(tagRepository: TagRepository) {
-        self.tagRepository = tagRepository
-    }
-    
     //MARK: - 태그 생성
     func createTag(name: String, color: Color.TagColor) async -> Result<Tag, TagError> {
         do {
@@ -39,7 +36,7 @@ final class DefaultTagServerice: TagService {
             let dto = try await tagRepository.fetchTags()
             let tags = dto.map{ $0.toTag() }
             return .success(tags)
-        } catch let error{
+        } catch let error {
             return .failure(.from(baseError: error as! BaseError))
         }
     }
@@ -64,5 +61,11 @@ final class DefaultTagServerice: TagService {
             return .failure(.from(baseError: error as! BaseError))
         }
     }
-    
 }
+
+extension Container {
+    var tagService: Factory<TagService> {
+        self { DefaultTagServerice() }.singleton
+    }
+}
+

@@ -42,6 +42,8 @@ extension BaseRepository {
                 switch afError {
                 case .sessionTaskFailed:
                     throw BaseError(status: -1, code: "CONNECT_FAILED", message: "서버에 연결할 수 없습니다.")
+                case .explicitlyCancelled:
+                    throw BaseError(status: -1, code: "CANCEllED", message: "진행 중이던 작업이 취소되었습니다.")
                 default:
                     break
                 }
@@ -89,6 +91,8 @@ extension BaseRepository {
                 switch afError {
                 case .sessionTaskFailed:
                     throw BaseError(status: -1, code: "CONNECT_FAILED", message: "서버에 연결할 수 없습니다.")
+                case .explicitlyCancelled:
+                    throw BaseError(status: -1, code: "CANCEllED", message: "진행 중이던 작업이 취소되었습니다.")
                 default:
                     break
                 }

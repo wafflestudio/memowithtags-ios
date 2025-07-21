@@ -6,10 +6,10 @@
 //
 import Foundation
 
-struct Memo: Codable, Identifiable, Equatable  {
+struct Memo: Codable, Identifiable, Equatable, Hashable  {
     let id: Int
     var content: String
-    var tagIds: [Int]
+    var tagIds: [TagID]
     var locked: Bool
     var createdAt: Date
     var updatedAt: Date

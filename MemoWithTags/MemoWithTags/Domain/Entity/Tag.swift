@@ -12,3 +12,12 @@ struct Tag: Codable, Identifiable, Equatable, Hashable {
     var name: String
     var color: Color.TagColor
 }
+
+typealias TagID = Int
+
+enum TagOrdering: Codable {
+    case alphabetical
+    case dateAdded
+    case color
+}
+
