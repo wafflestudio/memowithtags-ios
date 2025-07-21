@@ -135,7 +135,7 @@ struct MemoView: View {
                           UIPasteboard.general.string = memo.content
                       } else {
                           navigation.pop()
-//                          viewModel.scrollTarget = memo.id
+                          viewModel.scrollTo(memoID: memo.id)
                       }
                     }
                 },
