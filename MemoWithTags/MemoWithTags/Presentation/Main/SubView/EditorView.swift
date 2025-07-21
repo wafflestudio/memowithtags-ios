@@ -193,51 +193,51 @@ struct EditorView: View {
             }
         }
         
-        private var recommendingOverlay: some View {
-            Group {
-                if !viewModel.recommendingMemoIds.isEmpty {
-                    HStack(spacing: 8) {
-                        recommendingPrompt
+    private var recommendingOverlay: some View {
+        Group {
+            if !viewModel.recommendingMemoIds.isEmpty {
+                HStack(spacing: 8) {
+                    recommendingPrompt
+                    
+                    HStack(spacing: 10) {
+                        Image(systemName: "chevron.up")
+                            .font(.system(size: 14, weight: .regular))
+                            .foregroundStyle(Color.vivid)
+                            .frame(width: 27, height: 27)
+                            .background(Color.memoBackground)
+                            .clipShape(
+                                Circle()
+                            )
+                            .onTapGesture {
+                                if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
+                                    viewModel.highlightingMemoIndex += 1
+                                    viewModel.scrollTo(memoID: viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex])
+                                }
+                            }
                         
-                        HStack(spacing: 10) {
-                            Image(systemName: "chevron.up")
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundStyle(Color.vivid)
-                                .frame(width: 27, height: 27)
-                                .background(Color.memoBackground)
-                                .clipShape(
-                                    Circle()
-                                )
-                                .onTapGesture {
-                                    if viewModel.highlightingMemoIndex < viewModel.recommendingMemoIds.count - 1 {
-                                        viewModel.highlightingMemoIndex += 1
-                                        viewModel.scrollTo(memoID: viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex])
-                                    }
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 14, weight: .regular))
+                            .foregroundStyle(Color.vivid)
+                            .frame(width: 27, height: 27)
+                            .background(Color.memoBackground)
+                            .clipShape(
+                                Circle()
+                            )
+                            .onTapGesture {
+                                if viewModel.highlightingMemoIndex > 0 {
+                                    viewModel.highlightingMemoIndex -= 1
+                                    viewModel.scrollTo(memoID: viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex])
                                 }
-                            
-                            Image(systemName: "chevron.down")
-                                .font(.system(size: 14, weight: .regular))
-                                .foregroundStyle(Color.vivid)
-                                .frame(width: 27, height: 27)
-                                .background(Color.memoBackground)
-                                .clipShape(
-                                    Circle()
-                                )
-                                .onTapGesture {
-                                    if viewModel.highlightingMemoIndex > 0 {
-                                        viewModel.highlightingMemoIndex -= 1
-                                        viewModel.scrollTo(memoID: viewModel.recommendingMemoIds[viewModel.highlightingMemoIndex])
-                                    }
-                                }
-                        }
-                        .background(Color.background)
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 20)
-                        )
+                            }
                     }
+                    .background(Color.background)
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 20)
+                    )
                 }
             }
-            .offset(x: -11, y: -35)
-            .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
         }
+        .offset(x: -11, y: -35)
+        .shadow(color: Color.shadow, radius: 3, x: 0, y: 1)
+    }
 }

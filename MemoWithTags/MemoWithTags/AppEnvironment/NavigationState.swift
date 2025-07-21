@@ -39,33 +39,79 @@ enum Route: Hashable {
     case changePassword
 }
 
+// MARK: - NavigationContext
+enum NavigationContext {
+    case splash
+    case auth
+    case main
+}
+
 @MainActor
 @Observable
 final class NavigationState {
-    var path = NavigationPath()
-    var explicitStack: [Route] = []
+    var activeContext: NavigationContext = .splash
+    
+    var authPath = NavigationPath()
+    var mainPath = NavigationPath()
+    
+    var explicitStack: [Route] = [.root]
     
     var current: Route {
         return explicitStack.last ?? .root
     }
     
+    func switchTo(_ context: NavigationContext) {
+        reset(context: context)
+        activeContext = context
+        switch activeContext {
+        case .auth:
+            explicitStack = [.login]
+        case .main:
+            explicitStack = [.main]
+        case .splash:
+            explicitStack = [.root]
+        }
+    }
+    
     func push(to route: Route) {
-        path.append(route)
         explicitStack.append(route)
+        switch activeContext {
+        case .auth:
+            authPath.append(route)
+        case .main:
+            mainPath.append(route)
+        case .splash:
+            break
+        }
     }
     
     func pop() {
-        if !path.isEmpty {
-            path.removeLast()
-        }
-        if !explicitStack.isEmpty {
-            explicitStack.removeLast()
+        if explicitStack.count > 1 { explicitStack.removeLast() }
+        switch activeContext {
+        case .auth:
+            if !authPath.isEmpty { authPath.removeLast() }
+        case .main:
+            if !mainPath.isEmpty { mainPath.removeLast() }
+        case .splash:
+            break
         }
     }
     
-    func reset() {
-        path = NavigationPath()
+    func reset(context: NavigationContext? = nil) {
         explicitStack = []
+        if let contextToReset = context {
+            switch contextToReset {
+            case .auth:
+                authPath = NavigationPath()
+            case .main:
+                mainPath = NavigationPath()
+            case .splash:
+                break
+            }
+        } else {
+            authPath = NavigationPath()
+            mainPath = NavigationPath()
+        }
     }
 }
 

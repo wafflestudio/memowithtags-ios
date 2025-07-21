@@ -51,7 +51,7 @@ struct SignupSuccessView: View {
                     //MARK: - 시작버튼
                     Button {
                         //action
-                        navigation.reset()
+                        navigation.switchTo(.splash)
                     } label: {
                         Text("시작하기")
                             .frame(maxWidth: .infinity)

@@ -70,18 +70,18 @@ struct SplashView: View {
         .onChange(of: isLoading) {
             if !isAnimating && !isLoading {
                 if checkLogin() {
-                    navigation.push(to: .main)
+                    navigation.switchTo(.main)
                 } else {
-                    navigation.push(to: .login)
+                    navigation.switchTo(.auth)
                 }
             }
         }
         .onChange(of: isAnimating) {
             if !isAnimating && !isLoading {
                 if checkLogin() {
-                    navigation.push(to: .main)
+                    navigation.switchTo(.main)
                 } else {
-                    navigation.push(to: .login)
+                    navigation.switchTo(.auth)
                 }
             }
         }

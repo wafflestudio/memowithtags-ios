@@ -33,7 +33,7 @@ final class SettingViewModel {
         
         switch result {
         case .success:
-            navigation.reset()
+            navigation.switchTo(.splash)
         case .failure(let error):
             alert.alert(error: error)
         }
@@ -51,7 +51,7 @@ final class SettingViewModel {
         
         switch result {
         case .success:
-            navigation.reset()
+            navigation.switchTo(.splash)
         case .failure(let error):
             alert.alert(error: error)
         }

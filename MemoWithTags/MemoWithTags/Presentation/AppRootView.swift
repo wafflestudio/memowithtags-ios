@@ -22,56 +22,73 @@ struct AppRootView: View {
     
     var body: some View {
         //MARK: - 네비게이션
-        NavigationStack(path: $navigation.path) {
-            SplashView()
-                .onAppear {
-                    contextMenuAction.namespace = namespace
-                    expandAction.namespace = namespace
-                }
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .root:
-                        SplashView()
-                    case .main:
-                        MainView()
-                    case .search:
-                        SearchView()
-                    
-                    //로그인
-                    case .login:
-                        LoginView()
+        ZStack {
+            //MARK: - 네비게이션 컨텍스트 전환
+            switch navigation.activeContext {
+            case .splash:
+                SplashView()
 
-                    //회원가입, 비밀번호 찾기
-                    case .emailEnter, .resetPasswordEmailEnter:
-                        EmailEnterView()
-                    case .emailVerification(let email), .resetPasswordEmailVerification(let email):
-                        EmailVerificationView(email: email)
-                    case .signup(let email):
-                        SignupView(email: email)
-                    case .signupSuccess:
-                        SignupSuccessView()
-                    case .nicknameSetting:
-                        NicknameSettingView()
-                    case .resetPassword(let email):
-                        ResetPasswordView(email: email)
-                    case .resetPasswordSuccess:
-                        ResetPasswordSuccessView()
-                      
-                    //세팅
-                    case .settings:
-                        SettingsView()
-                    case .accountSetting:
-                        AccountSettingView()
-                    case .tagSetting:
-                        TagSettingView()
-                    case let .tagDetailedSetting(tag):
-                        TagDetailedSettingView(tag: tag)
-                    case .changePassword:
-                        ChangePasswordView()
-                    case .changeNickname:
-                        ChangeNicknameView()
-                    }
+            case .auth:
+                NavigationStack(path: $navigation.authPath) {
+                    LoginView()
+                        .navigationDestination(for: Route.self) { route in
+                            switch route {
+                            case .login:
+                                LoginView()
+                            case .emailEnter, .resetPasswordEmailEnter:
+                                EmailEnterView()
+                            case .emailVerification(let email), .resetPasswordEmailVerification(let email):
+                                EmailVerificationView(email: email)
+                            case .signup(let email):
+                                SignupView(email: email)
+                            case .signupSuccess:
+                                SignupSuccessView()
+                            case .resetPassword(let email):
+                                ResetPasswordView(email: email)
+                            case .resetPasswordSuccess:
+                                ResetPasswordSuccessView()
+                            case .nicknameSetting:
+                                NicknameSettingView()
+                            default:
+                                Text("Invalid route for auth flow: \(String(describing: route))")
+                            }
+                        }
                 }
+                .transition(.opacity)
+                
+            case .main:
+                NavigationStack(path: $navigation.mainPath) {
+                    MainView()
+                        .navigationDestination(for: Route.self) { route in
+                            switch route {
+                             case .main:
+                                 MainView()
+                             case .search:
+                                 SearchView()
+                             case .settings:
+                                 SettingsView()
+                             case .accountSetting:
+                                 AccountSettingView()
+                             case .tagSetting:
+                                 TagSettingView()
+                             case .tagDetailedSetting(let tag):
+                                 TagDetailedSettingView(tag: tag)
+                             case .changePassword:
+                                 ChangePasswordView()
+                             case .changeNickname:
+                                 ChangeNicknameView()
+                             default:
+                                 Text("Invalid route for main flow: \(String(describing: route))")
+                             }
+                        }
+                }
+                .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut, value: navigation.activeContext)
+        .onAppear {
+            contextMenuAction.namespace = namespace
+            expandAction.namespace = namespace
         }
         //MARK: - Context Menu
         .onChange(of: contextMenuAction.signal) {
