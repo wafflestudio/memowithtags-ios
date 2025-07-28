@@ -9,9 +9,12 @@ import SwiftUI
 import Factory
 
 protocol SettingService {
+    func getFontSizeSetting(userId: Int) throws -> AppState.FontSize
     func getTagOrdering(userId: Int) throws -> TagOrdering
     func getOnMemoTagSorting(userId: Int) throws -> Bool
     func getFavoriteTags(userId: Int) throws -> [TagID]
+    
+    func changeFontSize(_ size: AppState.FontSize, userId: Int) throws
     func sortTag(by order: TagOrdering, userId: Int) throws
     func togleMemoTagSorting(_ value: Bool, userId: Int) throws
     func addFavoriteTag(with tagId: TagID, userId: Int) throws
@@ -20,6 +23,13 @@ protocol SettingService {
 
 final class DefaultSettingServerice: SettingService {
     @Injected(\.localRepository) private var localRepository
+    
+    func getFontSizeSetting(userId: Int) throws -> AppState.FontSize {
+        if let fontSize = try localRepository.get(forKey: "\(userId)/FontSize", as: AppState.FontSize.self) {
+            return fontSize
+        }
+        return .small
+    }
     
     func getTagOrdering(userId: Int) throws -> TagOrdering {
         if let tagOrdering = try localRepository.get(forKey: "\(userId)/TagOrdering", as: TagOrdering.self) {
@@ -40,6 +50,10 @@ final class DefaultSettingServerice: SettingService {
             return favoriteTags
         }
         return []
+    }
+    
+    func changeFontSize(_ size: AppState.FontSize, userId: Int) throws {
+        try localRepository.set(size, forKey: "\(userId)/FontSize")
     }
     
     func sortTag(by order: TagOrdering, userId: Int) throws {

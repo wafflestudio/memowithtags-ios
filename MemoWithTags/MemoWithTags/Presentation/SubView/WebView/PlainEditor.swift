@@ -6,16 +6,23 @@
 //
 
 import SwiftUI
+import Factory
 
 struct PlainEditor: View {
     @Binding var text: String
+    
+    @InjectedObservable(\.appState) private var appState
 
     let placeholder: String = "새로운 메모"
     let maxHeight: CGFloat = 100
     
+    private var fontSize: CGFloat {
+        appState.fontSize == .small ? 14 : appState.fontSize == .medium ? 15 : 16
+    }
+    
     var body: some View {
         TextEditor(text: $text)
-            .font(.pretendard(.regular, size: 14))
+            .font(.pretendard(.regular, size: fontSize))
             .foregroundStyle(Color.basicText)
             .lineSpacing(3)
             .frame(minHeight: 33, maxHeight: maxHeight)

@@ -11,12 +11,22 @@ import Factory
 @MainActor
 @Observable
 final class AppState {
+    // 기본 정보
     var user: User?
     var tags: [Tag] = []
+    // 잠금해제 관련
     var isBioAuthenticated: Bool = false
+    // 태그 관련 설정
     var tagOrdering: TagOrdering = .dateAdded
     var isOnMemoTagSorting: Bool = false
     var favoriteTags: [TagID] = []
+    // 글자 크기 관련 설정
+    var fontSize: FontSize = .small
+    enum FontSize: Codable {
+        case small
+        case medium
+        case large
+    }
     
     func initialize() {
         Container.shared.mainViewModel.reset()
@@ -26,6 +36,7 @@ final class AppState {
         tagOrdering = .dateAdded
         isOnMemoTagSorting = false
         favoriteTags = []
+        fontSize = .small
     }
 }
 

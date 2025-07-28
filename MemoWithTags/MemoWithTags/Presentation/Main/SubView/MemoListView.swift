@@ -21,8 +21,10 @@ struct MemoListView: View {
                             .rotationEffect(.degrees(180))
                     }
                     
-                    Color.clear
-                        .frame(height: 8)
+                    ProgressView()
+                        .opacity(viewModel.mainLoading ? 1 : 0)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(5)
                         .onAppear {
                             Task {
                                 await viewModel.fetchMemos()
@@ -41,7 +43,7 @@ struct MemoListView: View {
                     } else {
                         if viewModel.memos.contains(where: { $0.id == viewModel.scrollTarget }) {
                             // scrollTarget이 이미 memos에 있다면 바로 스크롤
-                            withAnimation {
+                            withAnimation(.easeInOut) {
                                 proxy.scrollTo(viewModel.scrollTarget, anchor: .center)
                             }
                         } else {
@@ -52,7 +54,7 @@ struct MemoListView: View {
                             }
                             // fetchMemo가 된 것이 View에 반영될 때까지 0.1초 기다리기
                             try? await Task.sleep(for: .seconds(0.1))
-                            withAnimation {
+                            withAnimation(.easeInOut) {
                                 proxy.scrollTo(viewModel.scrollTarget, anchor: .center)
                             }
                         }

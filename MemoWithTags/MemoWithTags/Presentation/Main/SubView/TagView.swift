@@ -15,11 +15,12 @@ struct TagView: View {
     
     @InjectedObservable(\.mainViewModel) private var viewModel
     @InjectedObservable(\.navigationState) private var navigation
+    @InjectedObservable(\.appState) private var appState
     @InjectedObservable(\.tagUpdateAction) private var tagUpdateAction
     
     var body: some View {
         Text(tag.name)
-            .font(.pretendard(.regular, size: 13))
+            .font(.pretendard(.regular, size: appState.fontSize == .large ? 14 : 13))
             .foregroundColor(Color.tagText)
             .padding(.horizontal, 6)
             .padding(.vertical, 4)

@@ -67,9 +67,11 @@ struct TagEditorView: View {
                         }
                         .onTapGesture {
                             Task {
-                                await viewModel.createTag(name: searchText, color: randomColor)
-                                searchText = ""
-                                generateRandomHexColor()
+                                if let tagId = await viewModel.createTag(name: searchText, color: randomColor) {
+                                    selectedTags.append(tagId)
+                                    searchText = ""
+                                    generateRandomHexColor()
+                                }
                             }
                         }
                     }

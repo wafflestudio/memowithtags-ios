@@ -135,10 +135,12 @@ final class SplashViewModel {
     func fetchSetting() async {
         do {
             if let user = appState.user {
+                let fontSize = try settingService.getFontSizeSetting(userId: user.userNumber)
                 let tagOrdering = try settingService.getTagOrdering(userId: user.userNumber)
                 let onMemoTagSorting = try settingService.getOnMemoTagSorting(userId: user.userNumber)
                 let favoriteTags = try settingService.getFavoriteTags(userId: user.userNumber)
                 
+                appState.fontSize = fontSize
                 appState.tagOrdering = tagOrdering
                 appState.isOnMemoTagSorting = onMemoTagSorting
                 appState.favoriteTags = favoriteTags

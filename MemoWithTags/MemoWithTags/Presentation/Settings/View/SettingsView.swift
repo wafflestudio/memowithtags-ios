@@ -9,8 +9,10 @@ import SwiftUI
 import Factory
 
 struct SettingsView: View {
+    @InjectedObservable(\.settingViewModel) private var viewModel
     @InjectedObservable(\.navigationState) private var navigation
-
+    @InjectedObservable(\.appState) private var appState
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.background.ignoresSafeArea()
@@ -87,8 +89,14 @@ struct SettingsView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
+                                    .opacity(appState.fontSize == .small ? 1 : 0)
                             }
                             .onTapGesture {
+                                viewModel.changeFontSize(fontSize: .small)
                             }
                             
                             HStack {
@@ -97,8 +105,14 @@ struct SettingsView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
+                                    .opacity(appState.fontSize == .medium ? 1 : 0)
                             }
                             .onTapGesture {
+                                viewModel.changeFontSize(fontSize: .medium)
                             }
                             
                             HStack {
@@ -107,8 +121,14 @@ struct SettingsView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
+                                    .opacity(appState.fontSize == .large ? 1 : 0)
                             }
                             .onTapGesture {
+                                viewModel.changeFontSize(fontSize: .large)
                             }
                         }
                         
@@ -124,6 +144,10 @@ struct SettingsView: View {
                                     .foregroundStyle(Color.basicText)
                                 
                                 Spacer()
+                                
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 17))
+                                    .foregroundStyle(Color.redText)
                             }
                             .onTapGesture {
                             }
@@ -131,7 +155,8 @@ struct SettingsView: View {
                             HStack {
                                 Text("수정한 날짜")
                                     .font(.pretendard(.regular, size: 15))
-                                    .foregroundStyle(Color.basicText)
+                                    .foregroundStyle(Color.soft)
+                                    .strikethrough()
                                 
                                 Spacer()
                             }

@@ -89,6 +89,7 @@ struct AppRootView: View {
         .onAppear {
             contextMenuAction.namespace = namespace
             expandAction.namespace = namespace
+            tagUpdateAction.namespace = namespace
         }
         //MARK: - Context Menu
         .onChange(of: contextMenuAction.signal) {
@@ -167,8 +168,7 @@ struct AppRootView: View {
                             _ = KeyChainManager.shared.deleteAccessToken()
                             _ = KeyChainManager.shared.deleteRefreshToken()
                             
-                            navigation.reset()
-                            navigation.push(to: .root)
+                            navigation.switchTo(.splash)
                         })
                     )
                     
@@ -184,7 +184,10 @@ struct AppRootView: View {
                         title: Text("치명적인 오류"),
                         message: Text(customError.localizedDescription),
                         dismissButton: .destructive(Text("앱 종료"), action: {
-                            /* 앱 종료 또는 강제 리셋 처리 */
+                            _ = KeyChainManager.shared.deleteAccessToken()
+                            _ = KeyChainManager.shared.deleteRefreshToken()
+                            
+                            navigation.switchTo(.splash)
                         })
                     )
                 }

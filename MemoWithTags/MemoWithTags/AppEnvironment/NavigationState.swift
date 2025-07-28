@@ -63,14 +63,6 @@ final class NavigationState {
     func switchTo(_ context: NavigationContext) {
         reset(context: context)
         activeContext = context
-        switch activeContext {
-        case .auth:
-            explicitStack = [.login]
-        case .main:
-            explicitStack = [.main]
-        case .splash:
-            explicitStack = [.root]
-        }
     }
     
     func push(to route: Route) {
@@ -97,20 +89,24 @@ final class NavigationState {
         }
     }
     
-    func reset(context: NavigationContext? = nil) {
+    private func reset(context: NavigationContext? = nil) {
         explicitStack = []
         if let contextToReset = context {
             switch contextToReset {
             case .auth:
                 authPath = NavigationPath()
+                explicitStack = [.login]
             case .main:
                 mainPath = NavigationPath()
+                explicitStack = [.main]
             case .splash:
+                explicitStack = [.root]
                 break
             }
         } else {
             authPath = NavigationPath()
             mainPath = NavigationPath()
+            explicitStack = [.root]
         }
     }
 }

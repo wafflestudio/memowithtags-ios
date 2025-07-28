@@ -18,8 +18,6 @@ struct SignupView: View {
     @State private var passwordRepeat: String = ""
     
     @State private var showBackAlert: Bool = false
-    @State private var showTerms: Bool = false
-    @State private var showPrivacyPolicy: Bool = false
     
     var body: some View {
         
@@ -68,17 +66,17 @@ struct SignupView: View {
                             .padding(.top, 12)
 
                         HStack(spacing: 16) {
-                            Button("이용약관") {
-                                showTerms = true
+                            Link(destination: URL(string: "https://wafflestudio.github.io/memowithtags-ios/service-term.html")!) {
+                                Text("이용약관")
+                                    .font(.pretendard(.regular, size: 14))
+                                    .foregroundStyle(Color.blue)
                             }
-                            .font(.pretendard(.regular, size: 14))
-                            .foregroundStyle(Color.blue) // iOS 기본 링크 컬러
 
-                            Button("개인정보처리방침") {
-                                showPrivacyPolicy = true
+                            Link(destination: URL(string: "https://wafflestudio.github.io/memowithtags-ios/privacy-policy.html")!) {
+                                Text("개인정보처리방침")
+                                    .font(.pretendard(.regular, size: 14))
+                                    .foregroundStyle(Color.blue)
                             }
-                            .font(.pretendard(.regular, size: 14))
-                            .foregroundStyle(Color.blue) // iOS 기본 링크 컬러
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -120,23 +118,11 @@ struct SignupView: View {
         }
         .alert("이전", isPresented: $showBackAlert) {
             Button("확인", role: .destructive) {
-                navigation.reset()
+                navigation.switchTo(.auth)
             }
             Button("취소", role: .cancel) {}
         } message: {
             Text("로그인 화면으로 돌아가시겠습니까?")
-        }
-        .sheet(isPresented: $showTerms) {
-            DocumentView(
-                title: "이용약관",
-                content: Documents.serviceTerm
-            )
-        }
-        .sheet(isPresented: $showPrivacyPolicy) {
-            DocumentView(
-                title: "개인정보처리방침",
-                content: Documents.privacyPolicy
-            )
         }
     }
 }

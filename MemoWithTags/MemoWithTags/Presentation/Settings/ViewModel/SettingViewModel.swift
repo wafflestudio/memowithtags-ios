@@ -133,6 +133,18 @@ final class SettingViewModel {
         isLoading = false
     }
     
+    //MARK: - 글씨 크기 설정
+    func changeFontSize(fontSize: AppState.FontSize) {
+        do {
+            if let user = appState.user {
+                try settingService.changeFontSize(fontSize, userId: user.userNumber)
+                appState.fontSize = fontSize
+            }
+        } catch {
+            alert.alert(error: error)
+        }
+    }
+    
     //MARK: - 태그 수정
     func updateTag(tagId: Int, name: String, color: Color.TagColor) async {
         let result = await tagService.updateTag(tagId: tagId, name: name, color: color)
@@ -171,6 +183,7 @@ final class SettingViewModel {
         }
     }
     
+    //MARK: - 태그 즐겨찾기
     func togleFavoriteTag(tagId: Int) {
         do {
             if let user = appState.user {

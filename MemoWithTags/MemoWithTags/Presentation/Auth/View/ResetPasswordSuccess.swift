@@ -44,7 +44,7 @@ struct ResetPasswordSuccessView: View {
                     //MARK: - 로그인 버튼
                     Button {
                         //action
-                        navigation.switchTo(.splash)
+                        navigation.switchTo(.auth)
                     } label: {
                         Text("로그인 하기")
                             .frame(maxWidth: .infinity)

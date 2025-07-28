@@ -85,7 +85,7 @@ struct ResetPasswordView: View {
         .navigationBarBackButtonHidden()
         .alert("이전", isPresented: $showBackAlert) {
             Button("확인", role: .destructive) {
-                navigation.reset()
+                navigation.switchTo(.auth)
             }
             Button("취소", role: .cancel) {}
         } message: {

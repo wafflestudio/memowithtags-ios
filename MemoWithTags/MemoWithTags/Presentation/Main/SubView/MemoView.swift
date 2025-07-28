@@ -19,11 +19,15 @@ struct MemoView: View {
     
     @State private var isExpanded: Bool = false
     
+    private var fontSize: CGFloat {
+        appState.fontSize == .small ? 14 : appState.fontSize == .medium ? 15 : 16
+    }
+    
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             //MARK: - 메모 내용
             Text(memo.content)
-                .font(.pretendard(.regular, size: 14))
+                .font(.pretendard(.regular, size: fontSize))
                 .foregroundColor(Color.basicText)
                 .lineSpacing(3)
                 .lineLimit(isExpanded ? nil : 4)
@@ -31,12 +35,17 @@ struct MemoView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
             //MARK: - 태그
-            if !memo.tagIds.isEmpty {
+            if !memo.tagIds.isEmpty || memo.locked {
                 HFlow {
                     ForEach(viewModel.tags(for: memo.tagIds) , id: \.id) { tag in
                         TagView(tag: tag) {
                             onTappingMemo()
                         }
+                    }
+                    if memo.locked {
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(Color.grayText)
+                            .font(.system(size: 14))
                     }
                 }
                 .padding(.top, 6)
@@ -46,12 +55,6 @@ struct MemoView: View {
             //MARK: - 메모 펼쳤을 때 나오는 밑에 버튼들
             if isExpanded {
                 HStack(alignment: .bottom) {
-                    if memo.locked {
-                        Image(systemName: "lock.fill")
-                            .foregroundColor(Color.grayText)
-                            .font(.system(size: 14))
-                    }
-                    
                     Text(dateFormat(date: memo.createdAt))
                         .font(.pretendard(.medium, size: 11))
                         .foregroundStyle(Color.grayText)
@@ -61,7 +64,7 @@ struct MemoView: View {
                     
                     HStack(spacing: 4) {
                         Text("관련 검색")
-                            .font(.pretendard(.medium, size: 11))
+                            .font(.pretendard(.medium, size: appState.fontSize == .large ? 12 : 11))
                             .foregroundStyle(Color.basicText)
                         Image(.searchIcon)
                             .resizable()
@@ -81,7 +84,7 @@ struct MemoView: View {
                     
                     HStack(spacing: 4) {
                         Text("간편 수정")
-                            .font(.pretendard(.medium, size: 11))
+                            .font(.pretendard(.medium, size: appState.fontSize == .large ? 12 : 11))
                             .foregroundStyle(Color.basicText)
                         
                         Image(.aiPenIcon)

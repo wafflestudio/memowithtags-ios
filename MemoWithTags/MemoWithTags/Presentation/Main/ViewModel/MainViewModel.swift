@@ -27,7 +27,7 @@ final class MainViewModel {
     private var mainCurrentPage: Int = 0
     private var mainTotalPages: Int = 1
     
-    private var mainLoading: Bool = false
+    var mainLoading: Bool = false
     
     var scrollTrigger: Bool = false
     var scrollTarget: Int = -1
@@ -208,16 +208,19 @@ final class MainViewModel {
     }
     
     //MARK: - 태그 생성
-    func createTag(name: String, color: Color.TagColor) async {
+    func createTag(name: String, color: Color.TagColor) async -> TagID? {
         let result = await tagService.createTag(name: name, color: color)
         
         switch result {
         case .success(let tag):
             appState.tags.append(tag)
+            return tag.id
             
         case .failure(let error):
             alert.alert(error: error)
         }
+        
+        return nil
     }
     
     //MARK: - 태그 수정
@@ -330,8 +333,10 @@ final class MainViewModel {
                         self.editContent = ""
                         self.editTags = []
                         self.editState = .create
+                        self.scrollTo(memoID: nil)
                         hideKeyboard()
                     }
+                    
                     switch editState {
                     case .create:
                         await createMemo(content: trimmedContent, tagIds: tags, locked: false)
