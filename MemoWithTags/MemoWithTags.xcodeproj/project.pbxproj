@@ -67,7 +67,6 @@
 		DA19AD9E2E2E673800059CF7 /* SubmitButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19AD9B2E2E673800059CF7 /* SubmitButtonView.swift */; };
 		DA19ADA12E2E675900059CF7 /* ReadPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19AD9F2E2E675900059CF7 /* ReadPosition.swift */; };
 		DA19ADA22E2E675900059CF7 /* CustomContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA02E2E675900059CF7 /* CustomContextMenu.swift */; };
-		DA19ADA92E2E685B00059CF7 /* Documents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA82E2E685B00059CF7 /* Documents.swift */; };
 		DA19ADAA2E2E685B00059CF7 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA32E2E685B00059CF7 /* Action.swift */; };
 		DA19ADAB2E2E685B00059CF7 /* NavigationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA52E2E685B00059CF7 /* NavigationState.swift */; };
 		DA19ADAC2E2E685B00059CF7 /* AlertState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA19ADA62E2E685B00059CF7 /* AlertState.swift */; };
@@ -187,7 +186,6 @@
 		DA19ADA52E2E685B00059CF7 /* NavigationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationState.swift; sourceTree = "<group>"; };
 		DA19ADA62E2E685B00059CF7 /* AlertState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertState.swift; sourceTree = "<group>"; };
 		DA19ADA72E2E685B00059CF7 /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
-		DA19ADA82E2E685B00059CF7 /* Documents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Documents.swift; sourceTree = "<group>"; };
 		DA19ADAF2E2E69AF00059CF7 /* SettingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingService.swift; sourceTree = "<group>"; };
 		DA2DA6642D2AF00D000C0495 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA3C9E552D290D0E00F28D07 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
@@ -538,7 +536,6 @@
 				DA19ADA52E2E685B00059CF7 /* NavigationState.swift */,
 				DA19ADA62E2E685B00059CF7 /* AlertState.swift */,
 				DA19ADA72E2E685B00059CF7 /* DeepLinkHandler.swift */,
-				DA19ADA82E2E685B00059CF7 /* Documents.swift */,
 			);
 			path = AppEnvironment;
 			sourceTree = "<group>";
@@ -812,7 +809,6 @@
 				DA8886CF2D6A317800ED6C1A /* MemoError.swift in Sources */,
 				DABFE2822D28481100B314E2 /* MemoRouter.swift in Sources */,
 				DA8886C52D6A1AA000ED6C1A /* UserService.swift in Sources */,
-				DA19ADA92E2E685B00059CF7 /* Documents.swift in Sources */,
 				DA19ADAA2E2E685B00059CF7 /* Action.swift in Sources */,
 				DA19ADAB2E2E685B00059CF7 /* NavigationState.swift in Sources */,
 				DA19ADAC2E2E685B00059CF7 /* AlertState.swift in Sources */,
