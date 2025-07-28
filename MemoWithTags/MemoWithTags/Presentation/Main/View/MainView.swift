@@ -18,7 +18,7 @@ struct MainView: View {
         ZStack {
             Color.background.ignoresSafeArea()
             
-            VStack(spacing: 4) {
+            VStack(spacing: 0) {
                 MemoListView()
                 
                 Spacer()

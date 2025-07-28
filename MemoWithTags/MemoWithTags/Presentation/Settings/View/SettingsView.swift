@@ -155,8 +155,9 @@ struct SettingsView: View {
                             HStack {
                                 Text("수정한 날짜")
                                     .font(.pretendard(.regular, size: 15))
-                                    .foregroundStyle(Color.soft)
                                     .strikethrough()
+                                    .foregroundStyle(Color.soft)
+
                                 
                                 Spacer()
                             }

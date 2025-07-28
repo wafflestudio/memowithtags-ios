@@ -333,12 +333,12 @@ final class MainViewModel {
                         self.editContent = ""
                         self.editTags = []
                         self.editState = .create
-                        self.scrollTo(memoID: nil)
                         hideKeyboard()
                     }
                     
                     switch editState {
                     case .create:
+                        self.scrollTo(memoID: nil)
                         await createMemo(content: trimmedContent, tagIds: tags, locked: false)
                     case .update(let target):
                         await updateMemo(memoId: target.id, content: trimmedContent, tagIds: tags, locked: target.locked)
