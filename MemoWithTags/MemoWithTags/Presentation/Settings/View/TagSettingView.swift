@@ -38,108 +38,113 @@ struct TagSettingView: View {
                     Spacer()
                 }
                 .padding(.vertical, 8)
+                .padding(.horizontal, 12)
+                .background(Color.background) // 네비게이션 바 배경 고정
                 
-                //MARK: -
-                VStack(spacing: 12) {
-                    VStack(alignment: .leading, spacing: 20) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("태그 목록 정렬")
+                //MARK: - 스크롤 가능한 콘텐츠 영역
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 20) {
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("태그 목록 정렬")
+                                    .font(.pretendard(.regular, size: 12))
+                                    .foregroundStyle(Color.grayText)
+                                    .padding(.horizontal, 6)
+                                
+                                HStack {
+                                    Text("가나다 순")
+                                        .font(.pretendard(.regular, size: 15))
+                                        .foregroundStyle(Color.basicText)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 17))
+                                        .foregroundStyle(Color.redText)
+                                        .opacity(appState.tagOrdering == .alphabetical ? 1 : 0)
+                                }
+                                .onTapGesture {
+                                    viewModel.sortTag(by: .alphabetical)
+                                }
+                                
+                                HStack {
+                                    Text("색상 순")
+                                        .font(.pretendard(.regular, size: 15))
+                                        .foregroundStyle(Color.basicText)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 17))
+                                        .foregroundStyle(Color.redText)
+                                        .opacity(appState.tagOrdering == .color ? 1 : 0)
+                                }
+                                .onTapGesture {
+                                    viewModel.sortTag(by: .color)
+                                }
+                                
+                                HStack {
+                                    Text("최근 생성순")
+                                        .font(.pretendard(.regular, size: 15))
+                                        .foregroundStyle(Color.basicText)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 17))
+                                        .foregroundStyle(Color.redText)
+                                        .opacity(appState.tagOrdering == .dateAdded ? 1 : 0)
+                                }
+                                .onTapGesture {
+                                    viewModel.sortTag(by: .dateAdded)
+                                }
+                            }
+                            
+                            Divider()
+                            
+                            HStack {
+                                Toggle(isOn: $appState.isOnMemoTagSorting) {
+                                    Text("메모 내 태그에도 적용")
+                                        .font(.pretendard(.regular, size: 15))
+                                        .foregroundStyle(Color.basicText)
+                                }
+                                .tint(Color.TagColor.Red.color)
+                                .onChange(of: appState.isOnMemoTagSorting) {
+                                    viewModel.togleMemoTagSorting()
+                                }
+                            }
+
+                        }
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 17)
+                        .background(Color.memoBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text("태그 개별 수정")
                                 .font(.pretendard(.regular, size: 12))
                                 .foregroundStyle(Color.grayText)
                                 .padding(.horizontal, 6)
                             
-                            HStack {
-                                Text("가나다 순")
-                                    .font(.pretendard(.regular, size: 15))
-                                    .foregroundStyle(Color.basicText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 17))
-                                    .foregroundStyle(Color.redText)
-                                    .opacity(appState.tagOrdering == .alphabetical ? 1 : 0)
-                            }
-                            .onTapGesture {
-                                viewModel.sortTag(by: .alphabetical)
-                            }
-                            
-                            HStack {
-                                Text("색상 순")
-                                    .font(.pretendard(.regular, size: 15))
-                                    .foregroundStyle(Color.basicText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 17))
-                                    .foregroundStyle(Color.redText)
-                                    .opacity(appState.tagOrdering == .color ? 1 : 0)
-                            }
-                            .onTapGesture {
-                                viewModel.sortTag(by: .color)
-                            }
-                            
-                            HStack {
-                                Text("최근 생성순")
-                                    .font(.pretendard(.regular, size: 15))
-                                    .foregroundStyle(Color.basicText)
-                                
-                                Spacer()
-                                
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 17))
-                                    .foregroundStyle(Color.redText)
-                                    .opacity(appState.tagOrdering == .dateAdded ? 1 : 0)
-                            }
-                            .onTapGesture {
-                                viewModel.sortTag(by: .dateAdded)
-                            }
-                        }
-                        
-                        Divider()
-                        
-                        HStack {
-                            Toggle(isOn: $appState.isOnMemoTagSorting) {
-                                Text("메모 내 태그에도 적용")
-                                    .font(.pretendard(.regular, size: 15))
-                                    .foregroundStyle(Color.basicText)
-                            }
-                            .tint(Color.TagColor.Red.color)
-                            .onChange(of: appState.isOnMemoTagSorting) {
-                                viewModel.togleMemoTagSorting()
-                            }
-                        }
-
-                    }
-                    .padding(.vertical, 16)
-                    .padding(.horizontal, 17)
-                    .background(Color.memoBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                    
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("태그 개별 수정")
-                            .font(.pretendard(.regular, size: 12))
-                            .foregroundStyle(Color.grayText)
-                            .padding(.horizontal, 6)
-                        
-                        HFlow {
-                            ForEach(appState.sortedTags, id: \.id) { tag in
-                                EditableTagView(tag: tag, star: appState.favoriteTags.contains(tag.id)) {
-                                    navigation.push(to: .tagDetailedSetting(tag: tag))
+                            HFlow {
+                                ForEach(appState.sortedTags, id: \.id) { tag in
+                                    EditableTagView(tag: tag, star: appState.favoriteTags.contains(tag.id)) {
+                                        navigation.push(to: .tagDetailedSetting(tag: tag))
+                                    }
                                 }
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 17)
+                        .background(Color.memoBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
-                    .padding(.vertical, 16)
-                    .padding(.horizontal, 17)
-                    .background(Color.memoBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 20) // 하단 여백 추가
                 }
             }
-            .padding(.horizontal, 12)
             
         }
         .navigationBarBackButtonHidden(true)
