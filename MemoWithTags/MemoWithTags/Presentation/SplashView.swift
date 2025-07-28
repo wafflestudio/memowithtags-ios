@@ -116,6 +116,9 @@ final class SplashViewModel {
         case .success(let user):
             appState.user = user
         case .failure(let error):
+            let _ = KeyChainManager.shared.deleteAccessToken()
+            let _ = KeyChainManager.shared.deleteRefreshToken()
+            
             alert.alert(error: error)
         }
     }
@@ -128,6 +131,9 @@ final class SplashViewModel {
         case .success(let tags):
             appState.tags = tags
         case .failure(let error):
+            let _ = KeyChainManager.shared.deleteAccessToken()
+            let _ = KeyChainManager.shared.deleteRefreshToken()
+            
             alert.alert(error: error)
         }
     }
@@ -147,6 +153,9 @@ final class SplashViewModel {
             }
 
         } catch {
+            let _ = KeyChainManager.shared.deleteAccessToken()
+            let _ = KeyChainManager.shared.deleteRefreshToken()
+            
             alert.alert(error: error)
         }
     }
