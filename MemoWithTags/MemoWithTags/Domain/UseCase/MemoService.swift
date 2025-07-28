@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Factory
 
 protocol MemoService {
     func searchMemos(content: String?, tagIds: [Int]?, dateRange: ClosedRange<Date>?, page: Int) async -> Result<PaginatedMemos, MemoError>
@@ -17,11 +18,7 @@ protocol MemoService {
 }
 
 final class DefaultMemoService: MemoService {
-    private let memoRepository: MemoRepository
-
-    init(memoRepository: MemoRepository) {
-        self.memoRepository = memoRepository
-    }
+    @Injected(\.memoRepository) private var memoRepository: MemoRepository
     
     //MARK: - 메모 생성
     func createMemo(content: String, tagIds: [Int], locked: Bool) async -> Result<Memo, MemoError> {
@@ -88,3 +85,10 @@ final class DefaultMemoService: MemoService {
         }
     }
 }
+
+extension Container {
+    var memoService: Factory<MemoService> {
+        self { DefaultMemoService() }.singleton
+    }
+}
+

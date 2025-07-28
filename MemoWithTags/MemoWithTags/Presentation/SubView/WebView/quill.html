@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable = no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.bubble.css" />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        .ql-editor {
+            font-family: sans-serif !important;
+            font-size: 25px;
+            padding: 0 !important;
+            border: 1px solid black
+        }
+        .ql-tooltip {
+          display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="editor"></div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script>
+        const quill = new Quill('#editor', {
+            theme: 'bubble'
+        });
+        
+        window.webkit?.messageHandlers?.formatUpdate?.postMessage({});
+        
+        <!--editor 변화 감지-->
+        quill.on('editor-change', (eventName, ...args) => {
+            if (eventName === 'selection-change') {
+                if (args[0]) {
+                    const format = quill.getFormat(args[0])
+
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.formatUpdate) {
+                        window.webkit.messageHandlers.formatUpdate.postMessage(format)
+                    }
+                }
+            } else if (eventName === 'text-change') {
+                const text = quill.getText().trim();
+                const html = quill.getSemanticHTML();
+
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.textUpdate) {
+                    window.webkit.messageHandlers.textUpdate.postMessage({ text, html });
+                }
+            }
+        });
+        
+        <!--editor 높이 변화 감지-->
+        const editorEl = document.getElementById("editor");
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                const height = entry.contentRect.height;
+                window.webkit?.messageHandlers?.heightUpdate?.postMessage(height);
+            }
+        });
+        resizeObserver.observe(editorEl);
+        
+        <!--Enter 키 처리-->
+        quill.root.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const range = quill.getSelection();
+                if (!range) return;
+                
+                quill.root.blur()
+
+                setTimeout(() => {
+                    quill.root.focus();
+                    quill.setSelection(range.index, 0);
+                }, 20);
+            }
+        });
+        
+        <!--format 변경 감지-->
+        const togleStyle = (style, value = null) => {
+            const range = quill.getSelection();
+            if (!range) return;
+
+            quill.root.blur()
+
+            setTimeout(() => {
+                quill.root.focus();
+                quill.setSelection(range.index, range.length);
+                
+                if (value === null) {
+                    const current = quill.getFormat(range);
+                    quill.format(style, !current[style]);
+                } else {
+                    quill.format(style, value);
+                }
+                
+                const format = quill.getFormat(range)
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.formatUpdate) {
+                    window.webkit.messageHandlers.formatUpdate.postMessage(format)
+                }
+            }, 20);
+        };
+    </script>
+</body>
+</html>

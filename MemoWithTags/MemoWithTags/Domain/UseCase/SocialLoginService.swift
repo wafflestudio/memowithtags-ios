@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Factory
 
 protocol SocialLoginService {
     func kakaoLogin(authCode: String) async -> Result<SocialAuth, SocialLoginError>
@@ -14,11 +15,7 @@ protocol SocialLoginService {
 }
 
 final class DefaultSocialLoginService: SocialLoginService {
-    private let authRepository: AuthRepository
-    
-    init(authRepository: AuthRepository) {
-        self.authRepository = authRepository
-    }
+    @Injected(\.authRepository) private var authRepository: AuthRepository
     
     //MARK: - 카카오 로그인
     func kakaoLogin(authCode: String) async -> Result<SocialAuth, SocialLoginError> {
@@ -77,3 +74,10 @@ final class DefaultSocialLoginService: SocialLoginService {
         }
     }
 }
+
+extension Container {
+    var socialLoginService: Factory<SocialLoginService> {
+        self { DefaultSocialLoginService() }.singleton
+    }
+}
+

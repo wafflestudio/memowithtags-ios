@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import Factory
 
 final class DefaultMemoRepository: MemoRepository {
     
@@ -81,3 +82,10 @@ final class DefaultMemoRepository: MemoRepository {
         return dto
     }
 }
+
+extension Container {
+    var memoRepository: Factory<MemoRepository> {
+        self { DefaultMemoRepository() }.singleton
+    }
+}
+

@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import Factory
 
 final class DefaultAuthRepository: AuthRepository {
     
@@ -128,6 +129,12 @@ final class DefaultAuthRepository: AuthRepository {
             .response
         let dto = try handleErrorDecodable(response: response)
         return dto
+    }
+}
+
+extension Container {
+    var authRepository: Factory<AuthRepository> {
+        self { DefaultAuthRepository() }.singleton
     }
 }
 
