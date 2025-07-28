@@ -18,6 +18,7 @@ struct MemoListView: View {
                             .padding(.horizontal, 12)
                             .scaleEffect(viewModel.scrollTarget == memo.id ? 1.04 : 1.0)
                             .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                            .shadow(color: viewModel.scrollTarget == memo.id ? Color.shadow : .clear, radius: 3)
                             .rotationEffect(.degrees(180))
                     }
                     

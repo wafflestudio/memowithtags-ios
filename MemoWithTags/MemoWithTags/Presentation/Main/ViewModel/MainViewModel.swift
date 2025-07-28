@@ -203,7 +203,9 @@ final class MainViewModel {
             }
             self.recommendingMemoIds = ids
         case .failure(let error):
-            alert.alert(error: error)
+            if error.type != .ignore {
+                alert.alert(error: error)
+            }
         }
     }
     
