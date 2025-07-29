@@ -23,6 +23,7 @@ struct TagDetailedSettingView: View {
     
     @State private var isAppeared: Bool = false
     @State private var isLoading: Bool  = false
+    @State private var canSave: Bool = false
 
     
     private let tagColors: [Color.TagColor] = [
@@ -52,8 +53,14 @@ struct TagDetailedSettingView: View {
                         .padding(12) // 터치 영역을 확장하기 위해 패딩 추가
                         .contentShape(Rectangle()) // 전체 영역을 터치 가능 영역으로 지정
                         .onTapGesture {
-                            Task {
-                                await viewModel.updateTag(tagId: tag.id, name: updatedName, color: selectedColor)
+                            // 저장 가능할 때만 저장하고 뒤로가기
+                            if canSave {
+                                Task {
+                                    await viewModel.updateTag(tagId: tag.id, name: updatedName.trimmingCharacters(in: .whitespacesAndNewlines), color: selectedColor)
+                                    navigation.pop()
+                                }
+                            } else {
+                                // 저장할 수 없으면 그냥 뒤로가기 (변경사항 무시)
                                 navigation.pop()
                             }
                         }
@@ -82,7 +89,7 @@ struct TagDetailedSettingView: View {
                             .frame(width: 230, height: 9)
                             .cornerRadius(4)
                         
-                        Text(updatedName)
+                        Text(updatedName.isEmpty ? "태그명" : updatedName)
                             .font(.pretendard(.regular, size: 13))
                             .foregroundColor(Color.tagText)
                             .padding(.horizontal, 6)
@@ -105,26 +112,18 @@ struct TagDetailedSettingView: View {
                                 .foregroundStyle(Color.grayText)
                                 .padding(.horizontal, 6)
                             
-                            ZStack(alignment: .topTrailing) {
-                                InputFieldView(text: $updatedName, placeholder: "태그명", showCount: true, showAlert: updatedName.count > 16)
-                                
-                                HStack(spacing: 14) {
-                                    Rectangle()
-                                        .foregroundColor(Color.placeholder)
-                                        .frame(width: 0.3, height: 32)
-                                    
-                                    Image(appState.favoriteTags.contains(tag.id) ? .starFilledIcon : .starIcon)
-                                        .resizable()
-                                        .frame(width: 18, height: 18)
-
-                                }
-                                .padding(.top, 10)
-                                .padding(.trailing, 16)
-                                .onTapGesture {
+                            TagEditInputFieldView(
+                                text: $updatedName,
+                                placeholder: "태그명",
+                                currentTag: tag,
+                                allTags: appState.sortedTags,
+                                canSave: $canSave,
+                                onFavoriteToggle: {
                                     viewModel.togleFavoriteTag(tagId: tag.id)
-                                }
-                            }
-
+                                },
+                                isFavorite: appState.favoriteTags.contains(tag.id)
+                            )
+                            
                         }
                         
                         VStack(alignment: .leading, spacing: 16) {
@@ -146,6 +145,11 @@ struct TagDetailedSettingView: View {
                                                 )
                                         )
                                         .frame(width: 35, height: 35)
+                                        .overlay(
+                                            // 선택된 색상에 체크마크 표시
+                                            Circle()
+                                                .stroke(Color.basicText, lineWidth: selectedColor == tagColor ? 2 : 0)
+                                        )
                                         .onTapGesture {
                                             selectedColor = tagColor
                                         }

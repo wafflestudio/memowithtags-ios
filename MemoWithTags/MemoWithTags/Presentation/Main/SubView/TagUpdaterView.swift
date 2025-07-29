@@ -19,6 +19,7 @@ struct TagUpdaterView: View {
     @State private var selectedColor: Color.TagColor
     
     @State private var isLoading: Bool  = false
+    @State private var canSave: Bool = false
     
     private let tagColors: [Color.TagColor] = [
         .Red, .Yellow, .Green, .Mint, .Blue, .Purple, .Pink,
@@ -35,7 +36,7 @@ struct TagUpdaterView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text(updatedName)
+            Text(updatedName.isEmpty ? "태그명" : updatedName)
                 .font(.pretendard(.regular, size: 13))
                 .foregroundColor(Color.tagText)
                 .padding(.horizontal, 6)
@@ -53,25 +54,17 @@ struct TagUpdaterView: View {
                     .foregroundStyle(Color.grayText)
                     .padding(.horizontal, 6)
                 
-                ZStack(alignment: .topTrailing) {
-                    InputFieldView(text: $updatedName, placeholder: "태그명", showCount: true, showAlert: updatedName.count > 16)
-                    
-                    HStack(spacing: 14) {
-                        Rectangle()
-                            .foregroundColor(Color.placeholder)
-                            .frame(width: 0.3, height: 32)
-                        
-                        Image(appState.favoriteTags.contains(tag.id) ? .starFilledIcon : .starIcon)
-                            .resizable()
-                            .frame(width: 18, height: 18)
-
-                    }
-                    .padding(.top, 10)
-                    .padding(.trailing, 16)
-                    .onTapGesture {
+                TagEditInputFieldView(
+                    text: $updatedName,
+                    placeholder: "태그명",
+                    currentTag: tag,
+                    allTags: appState.sortedTags,
+                    canSave: $canSave,
+                    onFavoriteToggle: {
                         viewModel.togleFavoriteTag(tagId: tag.id)
-                    }
-                }
+                    },
+                    isFavorite: appState.favoriteTags.contains(tag.id)
+                )
             }
             
             VStack(alignment: .leading, spacing: 16) {
@@ -93,6 +86,11 @@ struct TagUpdaterView: View {
                                     )
                             )
                             .frame(width: 35, height: 35)
+                            .overlay(
+                                // 선택된 색상에 체크마크 표시
+                                Circle()
+                                    .stroke(Color.basicText, lineWidth: selectedColor == tagColor ? 2 : 0)
+                            )
                             .onTapGesture {
                                 selectedColor = tagColor
                             }
@@ -102,10 +100,11 @@ struct TagUpdaterView: View {
             
             Spacer()
             
-            SubmitButtonView(text: "완료", loading: isLoading, disabled: !(1...16 ~= updatedName.count)) {
+            SubmitButtonView(text: "완료", loading: isLoading, disabled: !canSave) {
                 Task {
                     isLoading = true
-                    await viewModel.updateTag(tagId: tag.id, name: updatedName, color: selectedColor)
+                    let trimmedName = updatedName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    await viewModel.updateTag(tagId: tag.id, name: trimmedName, color: selectedColor)
                     isLoading = false
                     dismiss()
                 }
