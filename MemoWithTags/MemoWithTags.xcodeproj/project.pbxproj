@@ -12,6 +12,7 @@
 		556EF45B2D68ACF0001BE9B3 /* MemoRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EF4592D68ACF0001BE9B3 /* MemoRepository.swift */; };
 		556EF45C2D68ACF0001BE9B3 /* TagRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EF45A2D68ACF0001BE9B3 /* TagRepository.swift */; };
 		55ECA11E2D3A7DC4003E1517 /* BioAuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55ECA11D2D3A7DC4003E1517 /* BioAuthenticationManager.swift */; };
+		55F013092E3931CC00C7A311 /* TagEditInputFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F013082E3931CC00C7A311 /* TagEditInputFieldView.swift */; };
 		DA0A4E752D2B7AFE007E481D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 55E610D22D2AD5A500E452A8 /* Alamofire */; };
 		DA0DE63C2D43BD290006668A /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0DE63B2D43BD290006668A /* KeyboardManager.swift */; };
 		DA19AD2A2E2E5DF600059CF7 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = DA19AD292E2E5DF600059CF7 /* Factory */; };
@@ -128,6 +129,7 @@
 		556EF4592D68ACF0001BE9B3 /* MemoRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoRepository.swift; sourceTree = "<group>"; };
 		556EF45A2D68ACF0001BE9B3 /* TagRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagRepository.swift; sourceTree = "<group>"; };
 		55ECA11D2D3A7DC4003E1517 /* BioAuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BioAuthenticationManager.swift; sourceTree = "<group>"; };
+		55F013082E3931CC00C7A311 /* TagEditInputFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditInputFieldView.swift; sourceTree = "<group>"; };
 		DA0DE63B2D43BD290006668A /* KeyboardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
 		DA19AD2C2E2E633200059CF7 /* LocalRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalRepository.swift; sourceTree = "<group>"; };
 		DA19AD2E2E2E643400059CF7 /* LocalError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalError.swift; sourceTree = "<group>"; };
@@ -419,6 +421,7 @@
 				DA19AD992E2E673800059CF7 /* InputFieldView.swift */,
 				DA19AD9A2E2E673800059CF7 /* SecureInputFieldView.swift */,
 				DA19AD9B2E2E673800059CF7 /* SubmitButtonView.swift */,
+				55F013082E3931CC00C7A311 /* TagEditInputFieldView.swift */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -802,6 +805,7 @@
 				DA19AD502E2E667E00059CF7 /* MemoView.swift in Sources */,
 				DA19AD512E2E667E00059CF7 /* TagEditorView.swift in Sources */,
 				DA19AD9C2E2E673800059CF7 /* SecureInputFieldView.swift in Sources */,
+				55F013092E3931CC00C7A311 /* TagEditInputFieldView.swift in Sources */,
 				DA19AD9D2E2E673800059CF7 /* InputFieldView.swift in Sources */,
 				DA19AD9E2E2E673800059CF7 /* SubmitButtonView.swift in Sources */,
 				DA19AD522E2E667E00059CF7 /* TagView.swift in Sources */,
